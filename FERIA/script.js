@@ -71,3 +71,15 @@ box('screen',1278,224,92,22,stage,'background:#ffd89a;animation-duration:2.4s');
  addEventListener('keydown',e=>{if(e.key==='Escape')set(false)});
  matchMedia('(min-width:861px)').addEventListener('change',e=>{if(e.matches)set(false)});
 })();
+
+(function(){ // cambiar tema claro / oscuro (se recuerda la elección)
+ const root=document.documentElement,mt=document.querySelector('meta[name=theme-color]'),btns=document.querySelectorAll('[data-theme-toggle]');
+ const light=()=>root.getAttribute('data-theme')==='light';
+ const paint=()=>{if(mt)mt.setAttribute('content',light()?'#f4f6ff':'#050a24');btns.forEach(b=>b.setAttribute('aria-pressed',String(light())))};
+ btns.forEach(b=>b.addEventListener('click',()=>{
+  if(light())root.removeAttribute('data-theme');else root.setAttribute('data-theme','light');
+  try{localStorage.setItem('tema',light()?'light':'dark')}catch(e){}
+  paint();
+ }));
+ paint();
+})();
