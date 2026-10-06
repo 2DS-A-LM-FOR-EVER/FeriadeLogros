@@ -29,9 +29,10 @@ svg.chev{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;opa
 .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,#050a24ee 0%,#050a24b0 26%,#050a2450 44%,#050a2400 60%)}
 .hero>:not(.stage):not(.scrim){position:relative;z-index:2}
 .kicker{font-weight:800;font-size:clamp(13px,1.5vw,18px);letter-spacing:.22em;color:#bcd6ff;text-transform:uppercase}
-.title{font:700 clamp(44px,7.2vw,86px)/.9 'Pixelify Sans',monospace;margin:12px 0 16px}
-.title span{display:block;position:relative;white-space:nowrap;color:transparent;background:linear-gradient(180deg,#ffe27a 10%,#ffb36b 55%,#ff8f9f 100%);-webkit-background-clip:text;background-clip:text}
-.title span::before{content:attr(data-t);position:absolute;inset:0;z-index:-1;color:#4a2338;-webkit-text-stroke:.14em #4a2338;text-shadow:0 .07em 0 #4a2338}
+.title{margin:12px 0 16px;line-height:0}
+.title img{display:block;width:292px;height:auto;image-rendering:pixelated;filter:drop-shadow(0 4px 0 #0006)}
+@media(min-width:1000px){.title img{width:438px}}
+@media(min-width:1700px){.title img{width:584px}}
 .sub{font-weight:700;font-size:clamp(14px,1.4vw,18px);text-shadow:0 2px 0 #0008;margin-bottom:22px;max-width:92vw}
 .chat{position:fixed;right:20px;bottom:20px;z-index:6;width:48px;height:48px;border-radius:50%;background:var(--yellow);border:0;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 8px #0005}
 .chat i{width:18px;height:16px;background:#1b1500;border-radius:3px 3px 3px 0}
@@ -75,4 +76,18 @@ svg.chev{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;opa
 .mini{background:linear-gradient(#101433 0 38%,#8fffc0 38% 64%,#101433 64%);animation:mini 3.6s steps(1) infinite}
 @keyframes mini{0%,88%{opacity:0}90%,96%{opacity:1}98%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.stage *{animation:none!important}.wink,.hap,.mini,.px,.puff,.spark{display:none}}
-@media(max-width:860px){nav,.icon.hide-m{display:none}.logo{margin-right:0}}
+/* MENÚ MÓVIL */
+.burger{display:none}
+.drawer-bg{position:fixed;inset:0;z-index:19;background:#0009;opacity:0;pointer-events:none;transition:opacity .25s}
+.drawer-bg.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:20;width:min(calc(100vw - 18px),460px);background:#03071a;border-left:2px solid #1c2740;display:flex;flex-direction:column;overflow-y:auto;transform:translateX(100%);visibility:hidden;transition:transform .28s ease,visibility 0s linear .28s}
+.drawer.open{transform:none;visibility:visible;transition:transform .28s ease,visibility 0s}
+.drawer-top{display:flex;align-items:center;gap:14px;height:62px;padding:0 20px;border-bottom:2px solid #1c2740;font-weight:800;font-size:22px}
+.drawer-top .icon{width:36px;height:36px}
+.drawer ul{list-style:none;padding:12px 24px}
+.drawer li{border-bottom:1px solid #1f2a44}
+.drawer li a,.drawer li button{display:flex;align-items:center;gap:20px;width:100%;min-height:68px;padding:12px 4px;background:none;border:0;color:#e9ecf8;font:700 20px 'Mulish',sans-serif;text-align:left;cursor:pointer}
+.drawer li svg{width:26px;height:26px;flex:none;stroke:#aab3d0;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.drawer li .go{width:18px;height:18px;opacity:.7}
+.drawer li span{flex:1}
+@media(max-width:860px){nav,.icon.hide-m{display:none}.logo{margin-right:0}.logo-t{display:none}.burger{display:grid}header{padding:0 14px 0 20px}}

@@ -60,3 +60,14 @@ box('screen',1278,224,92,22,stage,'background:#ffd89a;animation-duration:2.4s');
 })();
 [[372,100],[497,152],[880,152],[1052,98]].forEach(([x,y],i)=>box('lamp',x-90,y-60,180,150,stage,`animation-delay:-${i*1.3}s`)); // lámparas
 [[905,425],[928,458],[872,482],[952,470],[890,448]].forEach(([x,y],i)=>box('spark',x,y,14,14,stage,`animation-delay:-${i*.55}s`)); // monedas
+
+(function(){ // menú lateral del celular
+ const d=document.getElementById('drawer'),bg=document.getElementById('drawerBg'),b=document.getElementById('burger');
+ const set=o=>{d.classList.toggle('open',o);bg.classList.toggle('open',o);d.setAttribute('aria-hidden',String(!o));b.setAttribute('aria-expanded',String(o));document.body.style.overflow=o?'hidden':''};
+ b.addEventListener('click',()=>set(true));
+ document.getElementById('drawerClose').addEventListener('click',()=>set(false));
+ bg.addEventListener('click',()=>set(false));
+ d.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>set(false)));
+ addEventListener('keydown',e=>{if(e.key==='Escape')set(false)});
+ matchMedia('(min-width:861px)').addEventListener('change',e=>{if(e.matches)set(false)});
+})();

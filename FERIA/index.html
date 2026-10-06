@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coding Adventure</title>
+<title>Codédex – Coding Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
@@ -13,23 +13,41 @@
 <body>
 <header>
   <div class="left">
-    <a class="logo" href="#"><span class="coin">0</span>CODING</a>
+    <a class="logo" href="#"><span class="coin">0</span><span class="logo-t">Codédex</span></a>
     <nav>
       <a href="#">Aprender <svg class="chev" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4"/></svg></a>
       <a href="#">Práctica <svg class="chev" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4"/></svg></a>
     </nav>
   </div>
   <div class="right">
-    <button class="icon hide-m" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
+    <button class="icon" aria-label="Buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></button>
     <button class="icon hide-m" aria-label="Cambiar tema"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg></button>
+    <button class="icon burger" id="burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="drawer"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
 </header>
+
+<!-- Menú lateral para celular -->
+<div class="drawer-bg" id="drawerBg"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-top">
+    <button class="icon" id="drawerClose" aria-label="Cerrar menú"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    <span>Menú</span>
+  </div>
+  <ul>
+    <li><a href="#"><svg viewBox="0 0 24 24"><path d="M3 5h7a2 2 0 012 2v12a2 2 0 00-2-2H3z"/><path d="M21 5h-7a2 2 0 00-2 2v12a2 2 0 012-2h7z"/></svg><span>Aprender</span><svg class="go" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6"/></svg></a></li>
+    <li><a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>Práctica</span><svg class="go" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6"/></svg></a></li>
+    <li><a href="#"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H11l-4 4v-4H4z"/></svg><span>Comunidad</span><svg class="go" viewBox="0 0 20 20"><path d="M7 4l6 6-6 6"/></svg></a></li>
+    <li><a href="#"><svg viewBox="0 0 24 24"><path d="M12 3v18M16.5 7.5C15.5 6.5 14 6 12 6c-2.5 0-4 1-4 2.6S9.6 11 12 11.5s4 1.2 4 2.9S14.5 18 12 18c-2 0-3.6-.6-4.6-1.8M5 12h14"/></svg><span>Precios</span></a></li>
+    <li><button type="button"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg><span>Cambiar tema</span></button></li>
+    <li><a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6z"/></svg><span>Iniciar sesión</span></a></li>
+  </ul>
+</aside>
 
 <main class="hero">
   <div class="stage" id="stage" aria-hidden="true"></div>
   <div class="scrim"></div>
   <p class="kicker">Comience su</p>
-  <h1 class="title" aria-label="Coding Adventure"><span data-t="Coding">Coding</span><span data-t="Adventure">Adventure</span></h1>
+  <h1 class="title"><img src="LandingPage_Text.gif" alt="Coding Adventure"></h1>
   <p class="sub">La forma más divertida y accesible para principiantes de aprender a programar. ⋆˚✧</p>
   <a class="btn lg" href="#">Comience</a>
 </main>
