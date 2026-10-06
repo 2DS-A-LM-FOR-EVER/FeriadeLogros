@@ -91,3 +91,19 @@ svg.chev{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;opa
 .drawer li .go{width:18px;height:18px;opacity:.7}
 .drawer li span{flex:1}
 @media(max-width:860px){nav,.icon.hide-m{display:none}.logo{margin-right:0}.logo-t{display:none}.burger{display:grid}header{padding:0 14px 0 20px}}
+/* TEMA CLARO (el oscuro es el de siempre) */
+.i-sun{display:none}
+html[data-theme="light"] .i-sun{display:block}
+html[data-theme="light"] .i-moon{display:none}
+html[data-theme="light"]{--nav:#f4f6ff}
+html[data-theme="light"] header,html[data-theme="light"] .drawer{color:#0d1533}
+html[data-theme="light"] header{box-shadow:0 1px 0 #d3daf0}
+html[data-theme="light"] nav a{color:#1d2747}
+html[data-theme="light"] nav a:hover,html[data-theme="light"] .icon:hover{background:#0d153312}
+html[data-theme="light"] .icon{color:#2b3558}
+html[data-theme="light"] .drawer{background:#f4f6ff;border-color:#d3daf0}
+html[data-theme="light"] .drawer-top{border-color:#d3daf0}
+html[data-theme="light"] .drawer li{border-color:#d9def0}
+html[data-theme="light"] .drawer li a,html[data-theme="light"] .drawer li button{color:#1d2747}
+html[data-theme="light"] .drawer li svg{stroke:#4a5578}
+html[data-theme="light"] .drawer-bg{background:#0d153366}
