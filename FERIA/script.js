@@ -56,7 +56,7 @@ box('screen',1278,224,92,22,stage,'background:#ffd89a;animation-duration:2.4s');
   boom=boom.filter(e=>e.t-->0);boom.forEach(e=>{x.fillStyle=e.t%2?'#fff':'#ff9a3c';x.fillRect(e.x-2,e.y-1,5,1);x.fillRect(e.x-1,e.y-2,3,3)});
  }
  draw();
- if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{step();draw()},110);
+ setInterval(()=>{step();draw()},110);
 })();
 [[372,100],[497,152],[880,152],[1052,98]].forEach(([x,y],i)=>box('lamp',x-90,y-60,180,150,stage,`animation-delay:-${i*1.3}s`)); // lámparas
 [[905,425],[928,458],[872,482],[952,470],[890,448]].forEach(([x,y],i)=>box('spark',x,y,14,14,stage,`animation-delay:-${i*.55}s`)); // monedas

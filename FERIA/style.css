@@ -75,7 +75,6 @@ svg.chev{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;opa
 @keyframes bt{0%{opacity:1}50%{opacity:.1}}
 .mini{background:linear-gradient(#101433 0 38%,#8fffc0 38% 64%,#101433 64%);animation:mini 3.6s steps(1) infinite}
 @keyframes mini{0%,88%{opacity:0}90%,96%{opacity:1}98%,100%{opacity:0}}
-@media(prefers-reduced-motion:reduce){.stage *{animation:none!important}.wink,.hap,.mini,.px,.puff,.spark{display:none}}
 /* MENÚ MÓVIL */
 .burger{display:none}
 .drawer-bg{position:fixed;inset:0;z-index:19;background:#0009;opacity:0;pointer-events:none;transition:opacity .25s}
