@@ -1,0 +1,42 @@
+<style>
+  html,
+  body,
+  body * {
+    cursor: none !important;
+  }
+
+  #espada-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+    z-index: 999999;
+    mix-blend-mode: difference;
+    will-change: transform;
+  }
+
+  #espada-cursor img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: invert(1);
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+
+<div id="espada-cursor">
+  <img src="ARMA.png" alt="">
+</div>
+
+<script>
+  const espada = document.getElementById("espada-cursor");
+
+  document.addEventListener("mousemove", (e) => {
+    // Alinear la punta de la espada con el puntero
+    espada.style.transform =
+      `translate(${e.clientX - 0}px, ${e.clientY - 0}px)`;
+  });
+</script>

@@ -9,14 +9,6 @@ function box(cls,x,y,w,h,parent=stage,extra=''){
 }
 let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
 
-box('glow',470,320,420,360);                       // brillo detrás de la mascota
-box('sh',560,622,280,28);                          // sombra que se achica al saltar
-const m=box('mascot',520,360,360,290);m._w=360;m._h=290; // mascota (cara + 67) como sprite aparte
-box('spr',0,0,360,290,m);box('shine',0,0,360,290,m);box('wink',172,157,16,24,m);box('hap',172,157,16,24,m);box('hap',123,163,16,24,m); // guiño del ojo derecho
-for(let i=0;i<14;i++){                              // partículas verdes
-  const sz=6+Math.round(rnd()*4);
-  box('px',540+rnd()*310,430+rnd()*190,sz,sz,stage,`--dx:${Math.round((rnd()-.5)*300)}%;animation-duration:${3+rnd()*3}s;animation-delay:-${rnd()*6}s`);
-}
 [[292,140,190,70],[520,168,320,56],[985,150,215,60]].forEach(([x,y,w,h],i)=>{ // nubes en ventanas
   const win=box('win',x,y,w,h);win._w=w;win._h=h;
   box('cloud',0,10,30,48,win,`animation-duration:${42+i*9}s;animation-delay:-${i*14}s`);
