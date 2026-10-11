@@ -21,10 +21,12 @@ async function sincronizarRanking(usuario){
 }
 
 // Suma XP en las dos colecciones (úsala desde los juegos)
-async function sumarXP(usuario, n){
-  const inc = firebase.firestore.FieldValue.increment(n);
-  const b = db.batch();
-  b.update(db.collection('usuarios').doc(usuario), { xp: inc });
-  b.set(db.collection('ranking').doc(usuario), { usuario, xp: inc }, { merge: true });
-  await b.commit();
+async function sumarXP(n){
+  const uid = (localStorage.getItem('usuarioActual') || '').trim().toLowerCase();
+  if (!uid || !n) return;
+  const inc = firebase.firestore.FieldValue.increment(Number(n));
+  await db.collection('ranking').doc(uid).set(
+    { usuario: uid, xp: inc },
+    { merge: true }
+  );
 }
