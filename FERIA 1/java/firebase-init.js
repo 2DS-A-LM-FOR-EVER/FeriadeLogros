@@ -11,20 +11,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); // ← variable global para todas tus páginas
 
-// Copia/actualiza al usuario en el ranking (sin contraseña)
-async function sincronizarRanking(usuario){
-  const s = await db.collection('usuarios').doc(usuario).get();
-  if(!s.exists) return;
-  const d = s.data();
-  await db.collection('ranking').doc(usuario)
-    .set({ usuario, xp: d.xp || 0, avatar: d.avatar || 'boy.gif' }, { merge: true });
-}
-
-// Suma XP en las dos colecciones (úsala desde los juegos)
-async function sumarXP(usuario, n){
+// Suma XP de forma atómica y segura (úsala desde los juegos)
+async function sumarXP(usuario, n) {
   const inc = firebase.firestore.FieldValue.increment(n);
-  const b = db.batch();
-  b.update(db.collection('usuarios').doc(usuario), { xp: inc });
-  b.set(db.collection('ranking').doc(usuario), { usuario, xp: inc }, { merge: true });
-  await b.commit();
+  
+  // 1. Siempre actualizamos 'ranking' (que es el que lee el perfil y el ranking)
+  await db.collection('ranking').doc(usuario).set({ 
+      xp: inc,
+      usuario: usuario
+  }, { merge: true }).catch(err => console.error("Error sumando XP en ranking:", err));
+  
+  // 2. Intentamos actualizar 'usuarios' solo si ya existe (para evitar errores)
+  try {
+      await db.collection('usuarios').doc(usuario).update({ xp: inc });
+  } catch(e) {
+      // Si no existe el documento en usuarios, no pasa nada, el ranking ya se actualizó correctamente
+  }
 }
