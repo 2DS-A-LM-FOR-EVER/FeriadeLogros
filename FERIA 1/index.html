@@ -43,22 +43,11 @@
 
 @media (max-width:768px) and (orientation:portrait){
   .fondo-gif{
-    position:relative;          /* deja de ser fondo fijo */
-    width:100%;
-    height:auto;
-    aspect-ratio:16/9;          /* el GIF conserva su forma */
     background-size:contain;
     background-position:center center;
     background-color:#050a24;
   }
-  /* El hero empieza DEBAJO del GIF */
-  .hero{
-    position:relative;
-    min-height:auto;
-    padding-top:24px;
-  }
 }
-
 /* RANKING TOP 10 */
 .rk-link{display:inline-block;margin-top:18px;font:700 14px 'Pixelify Sans',monospace;letter-spacing:.1em;color:#bcd6ff;animation:rkb 1.2s steps(2) infinite}
 @keyframes rkb{50%{opacity:.35}}
