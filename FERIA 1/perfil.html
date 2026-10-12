@@ -199,10 +199,21 @@ dialog::backdrop{background:transparent}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
 /* CURSOR ESPADA (bloque estándar) */
+/* CURSOR ESPADA — versión que sobrevive a <dialog> modal */
 html,body,body *{cursor:none!important}
-#espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
+#espada-cursor{
+  position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;
+  overflow:visible;width:30px;height:30px;pointer-events:none;
+  z-index:2147483647;                     /* máximo int32 */
+  will-change:transform;opacity:0;
+  transition:opacity .1s;
+}
 #espada-cursor.on{opacity:1}
-#espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
+#espada-cursor img{
+  width:100%;height:100%;display:block;
+  filter:invert(1) drop-shadow(0 0 4px rgba(0,0,0,.85)) drop-shadow(0 0 8px rgba(255,255,255,.35));
+  pointer-events:none;user-select:none;image-rendering:pixelated;
+}
 @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
 </style>
 </head>
@@ -589,9 +600,23 @@ function sync(){
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
 $('openEd').onclick=()=>{
-  D={...S,user:'@'+usuarioCanonico};$('iName').value=D.name;$('iUser').value=D.user;$('iBio').value=D.bio;$('iUrl').value='';
-  buildPickers();ed.showModal();if(window.raiseSword)raiseSword();sync();
+  D={...S,user:'@'+usuarioCanonico};
+  $('iName').value=D.name;
+  $('iUser').value=D.user;
+  $('iBio').value=D.bio;
+  $('iUrl').value='';
+  buildPickers();
+  ed.showModal();
+  // Reabrir el popover DESPUÉS de que el dialog entre al top layer
+  requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
+  setTimeout(()=>{ if(window.raiseSword) raiseSword(); }, 60);
+  sync();
 };
+
+// Cuando se cierre el dialog, también reafirmar el popover
+ed.addEventListener('close', ()=>{
+  requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
+});
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
 $('iBio').oninput=e=>D.bio=e.target.value;
