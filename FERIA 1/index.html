@@ -27,8 +27,37 @@
    Nota: queda DETRÁS de todo (z-index 0). Si quieres que tape también
    el dibujo pixel-art del hero, agrega además:  .stage{display:none}
    ═══════════════════════════════════════════════════════════ */
-.fondo-gif{position:fixed;inset:0;z-index:0;pointer-events:none;background:url("Fondo.gif") center/cover no-repeat,url("Animaci%C3%B3n_.gif") center/cover no-repeat;image-rendering:pixelated}
+.fondo-gif{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  height:100dvh;           /* mejor en móvil con barra del navegador */
+  z-index:0;
+  pointer-events:none;
+  background-image:url("Fondo.gif");
+  background-size:cover;            /* llena sin deformar */
+  background-position:center center;
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+}
 .stage{display:none}
+
+/* Celular: prioriza que se vea el centro y evita zoom raro */
+@media (max-width:768px){
+  .fondo-gif{
+    background-size:cover;
+    background-position:center top;
+  }
+}
+
+/* Pantallas muy anchas: no estires el pixel-art, recorta */
+@media (min-width:1600px){
+  .fondo-gif{
+    background-size:contain;         /* se ve el GIF completo */
+    background-color:#050a24;        /* rellena los bordes */
+  }
+}
 
 /* RANKING TOP 10 */
 .rk-link{display:inline-block;margin-top:18px;font:700 14px 'Pixelify Sans',monospace;letter-spacing:.1em;color:#bcd6ff;animation:rkb 1.2s steps(2) infinite}
