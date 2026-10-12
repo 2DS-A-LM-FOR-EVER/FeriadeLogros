@@ -41,11 +41,21 @@
 }
 .stage{display:none}
 
-/* Móvil vertical: el GIF es horizontal → lo mostramos COMPLETO con barras azul noche */
 @media (max-width:768px) and (orientation:portrait){
   .fondo-gif{
-    background-size:auto 100%;           /* llena la altura */
-    background-position:center 40%;      /* enfoca la parte del monitor */
+    position:relative;          /* deja de ser fondo fijo */
+    width:100%;
+    height:auto;
+    aspect-ratio:16/9;          /* el GIF conserva su forma */
+    background-size:contain;
+    background-position:center center;
+    background-color:#050a24;
+  }
+  /* El hero empieza DEBAJO del GIF */
+  .hero{
+    position:relative;
+    min-height:auto;
+    padding-top:24px;
   }
 }
 
