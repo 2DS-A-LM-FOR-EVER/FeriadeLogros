@@ -27,7 +27,8 @@
    Nota: queda DETRÁS de todo (z-index 0). Si quieres que tape también
    el dibujo pixel-art del hero, agrega además:  .stage{display:none}
    ═══════════════════════════════════════════════════════════ */
-.fondo-gif{position:fixed;inset:0;z-index:0;pointer-events:none;background:none}
+.fondo-gif{position:fixed;inset:0;z-index:0;pointer-events:none;background:url("fondo.gif") center/cover no-repeat,url("Animaci%C3%B3n_.gif") center/cover no-repeat;image-rendering:pixelated}
+.stage{display:none}
 
 /* RANKING TOP 10 */
 .rk-link{display:inline-block;margin-top:18px;font:700 14px 'Pixelify Sans',monospace;letter-spacing:.1em;color:#bcd6ff;animation:rkb 1.2s steps(2) infinite}
@@ -83,9 +84,8 @@ html,body,body *{cursor:none!important}
     <span>Menú</span>
   </div>
   <ul>
-    <li><a href="registro.html">Comenzar / Entrar</a></li>
-    <li><a href="juegos.html">Juegos</a></li>
-    <li><a href="ranking.html">Salón de la Fama</a></li>
+    <li><a href="registro.html">Iniciar Sesión</a></li>
+      <li><a href="ranking.html">Salón de la Fama</a></li>
   </ul>
 </aside>
 
