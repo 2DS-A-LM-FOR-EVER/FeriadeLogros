@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de Juegos – Coding Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#050a24">
+<script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/juegos.css">
+<style>
+  html,body,body *{cursor:none!important}
+  #espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
+  #espada-cursor.on{opacity:1}
+  #espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
+  @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
+</style>
+</head>
+<body>
+
+<canvas id="gxSky" aria-hidden="true"></canvas>
+
+<header>
+  <div class="left">
+    <a class="logo" href="index.html"><span class="coin">0</span><span class="logo-t">CODING</span></a>
+    <div class="gx-nav">
+      <a href="index.html">Inicio</a>
+      <a href="juegos.html" class="on">Juegos</a>
+      <a href="perfil.html">Perfil</a>
+    </div>
+  </div>
+  <div class="right">
+    <button class="icon" id="gxTheme" aria-label="Cambiar tema" type="button">
+      <svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+    </button>
+    <a class="gx-me" href="perfil.html" title="Ir a mi perfil">
+      <span class="gx-me-av" id="gxAv"></span>
+      <span class="gx-me-name" id="gxName">jugador</span>
+    </a>
+    <button class="btn sm" id="gxLogout" type="button">Salir</button>
+  </div>
+</header>
+
+<main class="gx-wrap">
+
+  <section class="gx-hero">
+    <p class="gx-kicker">Selecciona tu nivel</p>
+    <h1 class="gx-title">MAPA DE <span>JUEGOS</span></h1>
+    <p class="gx-sub">4 lenguajes, 5 retos cada uno. Elige uno, juega y sube de rango. ⋆˚✧</p>
+
+    <div class="gx-stats">
+      <div><b id="stGames">0</b><span>Juegos</span></div>
+      <div><b id="stPlayed">0</b><span>Jugados</span></div>
+      <div><b id="stLvl">1</b><span>Nivel</span></div>
+      <div><b id="stXp">0</b><span>XP total</span></div>
+    </div>
+
+    <a class="gx-last" id="gxLast" href="#" hidden>
+      <canvas width="8" height="8" id="gxLastArt"></canvas>
+      <div>
+        <small>CONTINUAR JUGANDO</small>
+        <b id="gxLastName">—</b>
+      </div>
+      <span class="gx-go">▶</span>
+    </a>
+  </section>
+
+  <section class="gx-tools" aria-label="Filtros">
+    <label class="gx-search">
+      <span aria-hidden="true">⌕</span>
+      <input id="gxQ" type="search" placeholder="Buscar juego…  ( / )" autocomplete="off">
+    </label>
+    <div class="gx-chips" id="gxChips" role="group" aria-label="Categorías"></div>
+    <button class="gx-favbtn" id="gxFavOnly" type="button" aria-pressed="false">★ Favoritos</button>
+  </section>
+
+  <section class="gx-grid" id="gxGrid" aria-live="polite"></section>
+  <p class="gx-empty" id="gxEmpty" hidden>No hay juegos que coincidan. Prueba otra búsqueda.</p>
+
+  <footer class="gx-foot">
+    <span>© Coding Adventure</span>
+    <span>Pulsa <kbd>/</kbd> para buscar</span>
+  </footer>
+</main>
+
+<div class="gx-load" id="gxLoad">
+  <div class="gx-load-box">
+    <div class="gx-spin"></div>
+    <h3 id="gxLoadT">Cargando nivel…</h3>
+    <p>Preparando tu aventura</p>
+  </div>
+</div>
+
+<div class="gx-toast" id="gxToast" role="status"></div>
+
+<div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
+
+<script src="java/juegos.js">
+
+/* =========================================
+   MODO FERIA (KIOSCO) - Supervivencia
+   ========================================= */
+function salirYLimpiar() {
+    // 1. Borra la sesión actual
+    localStorage.removeItem('usuarioActual');
+    // 2. Barre con cualquier progreso local de juegos de esta PC
+    Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('ca_python_v1_') || 
+            k.startsWith('ca_juegos_v1_') || 
+            k.startsWith('ca_arcade_profile_v1_')) {
+            localStorage.removeItem(k);
+        }
+    });
+    // 3. Manda al registro para el siguiente jugador
+    location.href = 'registro.html';
+}
+
+// 1. Secuestrar los botones de SALIR existentes
+document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
+    btn.onclick = salirYLimpiar;
+});
+
+// 2. Auto-Reset por Inactividad (90 segundos sin tocar nada)
+let timerInactividad;
+function resetearTimer() {
+    clearTimeout(timerInactividad);
+    timerInactividad = setTimeout(() => {
+        console.log("Inactividad detectada. Reseteando PC para el siguiente...");
+        salirYLimpiar();
+    }, 90000); // 90,000 ms = 90 segundos
+}
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+    document.addEventListener(evt, resetearTimer, { passive: true });
+});
+resetearTimer(); // Iniciar el contador al cargar
+
+// 3. Botón de Pánico para Cris y el equipo (Tecla F8)
+document.addEventListener('keydown', e => {
+    if (e.key === 'F8') {
+        e.preventDefault();
+        salirYLimpiar();
+    }
+});</script>
+</body>
+</html>
