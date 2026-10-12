@@ -44,9 +44,8 @@
 /* Móvil vertical: el GIF es horizontal → lo mostramos COMPLETO con barras azul noche */
 @media (max-width:768px) and (orientation:portrait){
   .fondo-gif{
-    background-size:contain;
-    background-position:center center;
-    background-color:#050a24;
+    background-size:auto 100%;           /* llena la altura */
+    background-position:center 40%;      /* enfoca la parte del monitor */
   }
 }
 
