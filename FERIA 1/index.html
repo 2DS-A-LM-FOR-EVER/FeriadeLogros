@@ -31,26 +31,22 @@
 .fondo-gif{
   position:fixed;
   inset:0;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
   z-index:0;
   pointer-events:none;
-  background:url("Fondo.gif") center center / contain no-repeat #050a24;
+  background:url("Fondo.gif") center center / cover no-repeat #050a24;
   image-rendering:pixelated;
 }
 .stage{display:none}
 
-/* Celular: prioriza que se vea el centro y evita zoom raro */
-@media (max-width:768px){
+/* Móvil vertical: el GIF es horizontal → lo mostramos COMPLETO con barras azul noche */
+@media (max-width:768px) and (orientation:portrait){
   .fondo-gif{
-    background-size:cover;
-    background-position:center top;
-  }
-}
-
-/* Pantallas muy anchas: no estires el pixel-art, recorta */
-@media (min-width:1600px){
-  .fondo-gif{
-    background-size:contain;         /* se ve el GIF completo */
-    background-color:#050a24;        /* rellena los bordes */
+    background-size:contain;
+    background-position:center center;
+    background-color:#050a24;
   }
 }
 
