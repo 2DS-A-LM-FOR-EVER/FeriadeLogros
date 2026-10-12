@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/juegos.css">
+<link rel="icon" href="data:,">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#050a24">
 <script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
@@ -30,15 +31,9 @@
 .fondo-gif{
   position:fixed;
   inset:0;
-  width:100vw;
-  height:100vh;
-  height:100dvh;           /* mejor en móvil con barra del navegador */
   z-index:0;
   pointer-events:none;
-  background-image:url("Fondo.gif");
-  background-size:cover;            /* llena sin deformar */
-  background-position:center center;
-  background-repeat:no-repeat;
+  background:url("Fondo.gif") center center / contain no-repeat #050a24;
   image-rendering:pixelated;
 }
 .stage{display:none}
