@@ -607,10 +607,19 @@ $('openEd').onclick=()=>{
   $('iUrl').value='';
   buildPickers();
   ed.showModal();
+
+  // 🔥 Mover el cursor DENTRO del dialog (mismo top layer)
+  ed.appendChild(document.getElementById('espada-cursor'));
+
   requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
-  setTimeout(()=>{ if(window.raiseSword) raiseSword(); }, 60);
   sync();
 };
+
+// Cuando se cierra, devolverlo al body
+ed.addEventListener('close', ()=>{
+  document.body.appendChild(document.getElementById('espada-cursor'));
+  if(window.raiseSword) raiseSword();
+});
 
 // Cuando se cierre el dialog, también reafirmar el popover
 ed.addEventListener('close', ()=>{
