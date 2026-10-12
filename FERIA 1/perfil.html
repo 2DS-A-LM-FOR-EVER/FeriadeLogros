@@ -109,17 +109,20 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .rk>div:last-child{flex:1;min-width:0}
 .embw{flex:none;filter:drop-shadow(0 0 12px var(--rk));animation:glow 1.8s steps(4) infinite}
 @keyframes glow{50%{filter:drop-shadow(0 0 22px var(--rk)) brightness(1.18)}}
-.emb{width:104px;height:118px;display:grid;place-items:center}
-.emb img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none;user-select:none}
+.emb{width:120px;height:130px;display:grid;place-items:center;overflow:visible}
+.emb img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none;user-select:none;display:block}
 .rkn{font-family:var(--px);font-size:18px;color:var(--rk);text-shadow:0 0 14px var(--rk);margin-bottom:10px}
 #rkSub{color:var(--muted);margin-bottom:12px}
 .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .tier{background:var(--panel2);border:3px solid var(--line);padding:10px 6px;text-align:center;display:grid;gap:4px;justify-items:center}
-.tier img{width:38px;height:38px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 0 4px var(--c))}
+.tier img{width:52px;height:52px;object-fit:contain;image-rendering:pixelated;display:block;pointer-events:none;user-select:none}
+.tier.done img{filter:drop-shadow(0 0 4px var(--c))}
+.tier.lock img{filter:grayscale(1) brightness(.55)}
+.tier.now img{filter:drop-shadow(0 0 8px var(--c)) drop-shadow(0 0 14px var(--c))}
 .tier b{font-family:var(--px);font-size:9px;color:var(--c)}
 .tier small{color:var(--muted);font-size:17px}
 .tier.now{border-color:var(--c);box-shadow:0 0 0 3px #000,0 0 0 6px var(--c),0 0 18px var(--c)}
-.tier.lock{opacity:.4;filter:grayscale(.9)}
+.tier.lock{opacity:.45}
 @media(max-width:560px){.tiers{grid-template-columns:repeat(2,1fr)}.rk{flex-direction:column;text-align:center}.rk>div:last-child{width:100%}}
 
 /* ESCENARIOS */
@@ -421,7 +424,6 @@ if (!(S.char >= -1 && S.char < SPRITES.length)) S.char = 0;
 if (!(S.stage >= 0 && S.stage < STAGES.length)) S.stage = 0;
 if (!(S.frame >= 0 && S.frame < FRAMES.length)) S.frame = 0;
 
-// Cargar datos reales desde Firestore al iniciar
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(usuarioCanonico.toLowerCase()).get().then(doc => {
     if (doc.exists) {
@@ -473,14 +475,15 @@ let t=0;const SEQ=[0,1,0,1,0,2];
 setInterval(()=>{const f=SEQ[t++%SEQ.length];document.querySelectorAll('canvas[data-char]').forEach(c=>drawSprite(c,SPRITES[+c.dataset.char],f))},280);
 
 /* ---------- RANGOS + EMBLEMAS ---------- */
+/* ORDEN: Bronce → Plata → Oro → Platino */
 const RANKS=[
-  {n:'Bronce',min:0,c:'#cd7f32',l:'#f2bb86',d:'#6b3a10',g:'I'},
-  {n:'Oro',min:300,c:'#ffc24b',l:'#fff3b0',d:'#a06a00',g:'II'},
-  {n:'Platino',min:700,c:'#8fe8d8',l:'#effffb',d:'#2f857c',g:'III'},
-  {n:'Diamante',min:1200,c:'#4fd8ff',l:'#e0f8ff',d:'#6a4cff',g:'IV'}
+  {n:'Bronce', min:0,    c:'#cd7f32', l:'#f2bb86', d:'#6b3a10', g:'I'},
+  {n:'Plata',  min:300,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
+  {n:'Oro',    min:700,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
+  {n:'Platino',min:1200, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
 ];
-// 🏆 Imágenes de emblemas en orden: Bronce → Oro → Platino → Diamante
-const EMBLEMAS = ['Broncee.png', 'ORO.png', 'Plata.png', 'RANGO-MAXIMO.png'];
+/* Imágenes en el mismo orden que RANKS */
+const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
 
 function renderProgress(){
@@ -493,14 +496,14 @@ function renderProgress(){
   $('xpBar').setAttribute('aria-valuenow',cur);
   $('stXp').textContent=xp;$('stLvl').textContent=lv;
 
-  // 🏆 Emblema grande
+  /* Emblema grande */
   $('emb').innerHTML = '<img src="'+EMBLEMAS[ri]+'" alt="'+R.n+'">';
   $('rkName').textContent='RANGO '+R.n.toUpperCase();
   $('rkFill').style.width=(N?Math.round((xp-R.min)/(N.min-R.min)*100):100)+'%';
   $('rkSub').textContent=N?'Faltan '+(N.min-xp)+' XP para '+N.n:'¡Rango máximo alcanzado!';
   $('pTag').textContent='RANGO '+R.n.toUpperCase();
 
-  // 🏆 Tiers chiquitos con PNG
+  /* Tiers chiquitos */
   $('tiers').replaceChildren(...RANKS.map((r,k)=>{
     const d=document.createElement('div');
     d.className='tier '+(k<ri?'done':k===ri?'now':'lock');
@@ -509,7 +512,7 @@ function renderProgress(){
     return d;
   }));
 
-  // Insignias de lenguajes
+  /* Insignias */
   const insCont = document.getElementById('insigniasContainer');
   if(insCont){
     if(S.insignias && S.insignias.length > 0){
@@ -602,13 +605,11 @@ $('openEd').onclick=()=>{
   $('iUrl').value='';
   buildPickers();
   ed.showModal();
-  // Cursor dentro del dialog (mismo top layer → encima del modal)
   ed.appendChild(document.getElementById('espada-cursor'));
   requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
   sync();
 };
 
-// Al cerrar el dialog: devolver el cursor al body y reafirmar
 ed.addEventListener('close', ()=>{
   document.body.appendChild(document.getElementById('espada-cursor'));
   requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
