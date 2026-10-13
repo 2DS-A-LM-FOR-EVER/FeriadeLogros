@@ -44,6 +44,7 @@ body {
   font-size: 1rem; outline: none; border-radius: 0;
 }
 .form-group input:focus { border-color: #38bdf8; background: #0b0f19; }
+.hint { display: block; margin-top: 6px; font-size: 0.8rem; color: #64748b; }
 
 .btn-submit {
   width: 100%; padding: 12px; background: #f7a325; color: #0b0f19;
@@ -53,6 +54,7 @@ body {
 }
 .btn-submit:hover { background: #ffe875; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000000; }
 .btn-submit:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
+.btn-submit:disabled { opacity: .6; pointer-events: none; }
 
 .msg { margin-top: 15px; font-size: 0.9rem; text-align: center; min-height: 20px; }
 .msg.ok { color: #7dffa0; }
@@ -104,12 +106,12 @@ html,body,body *{cursor:none!important}
 
   <div class="auth-card">
     <h2>Crear Cuenta</h2>
-    <form id="registerForm">
+    <form id="registerForm" novalidate>
       <div class="form-group">
         <label for="username">Usuario:</label>
         <div class="input-wrapper">
           <span class="input-icon">👤</span>
-          <input type="text" id="username" required placeholder="Tu usuario" autocomplete="off">
+          <input type="text" id="username" required placeholder="Tu usuario" autocomplete="off" maxlength="20">
         </div>
       </div>
       <div class="form-group">
@@ -119,7 +121,15 @@ html,body,body *{cursor:none!important}
           <input type="password" id="password" required placeholder="••••••••" autocomplete="off">
         </div>
       </div>
-      <button type="submit" class="btn-submit">Registrarse</button>
+      <div class="form-group">
+        <label for="telefono">Teléfono:</label>
+        <div class="input-wrapper">
+          <span class="input-icon">📱</span>
+          <input type="tel" id="telefono" required placeholder="7000 0000" inputmode="numeric" maxlength="9" autocomplete="off">
+        </div>
+        <span class="hint">8 dígitos, sin el +503</span>
+      </div>
+      <button type="submit" class="btn-submit" id="btnSubmit">Registrarse</button>
       <p id="msg" class="msg"></p>
     </form>
   </div>
@@ -128,7 +138,7 @@ html,body,body *{cursor:none!important}
 <!-- ESPADA: bloque estándar idéntico al de ranking y juegos -->
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
-<!-- Estrellas y meteoritos (decoración visual) -->
+<!-- Estrellas, meteoritos y formato del teléfono -->
 <script>
 const overlay = document.getElementById('starsOverlay');
 for (let i = 0; i < 35; i++) {
@@ -154,6 +164,13 @@ function crearMeteorito() {
   setTimeout(crearMeteorito, Math.random() * 1500 + 1000);
 }
 setTimeout(crearMeteorito, 1000);
+
+// Teléfono: solo números, con formato 0000 0000 mientras escribe
+const tel = document.getElementById('telefono');
+tel.addEventListener('input', () => {
+  const d = tel.value.replace(/\D/g, '').slice(0, 8);
+  tel.value = d.length > 4 ? d.slice(0, 4) + ' ' + d.slice(4) : d;
+});
 </script>
 
 <!-- CURSOR ESPADA JS (bloque estándar idéntico al de ranking y juegos) -->
