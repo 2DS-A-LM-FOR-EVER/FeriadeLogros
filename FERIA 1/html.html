@@ -204,13 +204,16 @@ function guardarXP(n){
   if (typeof db === 'undefined' || !n) return;
   const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
   if (!u) return;
-  db.collection('ranking').doc(u).set({
-    xp: firebase.firestore.FieldValue.increment(n)
-  }, { merge: true });
+  try {
+    db.collection('ranking').doc(u).set({
+      xp: firebase.firestore.FieldValue.increment(n)
+    }, { merge: true });
+  } catch(err){ console.error('guardarXP', err); }
 }
 
 /* ============== EJERCICIOS ============== */
-const IMG = "67URL.jpg" width='90' height='90'%3E%3Crect width='90' height='90' fill='%23fdc815'/%3E%3Ctext x='45' y='60' font-size='44' text-anchor='middle'%3E%E2%9A%94%3C/text%3E%3C/svg%3E";
+/* Imagen de ejemplo: SVG embebido (data-URI). Antes estaba roto y rompía todo el script. */
+const IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Crect width='90' height='90' fill='%23fdc815'/%3E%3Ctext x='45' y='60' font-size='44' text-anchor='middle'%3E%E2%9A%94%3C/text%3E%3C/svg%3E";
 
 const EJERCICIOS = [
   { titulo:'Tu primer título', xp:50,
@@ -231,7 +234,8 @@ const EJERCICIOS = [
     mision:'Escribe <b>dos párrafos</b>. En alguno de ellos pon una palabra en <b>negrita</b> con <code>&lt;b&gt;</code>.',
     inicial:'<!-- 1. Primer párrafo -->\n\n<!-- 2. Segundo párrafo con una palabra en negrita -->\n',
     esperado:'Dos párrafos de texto,\ncon al menos una palabra en negrita.',
-    exigir:[/<p[\s>]/i, /<b>/i], reglas:[/<p[^>]*>[\s\S]*?<\/p>[\s\S]*<p[^>]*>[\s\S]*?<\/p>/i, /<b>\s*\S[\s\S]*?<\/b>/i],
+    exigir:[/<p[\s>]/i, /<b>/i],
+    reglas:[/<p[^>]*>[\s\S]*?<\/p>[\s\S]*<p[^>]*>[\s\S]*?<\/p>/i, /<b>\s*\S[\s\S]*?<\/b>/i],
     pista:'<p>Mi primer párrafo</p> y después <p>Esto es <b>importante</b></p>.' },
 
   { titulo:'Enlaces e imágenes', xp:50,
@@ -241,7 +245,10 @@ const EJERCICIOS = [
     mision:'Crea un enlace <code>&lt;a&gt;</code> con un <code>href</code> y una imagen <code>&lt;img&gt;</code> con <code>src</code> y <code>alt</code>. Usa el <code>src</code> que te damos en el código inicial.',
     inicial:'<!-- Imagen: copia este src -->\n<!-- ' + IMG + ' -->\n\n<!-- 1. Enlace -->\n\n<!-- 2. Imagen -->\n',
     esperado:'Un enlace en azul subrayado\ny una imagen cuadrada amarilla.',
-    exigir:[/<a\s/i, /<img\s/i], reglas:[/<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>/i, /<img\s[^>]*src\s*=\s*["'][^"']+["']/i, /<img\s[^>]*alt\s*=\s*["']/i],
+    exigir:[/<a\s/i, /<img\s/i],
+    reglas:[/<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>/i,
+            /<img\s[^>]*src\s*=\s*["'][^"']+["']/i,
+            /<img\s[^>]*alt\s*=\s*["']/i],
     pista:'<a href="https://example.com">Visitar</a> y <img src="(el texto data:image…)" alt="Espada">. Sin comillas dentro del src.' },
 
   { titulo:'Listas', xp:50,
@@ -251,7 +258,9 @@ const EJERCICIOS = [
     mision:'Crea una lista con viñetas <code>&lt;ul&gt;</code> con <b>3 elementos</b> <code>&lt;li&gt;</code>.',
     inicial:'<!-- Crea tu lista aquí -->\n',
     esperado:'Una lista con 3 viñetas.',
-    exigir:[/<ul[\s>]/i, /<li[\s>]/i], reglas:[/<ul[^>]*>[\s\S]*<\/ul>/i, /<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>/i],
+    exigir:[/<ul[\s>]/i, /<li[\s>]/i],
+    reglas:[/<ul[^>]*>[\s\S]*<\/ul>/i,
+            /<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>/i],
     pista:'<ul> abre la lista; dentro, tres líneas <li>Texto</li>; y al final </ul>.' },
 
   { titulo:'Prueba final', xp:100, final:true,
@@ -260,7 +269,12 @@ const EJERCICIOS = [
     mision:`Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen usa el mismo <code>src</code> del ejercicio 3.`,
     inicial:'<!-- src de la imagen: -->\n<!-- ' + IMG + ' -->\n\n<!-- 1. h1 -->\n\n<!-- 2. p -->\n\n<!-- 3. img -->\n\n<!-- 4. a -->\n',
     esperado:'Un título grande,\nun párrafo,\nuna imagen amarilla\ny un enlace que dice: Visitar',
-    exigir:[/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i], reglas:[/<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i, /<p[^>]*>\s*\S[\s\S]*?<\/p>/i, /<img\s[^>]*src\s*=\s*["'][^"']+["']/i, /<img\s[^>]*alt\s*=\s*["']/i, /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i],
+    exigir:[/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i],
+    reglas:[/<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,
+            /<p[^>]*>\s*\S[\s\S]*?<\/p>/i,
+            /<img\s[^>]*src\s*=\s*["'][^"']+["']/i,
+            /<img\s[^>]*alt\s*=\s*["']/i,
+            /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i],
     pista:[
       'Pista 1/3: Empieza con <h1>Mi página</h1> y debajo un párrafo <p>Texto</p>.',
       'Pista 2/3: Agrega la imagen: <img src="..." alt="Espada"> con el src que está en el comentario.',
@@ -274,9 +288,26 @@ const uid = usuario.toLowerCase();
 const CLAVE = 'ca_html_v1_' + uid;
 try { const t = localStorage.getItem('tema'); if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro'; } catch(e){}
 
-let est = { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
-try { Object.assign(est, JSON.parse(localStorage.getItem(CLAVE) || '{}')); } catch(e){}
+/* Estado por defecto */
+function estadoNuevo(){
+  return { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
+}
+
+let est = estadoNuevo();
+try {
+  const guardado = JSON.parse(localStorage.getItem(CLAVE) || '{}');
+  if (guardado && typeof guardado === 'object') Object.assign(est, guardado);
+} catch(e){}
+
+/* Normalización defensiva (por si el guardado viene de una versión vieja o corrupta) */
+if (!Array.isArray(est.hechos) || est.hechos.length !== EJERCICIOS.length) {
+  const viejos = Array.isArray(est.hechos) ? est.hechos : [];
+  est.hechos = EJERCICIOS.map((_, i) => !!viejos[i]);
+}
+if (!est.codigo || typeof est.codigo !== 'object') est.codigo = {};
 if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object') est.pistasUsadas = {};
+if (!Number.isInteger(est.actual)) est.actual = 0;
+est.actual = Math.max(0, Math.min(est.actual, EJERCICIOS.length - 1));
 
 const $ = id => document.getElementById(id);
 const xpGanado = () => EJERCICIOS.reduce((s, e, i) => s + (est.hechos[i] ? e.xp : 0), 0);
@@ -339,25 +370,25 @@ function pintarPasos(){
 }
 
 function cargar(i){
-  est.actual = i;
-  const e = EJERCICIOS[i];
+  est.actual = Math.max(0, Math.min(i, EJERCICIOS.length - 1));
+  const e = EJERCICIOS[est.actual];
   $('izq').innerHTML = `
-    <div class="num">${e.final ? 'PRUEBA FINAL' : 'Ejercicio ' + (i + 1) + ' de ' + (EJERCICIOS.length - 1)}</div>
+    <div class="num">${e.final ? 'PRUEBA FINAL' : 'Ejercicio ' + (est.actual + 1) + ' de ' + (EJERCICIOS.length - 1)}</div>
     <h2>${e.titulo}</h2>
     ${e.explicacion}
     <div class="mision"><b>Misión:</b> ${e.mision}</div>
     <p style="margin-bottom:6px">Tu página debe verse así:</p>
     <div class="esperado"></div>`;
   $('izq').querySelector('.esperado').textContent = e.esperado;
-  $('codigo').value = est.codigo[i] ?? e.inicial;
+  $('codigo').value = est.codigo[est.actual] ?? e.inicial;
   numerarLineas();
   limpiarTerminal();
   mostrarVista($('codigo').value);
-  if (est.hechos[i]) escribir('✔ Ya completaste este ejercicio.', 'ok');
+  if (est.hechos[est.actual]) escribir('✔ Ya completaste este ejercicio.', 'ok');
   $('burbuja').classList.remove('ver');
-  $('centro').innerHTML = `Ejercicio <b>${i + 1}/${EJERCICIOS.length}</b> · XP <b>${xpGanado()}/${XP_MAX}</b>`;
-  $('btnBack').disabled = i === 0;
-  $('btnNext').disabled = !(est.hechos[i] && i < EJERCICIOS.length - 1);
+  $('centro').innerHTML = `Ejercicio <b>${est.actual + 1}/${EJERCICIOS.length}</b> · XP <b>${xpGanado()}/${XP_MAX}</b>`;
+  $('btnBack').disabled = est.actual === 0;
+  $('btnNext').disabled = !(est.hechos[est.actual] && est.actual < EJERCICIOS.length - 1);
   pintarPasos();
   guardar();
 }
@@ -410,9 +441,11 @@ async function exito(){
   cargar(i);
   if (est.hechos.every(Boolean)) terminar();
 }
+
 async function terminar(){
   $('xpTotal').textContent = xpGanado();
   $('velFin').classList.add('ver');
+  if (typeof db === 'undefined') return;
   try {
     await db.collection('ranking').doc(uid).set(
       { insignias: firebase.firestore.FieldValue.arrayUnion('html') }, { merge: true });
@@ -436,9 +469,10 @@ $('btnRun').onclick = () => {
   limpiarTerminal();
   const codigo = $('codigo').value;
   mostrarVista(codigo);
-  const err = revisarEtiquetas(codigo.replace(/<!--[\s\S]*?-->/g, ''));
+  const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
+  const err = revisarEtiquetas(limpio);
   if (err) escribir('Aviso: ' + err, 'err');
-  else if (!codigo.replace(/<!--[\s\S]*?-->/g, '').trim()) escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
+  else if (!limpio.trim()) escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
   else escribir('Vista previa actualizada.', 'info');
 };
 
@@ -446,7 +480,8 @@ $('btnSubmit').onclick = () => enviar();
 
 $('btnReset').onclick = () => {
   if (confirm('¿Volver al código inicial de este ejercicio?')) {
-    $('codigo').value = EJERCICIOS[est.actual].inicial; numerarLineas(); guardarCodigo(); limpiarTerminal(); mostrarVista($('codigo').value);
+    $('codigo').value = EJERCICIOS[est.actual].inicial;
+    numerarLineas(); guardarCodigo(); limpiarTerminal(); mostrarVista($('codigo').value);
   }
 };
 $('btnBack').onclick = () => { if (est.actual > 0) cargar(est.actual - 1); };
@@ -475,21 +510,24 @@ $('btnIntro').onclick = () => $('velIntro').classList.add('ver');
 $('btnEmpezar').onclick = () => { $('velIntro').classList.remove('ver'); est.intro = true; guardar(); };
 
 /* ============== ARRANQUE ============== */
+/* Reanuda donde se quedó; si no hay índice válido, va al primer ejercicio pendiente */
 const primero = est.hechos.findIndex(h => !h);
-cargar(Math.min(est.actual || (primero === -1 ? 0 : primero), EJERCICIOS.length - 1));
+const arranque = Number.isInteger(est.actual) ? est.actual : (primero === -1 ? 0 : primero);
+cargar(arranque);
 if (!est.intro) $('velIntro').classList.add('ver');
-// CHECK DE SINCRONIZACIÓN: si en Firebase no tengo la insignia, reinicio mi progreso local
+
+/* CHECK DE SINCRONIZACIÓN: si en Firebase no tengo la insignia, reinicio mi progreso local */
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(uid).get().then(doc => {
     const data = doc.exists ? doc.data() : {};
     const tieneInsignia = data.insignias && data.insignias.includes('html');
     if (est.hechos.every(Boolean) && !tieneInsignia) {
       console.warn('🔄 Desincronización detectada. Reiniciando progreso local de HTML.');
-      est = { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
+      est = estadoNuevo();
       guardar();
       cargar(0);
     }
-  });
+  }).catch(err => console.warn('No se pudo verificar la insignia:', err));
 }
 </script>
 <script>
@@ -505,6 +543,7 @@ if (typeof db !== 'undefined') {
   });
   document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
 })();
+
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
    ========================================= */
