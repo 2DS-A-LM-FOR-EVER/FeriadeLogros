@@ -657,8 +657,7 @@ function guardar(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} 
 const xpGanado=()=>XP.reduce((a,x,i)=>a+(S.done[i]?x:0),0);
 const todoListo=()=>S.done.every(Boolean);
 
-function db(){ try{ if(window.firebase&&firebase.apps&&firebase.apps.length) return firebase.firestore(); }catch(e){} return null; }
-function nube(estado){
+function getDB(){ try{ if(window.firebase&&firebase.apps&&firebase.apps.length) return firebase.firestore(); }catch(e){} return null; }function nube(estado){
   const el=$('#nube'); if(!el) return;
   el.textContent = estado==='ok' ? '☁️ Guardado en tu perfil' : estado==='warn' ? '⚠️ Sin conexión: se guardará después' : estado==='login' ? '' : '';
 }
@@ -667,7 +666,7 @@ async function flush(){
   if(!UID){ nube('login'); return; }
   const xp=S.pend.xp, ins=S.pend.ins;
   if(!xp && !ins) return;
-  const d=db(); if(!d){ nube('warn'); return; }
+  const d=getDB(); if(!d){ nube('warn'); return; }
   try{
     const ref=d.collection('ranking').doc(UID), F=firebase.firestore.FieldValue;
     const snap=await ref.get();
@@ -683,7 +682,7 @@ async function flush(){
 async function sumar(n,ins){ S.pend.xp+=n; if(ins) S.pend.ins=true; guardar(); await flush(); }
 
 async function sincronizar(){
-  const d=db(); if(!d||!UID) return;
+  const d=getDB(); if(!d||!UID) return;
   try{
     await flush();
     const s=await d.collection('ranking').doc(UID).get(), dat=s.exists?s.data():{};
