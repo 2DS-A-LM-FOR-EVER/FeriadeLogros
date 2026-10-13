@@ -3,17 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pixel Word – Coding Adventure</title>
+<title>PIXELWORD – Coding Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/juegos.css">
-<link rel="icon" href="data:,">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
+<link rel="icon" href="ho.png">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#050a24">
 <script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 <style>
-  /* ═══════════ TÍTULO PIXEL WORD ═══════════ */
+  /* ═══════════ TIPOGRAFÍA PIXEL-ART GLOBAL ═══════════ */
+  html, body,
+  body *:not(svg):not(svg *){
+    font-family:'Pixelify Sans', monospace !important;
+  }
+  h1,h2,h3,h4,p,a,li,span,div,button,input,label{
+    font-family:'Pixelify Sans', monospace !important;
+    letter-spacing: .5px;
+  }
+
+  /* ═══════════ TÍTULO PIXELWORD ═══════════ */
   .hero .title{text-align:center;margin:0 auto;width:100%}
   .hero .title img{
     width:min(760px, 88vw) !important;
@@ -26,34 +36,86 @@
   @media (max-width:768px){
     .hero .title img{width:min(560px, 92vw) !important}
   }
-  /* ═══════════ LOGO: ESTRELLA ═══════════ */
-.logo{display:flex;align-items:center;gap:10px}
-.logo .coin,
-img.coin{
-  width:34px;
-  height:34px;
-  object-fit:contain;
-  image-rendering:pixelated;
-  background:none !important;
-  border:0 !important;
-  border-radius:0 !important;
-  color:transparent !important;
-  font-size:0 !important;
-  padding:0 !important;
-  box-shadow:none !important;
-  display:block;
-}
-.logo .logo-t{font-size:clamp(13px,2.5vw,16px);letter-spacing:1px}
+
+  /* ═══════════ LOGO: ESTRELLA + PIXELWORD ═══════════ */
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+  }
+  .logo img.coin,
+  .logo .coin{
+    width:42px !important;
+    height:42px !important;
+    object-fit:contain;
+    image-rendering:pixelated;
+    background:none !important;
+    border:0 !important;
+    border-radius:0 !important;
+    padding:0 !important;
+    box-shadow:none !important;
+    display:block;
+  }
+  .logo .logo-t{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:clamp(18px, 2.6vw, 24px) !important;
+    font-weight:700 !important;
+    letter-spacing:1.5px !important;
+    color:#ffffff;
+    text-transform:uppercase;
+    line-height:1;
+  }
+
+  /* ═══════════ HERO: agrandar textos ═══════════ */
+  .hero .kicker{
+    font-size:clamp(16px, 2vw, 22px) !important;
+    letter-spacing:2px !important;
+  }
+  .hero .sub{
+    font-size:clamp(16px, 1.8vw, 21px) !important;
+    line-height:1.5 !important;
+    max-width:640px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .hero .btn.lg{
+    font-size:clamp(18px, 2vw, 22px) !important;
+    padding:16px 42px !important;
+  }
+  .hero .rk-link{
+    font-size:clamp(15px, 1.6vw, 18px) !important;
+    letter-spacing:2px !important;
+  }
+
+  /* ═══════════ RANKING: tipografía más grande ═══════════ */
+  .rk-t{font-size:clamp(34px, 6vw, 56px) !important;letter-spacing:2px !important}
+  .rk-s{font-size:clamp(16px, 1.8vw, 20px) !important;letter-spacing:1px !important}
+  .rk-row{font-size:clamp(16px, 1.6vw, 20px) !important}
+  .rk-pos{font-size:clamp(22px, 2.4vw, 30px) !important}
+  .rk-name{font-size:clamp(18px, 2vw, 24px) !important;letter-spacing:1px !important}
+  .rk-xp{font-size:clamp(18px, 2vw, 22px) !important;letter-spacing:1px !important}
+  .rk-chip{font-size:clamp(11px, 1.2vw, 14px) !important;letter-spacing:1px !important}
+  .rk-msg{font-size:clamp(16px, 1.8vw, 20px) !important}
+
+  /* ═══════════ DRAWER (menú móvil) ═══════════ */
+  .drawer a, .drawer span, .drawer ul, .drawer li{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:18px !important;
+    letter-spacing:1px !important;
+  }
 </style>
 </head>
 <body>
 
-<!-- FONDO GIF: div reservado. Las instrucciones están en el <style> de arriba, busca "FONDO GIF" -->
 <div class="fondo-gif" aria-hidden="true"></div>
 
 <header>
   <div class="left">
-    <a class="logo" href="#"><img class="coin" src="ho.png" alt=""><span class="logo-t">PIXELWORD</span></a>
+    <a class="logo" href="#">
+      <img class="coin" src="ho.png" alt="">
+      <span class="logo-t">PIXELWORD</span>
+    </a>
   </div>
   <div class="right">
     <button class="icon burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
@@ -62,7 +124,6 @@ img.coin{
   </div>
 </header>
 
-<!-- Menú lateral para celular (script.js necesita #burger, #drawer y #drawerBg) -->
 <div class="drawer-bg" id="drawerBg"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-top">
@@ -79,7 +140,7 @@ img.coin{
   <div class="stage" id="stage" aria-hidden="true"></div>
   <div class="scrim"></div>
   <p class="kicker">Comience su</p>
-  <h1 class="title"><img src="titulo.gif" alt="Pixel Word"></h1>
+  <h1 class="title"><img src="titulo.gif" alt="PIXELWORD"></h1>
   <p class="sub">La forma más divertida y accesible para principiantes de aprender a programar. ⋆˚</p>
   <a class="btn lg" href="registro.html">Comience</a>
   <a class="rk-link" href="#ranking">Ver ranking ▼</a>
@@ -91,17 +152,15 @@ img.coin{
   <ol class="rk-list" id="rkList"><li class="rk-msg">Cargando ranking…</li></ol>
 </section>
 
-<!-- ESPADA (misma ruta que en las páginas donde sí funciona: raíz) -->
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
-<!-- FIREBASE (compat) + init. NUNCA cargues juegos.js ni registro.js aquí: te expulsan a login -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
 <script src="java/script.js"></script>
 
 <script>
-/* ═════════════ RANKING TOP 10 EN VIVO (inline, con guards) ═════════════ */
+/* ═════════════ RANKING TOP 10 EN VIVO ═════════════ */
 (function(){
   const lista = document.getElementById('rkList');
   if (!lista) return;
@@ -146,7 +205,7 @@ img.coin{
   );
 })();
 
-/* ═════════════ CURSOR ESPADA (bloque estándar) ═════════════ */
+/* ═════════════ CURSOR ESPADA ═════════════ */
 (function(){
   const s = document.getElementById('espada-cursor');
   if (!s) { console.warn('⚠️ No se encontró #espada-cursor'); return; }
