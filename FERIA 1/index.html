@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PIXELWORD – Coding Adventure</title>
+<title>PIXELWORLD – Coding Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#050a24">
 <script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 <style>
-  /* ═══════════════ NAVBAR PIXELWORD (compartido) ═══════════════ */
+  /* ═══════════ NAVBAR PIXELWORLD (compartido) ═══════════ */
 header.gx-navbar{
   position:sticky; top:0; z-index:50;
   display:flex; align-items:center; justify-content:space-between;
@@ -195,7 +195,7 @@ header.gx-navbar .logo-t{
     letter-spacing: .5px;
   }
 
-  /* ═══════════ TÍTULO PIXELWORD ═══════════ */
+  /* ═══════════ TÍTULO PIXELWORLD ═══════════ */
   .hero .title{text-align:center;margin:0 auto;width:100%}
   .hero .title img{
     width:min(760px, 88vw) !important;
@@ -209,7 +209,7 @@ header.gx-navbar .logo-t{
     .hero .title img{width:min(560px, 92vw) !important}
   }
 
-  /* ═══════════ LOGO: ESTRELLA + PIXELWORD ═══════════ */
+  /* ═══════════ LOGO: ESTRELLA + PIXELWORLD ═══════════ */
   .logo{
     display:flex;
     align-items:center;
@@ -282,37 +282,38 @@ header.gx-navbar .logo-t{
 
 <div class="fondo-gif" aria-hidden="true"></div>
 
-<header>
+<header class="gx-navbar">
   <div class="left">
-    <a class="logo" href="#">
+    <a class="logo" href="index.html">
       <img class="coin" src="ho.png" alt="">
-      <span class="logo-t">PIXELWORD</span>
+      <span class="logo-t">PIXELWORLD</span>
     </a>
+    <nav class="gx-nav" role="navigation">
+      <a href="index.html" class="on">Inicio</a>
+      <a href="juegos.html">Juegos</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
   </div>
   <div class="right">
-    <button class="icon burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
-      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <button class="gx-theme-btn" id="gxTheme" aria-label="Cambiar tema" type="button">
+      <svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+    </button>
+    <a class="gx-me" href="perfil.html" title="Ir a mi perfil">
+      <span class="gx-me-av" id="gxAv"></span>
+      <span class="gx-me-name" id="gxName">jugador</span>
+    </a>
+    <button class="gx-logout" id="gxLogout" type="button">
+      <span>SALIR</span>
     </button>
   </div>
 </header>
-
-<div class="drawer-bg" id="drawerBg"></div>
-<aside class="drawer" id="drawer" aria-hidden="true">
-  <div class="drawer-top">
-    <button class="icon" id="drawerClose" aria-label="Cerrar menú"><svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
-    <span>Menú</span>
-  </div>
-  <ul>
-    <li><a href="registro.html">Iniciar Sesión</a></li>
-    <li><a href="ranking.html">Salón de la Fama</a></li>
-  </ul>
-</aside>
 
 <main class="hero">
   <div class="stage" id="stage" aria-hidden="true"></div>
   <div class="scrim"></div>
   <p class="kicker">Comience su</p>
-  <h1 class="title"><img src="titulo.gif" alt="PIXELWORD"></h1>
+  <h1 class="title"><img src="titulo.gif" alt="PIXELWORLD"></h1>
   <p class="sub">La forma más divertida y accesible para principiantes de aprender a programar. ⋆˚</p>
   <a class="btn lg" href="registro.html">Comience</a>
   <a class="rk-link" href="#ranking">Ver ranking ▼</a>
@@ -389,6 +390,43 @@ header.gx-navbar .logo-t{
   });
   document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
 })();
+
+/* ═════════════ MODO FERIA (KIOSCO) ═════════════ */
+function salirYLimpiar() {
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
+}
+
+document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
+  btn.onclick = salirYLimpiar;
+});
+
+let timerInactividad;
+function resetearTimer() {
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log("Inactividad detectada. Reseteando PC...");
+    salirYLimpiar();
+  }, 90000);
+}
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+resetearTimer();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'F8') {
+    e.preventDefault();
+    salirYLimpiar();
+  }
+});
 </script>
 </body>
 </html>
