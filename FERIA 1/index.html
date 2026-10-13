@@ -26,6 +26,24 @@
   @media (max-width:768px){
     .hero .title img{width:min(560px, 92vw) !important}
   }
+  /* ═══════════ LOGO: ESTRELLA ═══════════ */
+.logo{display:flex;align-items:center;gap:10px}
+.logo .coin,
+img.coin{
+  width:34px;
+  height:34px;
+  object-fit:contain;
+  image-rendering:pixelated;
+  background:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  color:transparent !important;
+  font-size:0 !important;
+  padding:0 !important;
+  box-shadow:none !important;
+  display:block;
+}
+.logo .logo-t{font-size:clamp(13px,2.5vw,16px);letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -35,7 +53,7 @@
 
 <header>
   <div class="left">
-    <a class="logo" href="#"><span class="coin">0</span><span class="logo-t">PIXEL WORD</span></a>
+    <a class="logo" href="#"><img class="coin" src="estrella.png" alt=""><span class="logo-t">PIXELWORD</span></a>
   </div>
   <div class="right">
     <button class="icon burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
