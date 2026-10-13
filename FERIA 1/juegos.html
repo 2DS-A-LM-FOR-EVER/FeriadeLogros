@@ -267,6 +267,32 @@
     .gx-logout span{display:none}
     .gx-logout::before{content:"✕";font-size:16px}
   }
+  /* ═══════════ TARJETA PRINCIPAL ═══════════ */
+.gx-card.featured{
+  grid-column:1/-1;
+  border-color:var(--c);
+  box-shadow:8px 8px 0 var(--gx-shadow),0 0 30px color-mix(in srgb,var(--c) 32%,transparent);
+}
+.gx-card.featured .gx-art{height:210px}
+.gx-card.featured .gx-art canvas{width:128px;height:128px}
+.gx-card.featured .gx-body{padding:20px 22px 22px}
+.gx-card.featured .gx-name{font-size:clamp(22px,3.6vw,36px)}
+.gx-card.featured .gx-desc{font-size:15px;max-width:70ch}
+.gx-badge{
+  align-self:flex-start;
+  font:700 11px 'Pixelify Sans',monospace;
+  letter-spacing:.18em;
+  background:var(--c);color:#1b1500;
+  padding:3px 10px;border:2px solid #000;box-shadow:2px 2px 0 #000;
+}
+@media(min-width:820px){
+  .gx-card.featured{display:grid;grid-template-columns:300px 1fr}
+  .gx-card.featured .gx-art{
+    height:100%;min-height:230px;
+    border-bottom:0;border-right:4px solid var(--gx-line);
+  }
+  .gx-card.featured .gx-play{margin-top:auto}
+}
 </style>
 </head>
 <body>
@@ -302,27 +328,27 @@
 
 <main class="gx-wrap">
 
-  <section class="gx-hero">
-    <p class="gx-kicker">Selecciona tu nivel</p>
-    <h1 class="gx-title">MAPA DE <span>JUEGOS</span></h1>
-    <p class="gx-sub">4 lenguajes, 5 retos cada uno. Elige uno, juega y sube de rango. ⋆˚✧</p>
+<section class="gx-hero">
+  <p class="gx-kicker">Selecciona tu nivel</p>
+  <h1 class="gx-title">APRENDAMOS SOBRE <span>DESARROLLO DE SOFTWARE</span></h1>
+  <p class="gx-sub">Empieza por lo básico, sigue con HTML, CSS, Python y Java. 5 retos por nivel. ⋆˚✧</p>
 
-    <div class="gx-stats">
-      <div><b id="stGames">0</b><span>Juegos</span></div>
-      <div><b id="stPlayed">0</b><span>Jugados</span></div>
-      <div><b id="stLvl">1</b><span>Nivel</span></div>
-      <div><b id="stXp">0</b><span>XP total</span></div>
+  <div class="gx-stats">
+    <div><b id="stGames">0</b><span>Juegos</span></div>
+    <div><b id="stPlayed">0</b><span>Jugados</span></div>
+    <div><b id="stLvl">1</b><span>Nivel</span></div>
+    <div><b id="stXp">0</b><span>XP total</span></div>
+  </div>
+
+  <a class="gx-last" id="gxLast" href="#" hidden>
+    <canvas width="8" height="8" id="gxLastArt"></canvas>
+    <div>
+      <small>CONTINUAR JUGANDO</small>
+      <b id="gxLastName">—</b>
     </div>
-
-    <a class="gx-last" id="gxLast" href="#" hidden>
-      <canvas width="8" height="8" id="gxLastArt"></canvas>
-      <div>
-        <small>CONTINUAR JUGANDO</small>
-        <b id="gxLastName">—</b>
-      </div>
-      <span class="gx-go">▶</span>
-    </a>
-  </section>
+    <span class="gx-go">▶</span>
+  </a>
+</section>
 
   <section class="gx-tools" aria-label="Filtros">
     <label class="gx-search">
