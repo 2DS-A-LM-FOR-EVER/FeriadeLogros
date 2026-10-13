@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Codédex – Coding Adventure</title>
+<title>Pixel Word – Coding Adventure</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
@@ -12,6 +12,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
 <meta name="theme-color" content="#050a24">
 <script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
+<style>
+  /* ═══════════ TÍTULO PIXEL WORD ═══════════ */
+  .hero .title{text-align:center;margin:0 auto;width:100%}
+  .hero .title img{
+    width:min(760px, 88vw) !important;
+    max-width:100% !important;
+    height:auto !important;
+    display:block;
+    margin:0 auto;
+    image-rendering:pixelated;
+  }
+  @media (max-width:768px){
+    .hero .title img{width:min(560px, 92vw) !important}
+  }
+</style>
 </head>
 <body>
 
@@ -20,7 +35,7 @@
 
 <header>
   <div class="left">
-    <a class="logo" href="#"><span class="coin">0</span><span class="logo-t">CODING</span></a>
+    <a class="logo" href="#"><span class="coin">0</span><span class="logo-t">PIXEL WORD</span></a>
   </div>
   <div class="right">
     <button class="icon burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
@@ -38,7 +53,7 @@
   </div>
   <ul>
     <li><a href="registro.html">Iniciar Sesión</a></li>
-      <li><a href="ranking.html">Salón de la Fama</a></li>
+    <li><a href="ranking.html">Salón de la Fama</a></li>
   </ul>
 </aside>
 
@@ -46,7 +61,7 @@
   <div class="stage" id="stage" aria-hidden="true"></div>
   <div class="scrim"></div>
   <p class="kicker">Comience su</p>
-  <h1 class="title"><img src="titulo.gif" alt="Coding Adventure"></h1>
+  <h1 class="title"><img src="titulo.gif" alt="Pixel Word"></h1>
   <p class="sub">La forma más divertida y accesible para principiantes de aprender a programar. ⋆˚</p>
   <a class="btn lg" href="registro.html">Comience</a>
   <a class="rk-link" href="#ranking">Ver ranking ▼</a>
