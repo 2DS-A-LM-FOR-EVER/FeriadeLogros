@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Perfil Arcade | Coding Adventure</title>
+<title>PIXELWORD | Perfil Arcade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
@@ -209,15 +209,22 @@ html,body,body *{cursor:none!important}
   pointer-events:none;user-select:none;image-rendering:pixelated;
 }
 @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
+/* ═══════════ LOGO PIXELWORD ═══════════ */
+.logo{gap:10px !important}
+.logo-icon{
+  width:36px;height:36px;object-fit:contain;image-rendering:pixelated;
+  display:block;filter:drop-shadow(0 0 4px rgba(255,255,255,.25));
+}
+.logo span{font-size:14px !important;letter-spacing:1.5px}
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="juegos.html">
-    <svg width="22" height="22" viewBox="0 0 8 8" shape-rendering="crispEdges"><path fill="#000" d="M2 0h4v1h1v1h1v4h-1v1h-1v1H2V7H1V6H0V2h1V1h1z"/><path fill="#ffc24b" d="M2 1h4v1h1v4h-1v1H2V6H1V2h1z"/><path fill="#fff3b0" d="M2 2h1v3H2zM3 2h1v1H3z"/><path fill="#c98a12" d="M5 3h1v3H5zM4 6h2v1H4z"/></svg>
-    <span>CODING <small>ADVENTURE</small></span>
-  </a>
+<a class="logo" href="juegos.html">
+    <img class="logo-icon" src="ho.png" alt="">
+    <span>PIXELWORD</span>
+</a>
   <div class="nav-right">
     <div class="mini-av" id="navAv"></div>
     <button class="exit-btn" id="logout" type="button">SALIR</button>
