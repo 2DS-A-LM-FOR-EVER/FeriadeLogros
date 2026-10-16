@@ -337,8 +337,13 @@ function salirYLimpiar() {
     location.href = 'registro.html';
 }
 
-document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
-    btn.onclick = salirYLimpiar;
+/* Delegacion de eventos: funciona aunque pixelword-nav.js cree
+   el boton SALIR despues de que cargue este script */
+document.addEventListener('click', e => {
+    if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+        e.preventDefault();
+        salirYLimpiar();
+    }
 });
 
 let timerInactividad;
