@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Salón de la Fama · Coding Adventure</title>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
 <style>
   :root{
     --noche:#050a24; --panel:#0b1236; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
@@ -18,7 +19,7 @@
   html{height:100%}
   body{
     min-height:100%; background:var(--noche); color:var(--texto);
-    font-family:'Mulish',sans-serif; line-height:1.5; padding:28px 18px 60px;
+    font-family:'Mulish',sans-serif; line-height:1.5; padding:0 0 60px;
     background-image:
       radial-gradient(2px 2px at 12% 20%,#fff8 50%,transparent 51%),
       radial-gradient(2px 2px at 78% 12%,#fff6 50%,transparent 51%),
@@ -26,15 +27,9 @@
       radial-gradient(2px 2px at 90% 60%,#fff7 50%,transparent 51%);
   }
   :focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
-  .wrap{max-width:860px;margin:0 auto}
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 0}
 
-  .volver{
-    display:inline-block;font-family:'Pixelify Sans',monospace;color:var(--cian);text-decoration:none;
-    border:3px solid var(--linea);padding:6px 14px;background:var(--panel);box-shadow:4px 4px 0 #000;
-  }
-  .volver:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
-
-  header{text-align:center;margin:26px 0 26px}
+  .wrap header{text-align:center;margin:10px 0 26px}
   h1{
     font-family:'Pixelify Sans',monospace;font-size:clamp(2rem,6vw,3.4rem);color:var(--amarillo);
     text-shadow:4px 4px 0 var(--amarillo-s),8px 8px 0 #000;letter-spacing:1px;
@@ -99,7 +94,7 @@
   :root[data-tema="claro"] .ins.final h3{color:#8a6500}
 
   @media (max-width:560px){
-    body{padding:18px 10px 50px}
+    .wrap{padding:18px 10px 0}
     .podio{grid-template-columns:1fr;}
     .puesto.p1{order:-1}
     .fila{grid-template-columns:36px 1fr auto;padding:10px}
@@ -115,8 +110,6 @@
 </head>
 <body>
 <div class="wrap">
-  <a class="volver" href="index.html">← Inicio</a>
-
   <header>
     <h1>Salón de la Fama</h1>
     <p class="en-vivo"><span class="punto"></span>Los puntajes se actualizan solos</p>
@@ -143,7 +136,7 @@
 
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
-<!-- Firebase compat PRIMERO, luego firebase-init, y RECIÉN THEN la lógica que usa db -->
+<!-- Firebase compat PRIMERO, luego firebase-init, y RECIÉN DESPUÉS la lógica que usa db -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
@@ -291,6 +284,30 @@
     s.classList.add('on');
   });
   document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
+})();
+</script>
+
+<!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
+<script src="pixelword-nav.js"></script>
+<script>
+(function(){
+  // deja SOLO una navbar oficial
+  const limpiar = () => {
+    const o = document.querySelectorAll('header.gx-navbar');
+    for (let i = 1; i < o.length; i++) o[i].remove();
+  };
+  limpiar();
+  window.addEventListener('load', limpiar);
+
+  // sincroniza el botón de tema de la navbar (data-theme) con este CSS (data-tema)
+  const root = document.documentElement;
+  const sync = () => {
+    if (root.getAttribute('data-theme') === 'light') root.dataset.tema = 'claro';
+    else delete root.dataset.tema;
+  };
+  new MutationObserver(sync).observe(root, {attributes:true, attributeFilter:['data-theme']});
+  try{ if (localStorage.getItem('tema') === 'light') root.setAttribute('data-theme','light'); }catch(e){}
+  sync();
 })();
 </script>
 </body>
