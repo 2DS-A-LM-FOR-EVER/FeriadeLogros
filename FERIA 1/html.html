@@ -212,8 +212,18 @@ function guardarXP(n){
 }
 
 /* ============== EJERCICIOS ============== */
-/* Imagen de ejemplo: SVG embebido (data-URI). Antes estaba roto y rompía todo el script. */
-const IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Crect width='90' height='90' fill='%23fdc815'/%3E%3Ctext x='45' y='60' font-size='44' text-anchor='middle'%3E%E2%9A%94%3C/text%3E%3C/svg%3E";
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  CAMBIAR_IMAGEN  ← busca este texto con Ctrl+F para cambiarla ║
+   ║                                                              ║
+   ║  La imagen del ejercicio 3 y de la prueba final sale de      ║
+   ║  ESTA ÚNICA LÍNEA. Para usar otra imagen, solo cambia el     ║
+   ║  nombre del archivo (debe estar en el repo, misma carpeta    ║
+   ║  que este html). Los textos de la misión, las pistas y el    ║
+   ║  código inicial se actualizan solos.                         ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+const IMG = "67.jpg";
+/* ───────────────────── FIN CAMBIAR_IMAGEN ───────────────────── */
 
 const EJERCICIOS = [
   { titulo:'Tu primer título', xp:50,
@@ -242,14 +252,14 @@ const EJERCICIOS = [
     explicacion:`<p>Un enlace usa <code>&lt;a&gt;</code> con el atributo <code>href</code> (a dónde va). Una imagen usa <code>&lt;img&gt;</code> con <code>src</code> (qué imagen) y <code>alt</code> (descripción). <code>&lt;img&gt;</code> no necesita cierre.</p>
       <p>Ejemplos:</p>
       <p><code>&lt;a href="https://example.com"&gt;Ir&lt;/a&gt;</code><br><code>&lt;img src="foto.png" alt="Mi foto"&gt;</code></p>`,
-    mision:'Crea un enlace <code>&lt;a&gt;</code> con un <code>href</code> y una imagen <code>&lt;img&gt;</code> con <code>src</code> y <code>alt</code>. Usa el <code>src</code> que te damos en el código inicial.',
-    inicial:'<!-- Imagen: copia este src -->\n<!-- ' + IMG + ' -->\n\n<!-- 1. Enlace -->\n\n<!-- 2. Imagen -->\n',
-    esperado:'Un enlace en azul subrayado\ny una imagen cuadrada amarilla.',
+    mision:'Crea un enlace <code>&lt;a&gt;</code> con un <code>href</code> y una imagen <code>&lt;img&gt;</code> con <code>src</code> y <code>alt</code>. Usa <code>' + IMG + '</code> como <code>src</code>.',
+    inicial:'<!-- La imagen se llama: ' + IMG + ' -->\n<!-- Úsala así: src="' + IMG + '" -->\n\n<!-- 1. Enlace -->\n\n<!-- 2. Imagen -->\n',
+    esperado:'Un enlace en azul subrayado\ny la imagen que pide la misión.',
     exigir:[/<a\s/i, /<img\s/i],
     reglas:[/<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>/i,
             /<img\s[^>]*src\s*=\s*["'][^"']+["']/i,
             /<img\s[^>]*alt\s*=\s*["']/i],
-    pista:'<a href="https://example.com">Visitar</a> y <img src="(el texto data:image…)" alt="Espada">. Sin comillas dentro del src.' },
+    pista:'<a href="https://example.com">Visitar</a> y <img src="' + IMG + '" alt="Mi imagen">. Pon el nombre del archivo entre comillas.' },
 
   { titulo:'Listas', xp:50,
     explicacion:`<p>Una lista con viñetas es <code>&lt;ul&gt;</code> y cada elemento va en un <code>&lt;li&gt;</code>. Si quieres numerarla, usa <code>&lt;ol&gt;</code>.</p>
@@ -266,9 +276,9 @@ const EJERCICIOS = [
   { titulo:'Prueba final', xp:100, final:true,
     explicacion:`<p>Llegó la hora de juntar todo: títulos, párrafos, imágenes y enlaces.</p>
       <p>Recuerda: casi toda etiqueta se abre y se cierra, menos <code>&lt;img&gt;</code>.</p>`,
-    mision:`Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen usa el mismo <code>src</code> del ejercicio 3.`,
-    inicial:'<!-- src de la imagen: -->\n<!-- ' + IMG + ' -->\n\n<!-- 1. h1 -->\n\n<!-- 2. p -->\n\n<!-- 3. img -->\n\n<!-- 4. a -->\n',
-    esperado:'Un título grande,\nun párrafo,\nuna imagen amarilla\ny un enlace que dice: Visitar',
+    mision:`Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen usa el mismo <code>src</code> del ejercicio 3: <code>${IMG}</code>.`,
+    inicial:'<!-- La imagen se llama: ' + IMG + ' -->\n<!-- Úsala así: src="' + IMG + '" -->\n\n<!-- 1. h1 -->\n\n<!-- 2. p -->\n\n<!-- 3. img -->\n\n<!-- 4. a -->\n',
+    esperado:'Un título grande,\nun párrafo,\nuna imagen\ny un enlace que dice: Visitar',
     exigir:[/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i],
     reglas:[/<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,
             /<p[^>]*>\s*\S[\s\S]*?<\/p>/i,
@@ -277,7 +287,7 @@ const EJERCICIOS = [
             /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i],
     pista:[
       'Pista 1/3: Empieza con <h1>Mi página</h1> y debajo un párrafo <p>Texto</p>.',
-      'Pista 2/3: Agrega la imagen: <img src="..." alt="Espada"> con el src que está en el comentario.',
+      'Pista 2/3: Agrega la imagen: <img src="' + IMG + '" alt="Mi imagen"> (el nombre del archivo va entre comillas).',
       'Pista 3/3: Última ayuda: cierra con <a href="https://example.com">Visitar</a>. ¡De acá en adelante es todo tuyo!'
     ] }];
 
@@ -338,8 +348,12 @@ function revisarEtiquetas(codigo){
   return '';
 }
 
+/* La vista previa vive en un iframe srcdoc: sus rutas relativas (como 67.jpg)
+   no se resolvían bien. El <base> las apunta a la carpeta de esta página. */
 function mostrarVista(codigo){
-  const base = '<style>body{font-family:Arial,sans-serif;color:#111;background:#fff;padding:10px;margin:0}img{max-width:100%}</style>';
+  const carpeta = new URL('.', location.href).href;
+  const base = '<base href="' + carpeta + '">' +
+    '<style>body{font-family:Arial,sans-serif;color:#111;background:#fff;padding:10px;margin:0}img{max-width:100%}</style>';
   $('vista').srcdoc = base + codigo;
 }
 
