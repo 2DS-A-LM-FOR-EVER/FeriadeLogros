@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PIXELWORLD | Mapa de Juegos</title>
+<link rel="icon" type="image/png" href="ho.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
@@ -44,9 +45,7 @@
     font-weight:700 !important;
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     NAVBAR PIXELWORLD — REDISEÑADO
-     ═══════════════════════════════════════════════════════════ */
+  /* ═══════════ NAVBAR PIXELWORLD ═══════════ */
   header.gx-navbar{
     position:sticky;
     top:0;
@@ -62,7 +61,6 @@
     font-family:'Pixelify Sans',monospace;
     overflow:visible;
   }
-  /* Línea de colores arcade debajo del nav */
   header.gx-navbar::after{
     content:"";
     position:absolute;
@@ -92,7 +90,6 @@
     flex:none;
   }
 
-  /* Logo con estrella que gira suave */
   header.gx-navbar .logo{
     display:flex;
     align-items:center;
@@ -114,7 +111,6 @@
     text-shadow:2px 2px 0 #000;
   }
 
-  /* Nav links como botones arcade */
   .gx-nav{
     display:flex;
     gap:4px;
@@ -154,7 +150,6 @@
     box-shadow:0 0 8px #fdc815;
   }
 
-  /* Botón de tema circular */
   .gx-theme-btn{
     width:42px;height:42px;
     display:grid;place-items:center;
@@ -184,7 +179,6 @@
   [data-theme="light"] .gx-theme-btn .i-moon{display:none}
   [data-theme="light"] .gx-theme-btn .i-sun{display:block}
 
-  /* Chip de usuario */
   .gx-me{
     display:flex;
     align-items:center;
@@ -221,7 +215,6 @@
     white-space:nowrap;
   }
 
-  /* Botón Salir */
   .gx-logout{
     font-family:'Pixelify Sans',monospace;
     font-size:13px;
@@ -245,7 +238,6 @@
     box-shadow:0 0 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
   }
 
-  /* Responsive */
   @media (max-width:900px){
     header.gx-navbar{padding:10px 16px;gap:12px}
     header.gx-navbar .left{gap:16px}
@@ -267,42 +259,38 @@
     .gx-logout span{display:none}
     .gx-logout::before{content:"✕";font-size:16px}
   }
+
   /* ═══════════ TARJETA PRINCIPAL ═══════════ */
-.gx-card.featured{
-  grid-column:1/-1;
-  border-color:var(--c);
-  box-shadow:8px 8px 0 var(--gx-shadow),0 0 30px color-mix(in srgb,var(--c) 32%,transparent);
-}
-.gx-card.featured .gx-art{height:210px}
-.gx-card.featured .gx-art canvas{width:128px;height:128px}
-.gx-card.featured .gx-body{padding:20px 22px 22px}
-.gx-card.featured .gx-name{font-size:clamp(22px,3.6vw,36px)}
-.gx-card.featured .gx-desc{font-size:15px;max-width:70ch}
-.gx-badge{
-  align-self:flex-start;
-  font:700 11px 'Pixelify Sans',monospace;
-  letter-spacing:.18em;
-  background:var(--c);color:#1b1500;
-  padding:3px 10px;border:2px solid #000;box-shadow:2px 2px 0 #000;
-}
-@media(min-width:820px){
-  .gx-card.featured{display:grid;grid-template-columns:300px 1fr}
-  .gx-card.featured .gx-art{
-    height:100%;min-height:230px;
-    border-bottom:0;border-right:4px solid var(--gx-line);
+  .gx-card.featured{
+    grid-column:1/-1;
+    border-color:var(--c);
+    box-shadow:8px 8px 0 var(--gx-shadow),0 0 30px color-mix(in srgb,var(--c) 32%,transparent);
   }
-  .gx-card.featured .gx-play{margin-top:auto}
-}
+  .gx-card.featured .gx-art{height:210px}
+  .gx-card.featured .gx-art canvas{width:128px;height:128px}
+  .gx-card.featured .gx-body{padding:20px 22px 22px}
+  .gx-card.featured .gx-name{font-size:clamp(22px,3.6vw,36px)}
+  .gx-card.featured .gx-desc{font-size:15px;max-width:70ch}
+  .gx-badge{
+    align-self:flex-start;
+    font:700 11px 'Pixelify Sans',monospace;
+    letter-spacing:.18em;
+    background:var(--c);color:#1b1500;
+    padding:3px 10px;border:2px solid #000;box-shadow:2px 2px 0 #000;
+  }
+  @media(min-width:820px){
+    .gx-card.featured{display:grid;grid-template-columns:300px 1fr}
+    .gx-card.featured .gx-art{
+      height:100%;min-height:230px;
+      border-bottom:0;border-right:4px solid var(--gx-line);
+    }
+    .gx-card.featured .gx-play{margin-top:auto}
+  }
 </style>
 </head>
 <body>
 
 <canvas id="gxSky" aria-hidden="true"></canvas>
-
-<!-- ═══════════════════════════════════════════════════════════
-     AQUÍ se inyecta la navbar oficial desde pixelword-nav.js
-     (se eliminó el <header class="gx-navbar"> hardcodeado)
-     ═══════════════════════════════════════════════════════════ -->
 
 <main class="gx-wrap">
 
@@ -369,59 +357,49 @@
 </script>
 <script src="pixelword-nav.js"></script>
 
-<!-- Guardián anti-duplicado -->
+<!-- ═════════════ GUARDIÁN ANTI-DUPLICADO (una sola vez, no dos) ═════════════ -->
 <script>
 (function(){
   const OFICIAL = 'header.gx-navbar';
   function limpiar(){
-    const of = document.querySelectorAll(OFICIAL);
-    for (let i = 1; i < of.length; i++) of[i].remove();
-    document.querySelectorAll('#navbar,.navbar,.nav-bar,.topbar').forEach(n => {
-      if (!n.matches(OFICIAL)) n.remove();
-    });
-  }
-  limpiar();
-  document.addEventListener('DOMContentLoaded', limpiar);
-  window.addEventListener('load', limpiar);
-  let n = 0; const iv = setInterval(()=>{limpiar(); if(++n>20) clearInterval(iv);},150);
-})();
-</script>
-
-<!-- ═════════════ AHORA sí, juegos.js (el nav ya existe) ═════════════ -->
-<script src="java/juegos.js"></script>
-
-<!-- ═════════════ ANTI-NAV DUPLICADO ═════════════
-     pixelword-nav.js es el ÚNICO que debe crear la navbar (header.gx-navbar).
-     Si algún otro script/archivo inyecta una segunda barra, la borramos aquí. -->
-<script>
-(function(){
-  const OFICIAL = 'header.gx-navbar';
-
-  function limpiar(){
-    // 1) Si hay varias navbar oficiales, conservamos SOLO la primera (la de pixelword-nav.js)
     const oficiales = document.querySelectorAll(OFICIAL);
     for (let i = 1; i < oficiales.length; i++) oficiales[i].remove();
-
-    // 2) Barra(s) vieja(s) que no sean la oficial
     document.querySelectorAll('#navbar, .navbar, .nav-bar, .topbar').forEach(n => {
       if (!n.matches(OFICIAL)) n.remove();
     });
   }
-
   limpiar();
   document.addEventListener('DOMContentLoaded', limpiar);
   window.addEventListener('load', limpiar);
-
-  // Por si algún script la inyecta con retraso
   let n = 0;
   const iv = setInterval(() => { limpiar(); if (++n > 20) clearInterval(iv); }, 150);
 })();
 </script>
 
+<!-- ═════════════ EL FIX: juegos.js SOLO cuando la navbar ya existe ═════════════
+     Antes: <script src="java/juegos.js"> corría antes de que pixelword-nav.js
+     inyectara el header → getElementById(...) devolvía null → TypeError en la
+     línea 213 y el resto del script moría (por eso el grid quedaba vacío).
+     Ahora: sondeamos el DOM y cargamos juegos.js con la navbar presente. -->
 <script>
-/* =========================================
-   MODO FERIA (KIOSCO) - Supervivencia
-   ========================================= */
+(function(){
+  function navLista(){ return !!document.querySelector('header.gx-navbar'); }
+  function cargarJuegos(){
+    const s = document.createElement('script');
+    s.src = 'java/juegos.js';
+    document.body.appendChild(s);
+  }
+  let intentos = 0;
+  (function espera(){
+    if (navLista()) return cargarJuegos();       // camino feliz
+    if (++intentos > 80) return cargarJuegos();  // ~4s: cargamos igual para no quedar muertos
+    setTimeout(espera, 50);
+  })();
+})();
+</script>
+
+<!-- ═════════════ MODO FERIA (KIOSCO) ═════════════ -->
+<script>
 function salirYLimpiar() {
     localStorage.removeItem('usuarioActual');
     Object.keys(localStorage).forEach(k => {
@@ -434,18 +412,12 @@ function salirYLimpiar() {
     location.href = 'registro.html';
 }
 
-// Nota: el botón #gxLogout lo inyecta pixelword-nav.js; igual lo enganchamos
-// cada vez que aparezca por si acaso.
-function engancharLogout(){
-  document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
-    if (btn.dataset._boundLogout) return;
-    btn.dataset._boundLogout = '1';
-    btn.onclick = salirYLimpiar;
-  });
-}
-engancharLogout();
-document.addEventListener('DOMContentLoaded', engancharLogout);
-window.addEventListener('load', engancharLogout);
+/* Delegación de eventos: funciona sin importar CUÁNDO inyecte el botón el nav.
+   Ya no dependemos de asignar .onclick a un elemento que quizás no existe. */
+document.addEventListener('click', function(e){
+  const btn = e.target.closest && e.target.closest('#gxLogout, #logout, .exit-btn, .gx-logout');
+  if (btn) { e.preventDefault(); salirYLimpiar(); }
+});
 
 let timerInactividad;
 function resetearTimer() {
