@@ -82,6 +82,8 @@
   }
   .mision{border:3px dashed var(--verde); padding:12px 14px; margin:16px 0; background:var(--panel2)}
   .mision b{font-family:'Pixelify Sans',monospace; color:var(--verde)}
+  .mision ol{margin:8px 0 0 22px}
+  .mision li{margin-bottom:6px}
   .esperado{
     font-family:'VT323',monospace; font-size:1.25rem; white-space:pre-wrap;
     background:#000; color:var(--verde); padding:8px 12px; border:2px solid var(--linea);
@@ -410,27 +412,43 @@ const EJERCICIOS = [
     pista:   '<ul> abre la lista; dentro, tres líneas <li>Texto</li>; y al final </ul>.'
   },
 
-  /* ---------- 5 · Prueba final (usa IMG) ---------- */
+  /* ---------- 5 · Prueba final: "Mi tarjeta de jugador" (usa IMG) ----------
+     Repasa TODO lo aprendido: h1, p + negrita, lista, imagen y enlace.
+     Cada parte se pide en un paso numerado, el texto es libre (salvo el enlace). */
   {
-    titulo: 'Prueba final', xp: 100, final: true,
+    titulo: 'Prueba final: Mi tarjeta de jugador', xp: 100, final: true,
     explicacion: `
-      <p>Llegó la hora de juntar todo: títulos, párrafos, imágenes y enlaces.</p>
-      <p>Recuerda: casi toda etiqueta se abre y se cierra, menos <code>&lt;img&gt;</code>.</p>`,
-    mision: `Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen es el archivo <code>${IMG}</code>, igual que en el ejercicio 3.`,
-    inicial: NOTA_IMG + '\n<!-- 1. h1 -->\n\n<!-- 2. p -->\n\n<!-- 3. img -->\n\n<!-- 4. a -->\n',
-    esperado:'Un título grande,\nun párrafo,\nla imagen ' + IMG + '\ny un enlace que dice: Visitar',
-    exigir:  [/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i],
+      <p>Vas a crear la <b>tarjeta de presentación</b> de un jugador usando todo lo que aprendiste: título, párrafo, negrita, lista, imagen y enlace.</p>
+      <p>Tú decides los textos. Solo sigue los 5 pasos de la misión, uno por uno.</p>`,
+    mision: `Construye tu tarjeta con estas 5 partes:
+      <ol>
+        <li>Un título <code>&lt;h1&gt;</code> con <b>tu nombre</b> (o el de tu jugador).</li>
+        <li>Un párrafo <code>&lt;p&gt;</code> que hable de ti, con <b>una palabra en negrita</b> <code>&lt;b&gt;</code>.</li>
+        <li>Una lista <code>&lt;ul&gt;</code> con <b>3 cosas que te gustan</b> (3 <code>&lt;li&gt;</code>).</li>
+        <li>La imagen <code>&lt;img&gt;</code> con <code>src="${IMG}"</code> y un <code>alt</code>.</li>
+        <li>Un enlace <code>&lt;a&gt;</code> con <code>href</code> que diga <b>Visitar</b>.</li>
+      </ol>`,
+    inicial: NOTA_IMG +
+      '\n<!-- 1. Título h1 con tu nombre -->\n' +
+      '\n<!-- 2. Párrafo p con una palabra en negrita b -->\n' +
+      '\n<!-- 3. Lista ul con 3 li -->\n' +
+      '\n<!-- 4. Imagen img -->\n' +
+      '\n<!-- 5. Enlace a que diga Visitar -->\n',
+    esperado:'Tu nombre como título grande,\nun párrafo con una palabra en negrita,\nuna lista de 3 cosas que te gustan,\nla imagen ' + IMG + '\ny un enlace que dice: Visitar',
+    exigir:  [/<h1[\s>]/i, /<p[\s>]/i, /<b>/i, /<ul[\s>]/i, /<li[\s>]/i, /<img\s/i, /<a\s/i],
     reglas:  [
-      /<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,
-      /<p[^>]*>\s*\S[\s\S]*?<\/p>/i,
-      RE_IMG_SRC,
-      /<img\s[^>]*alt\s*=\s*["']/i,
-      /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i
+      /<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,                                   // título con texto
+      /<p[^>]*>[\s\S]*?<b>\s*\S[\s\S]*?<\/b>[\s\S]*?<\/p>/i,             // párrafo con negrita dentro
+      /<ul[^>]*>[\s\S]*<\/ul>/i,                                         // lista
+      /<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>/i, // 3 elementos
+      RE_IMG_SRC,                                                        // imagen correcta
+      /<img\s[^>]*alt\s*=\s*["']/i,                                      // con alt
+      /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i      // enlace "Visitar"
     ],
     pista: [
-      'Pista 1/3: Empieza con un título <h1> y un párrafo <p> bien cerrados.',
-      'Pista 2/3: Inserta la imagen obligatoria con el atributo src="' + IMG + '" y su alt.',
-      'Pista 3/3: Usa la etiqueta a con su href y escribe exactamente Visitar entre la apertura y el cierre.'
+      'Pista 1/3: Empieza arriba. <h1>Tu nombre</h1> y luego <p>Me gusta <b>programar</b></p>. La palabra en negrita va DENTRO del párrafo.',
+      'Pista 2/3: La lista: <ul> + tres líneas <li>Algo que te gusta</li> + </ul>. Después la imagen: <img src="' + IMG + '" alt="Mi imagen">',
+      'Pista 3/3: Solo falta el enlace: <a href="https://example.com">Visitar</a>. Revisa que cada etiqueta esté cerrada y pulsa Enviar.'
     ]
   }
 ];
