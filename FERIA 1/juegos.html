@@ -299,32 +299,10 @@
 
 <canvas id="gxSky" aria-hidden="true"></canvas>
 
-<header class="gx-navbar">
-  <div class="left">
-    <a class="logo" href="index.html">
-      <img class="coin" src="ho.png" alt="">
-      <span class="logo-t">PIXELWORLD</span>
-    </a>
-    <nav class="gx-nav" role="navigation">
-      <a href="index.html">Inicio</a>
-      <a href="juegos.html" class="on">Juegos</a>
-      <a href="perfil.html">Perfil</a>
-    </nav>
-  </div>
-  <div class="right">
-    <button class="gx-theme-btn" id="gxTheme" aria-label="Cambiar tema" type="button">
-      <svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
-    </button>
-    <a class="gx-me" href="perfil.html" title="Ir a mi perfil">
-      <span class="gx-me-av" id="gxAv"></span>
-      <span class="gx-me-name" id="gxName">jugador</span>
-    </a>
-    <button class="gx-logout" id="gxLogout" type="button">
-      <span>SALIR</span>
-    </button>
-  </div>
-</header>
+<!-- ═══════════════════════════════════════════════════════════
+     AQUÍ se inyecta la navbar oficial desde pixelword-nav.js
+     (se eliminó el <header class="gx-navbar"> hardcodeado)
+     ═══════════════════════════════════════════════════════════ -->
 
 <main class="gx-wrap">
 
@@ -381,6 +359,46 @@
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
 <script src="java/juegos.js"></script>
+
+<!-- ═════════════ NAVBAR OFICIAL PIXELWORLD ═════════════ -->
+<script>
+  window.PIXELNAV_CONFIG = {
+    active  : 'juegos',            // marca "Juegos" como activo
+    salirUrl: 'registro.html',
+    logoUrl : 'ho.png',
+    marca   : 'PIXELWORD'
+  };
+</script>
+<script src="pixelword-nav.js"></script>
+
+<!-- ═════════════ ANTI-NAV DUPLICADO ═════════════
+     pixelword-nav.js es el ÚNICO que debe crear la navbar (header.gx-navbar).
+     Si algún otro script/archivo inyecta una segunda barra, la borramos aquí. -->
+<script>
+(function(){
+  const OFICIAL = 'header.gx-navbar';
+
+  function limpiar(){
+    // 1) Si hay varias navbar oficiales, conservamos SOLO la primera (la de pixelword-nav.js)
+    const oficiales = document.querySelectorAll(OFICIAL);
+    for (let i = 1; i < oficiales.length; i++) oficiales[i].remove();
+
+    // 2) Barra(s) vieja(s) que no sean la oficial
+    document.querySelectorAll('#navbar, .navbar, .nav-bar, .topbar').forEach(n => {
+      if (!n.matches(OFICIAL)) n.remove();
+    });
+  }
+
+  limpiar();
+  document.addEventListener('DOMContentLoaded', limpiar);
+  window.addEventListener('load', limpiar);
+
+  // Por si algún script la inyecta con retraso
+  let n = 0;
+  const iv = setInterval(() => { limpiar(); if (++n > 20) clearInterval(iv); }, 150);
+})();
+</script>
+
 <script>
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
@@ -397,9 +415,18 @@ function salirYLimpiar() {
     location.href = 'registro.html';
 }
 
-document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
+// Nota: el botón #gxLogout lo inyecta pixelword-nav.js; igual lo enganchamos
+// cada vez que aparezca por si acaso.
+function engancharLogout(){
+  document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
+    if (btn.dataset._boundLogout) return;
+    btn.dataset._boundLogout = '1';
     btn.onclick = salirYLimpiar;
-});
+  });
+}
+engancharLogout();
+document.addEventListener('DOMContentLoaded', engancharLogout);
+window.addEventListener('load', engancharLogout);
 
 let timerInactividad;
 function resetearTimer() {
