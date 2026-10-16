@@ -6,124 +6,216 @@
 <title>HTML · Coding Adventure</title>
 <link rel="icon" href="ho.png">
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Mulish:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+
 <style>
+  /* ═══════════ VARIABLES Y TEMA ═══════════ */
   :root{
-    --noche:#050a24; --panel:#0b1236; --panel2:#070d2b; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
+    --noche:#050a24; --panel:#0b1236; --panel2:#070d2b; --linea:#1b2a6b;
+    --texto:#eaf1ff; --suave:#8fa0d6;
     --amarillo:#fdc815; --amarillo-s:#c9940a; --cian:#4fd8ff; --rosa:#ff4f9a; --verde:#7cffb2;
   }
   :root[data-tema="claro"]{
-    --noche:#eef3ff; --panel:#ffffff; --panel2:#f3f6ff; --linea:#223a9a; --texto:#0a1240; --suave:#4a5a99;
+    --noche:#eef3ff; --panel:#ffffff; --panel2:#f3f6ff; --linea:#223a9a;
+    --texto:#0a1240; --suave:#4a5a99;
   }
+
+  /* ═══════════ BASE ═══════════ */
   *{box-sizing:border-box;margin:0}
   html,body{height:100%}
   body{
-    background:var(--noche);color:var(--texto);font-family:'Mulish',sans-serif;line-height:1.55;
-    display:flex;flex-direction:column;
+    background:var(--noche); color:var(--texto);
+    font-family:'Mulish',sans-serif; line-height:1.55;
+    display:flex; flex-direction:column;
   }
   button,a{font-family:inherit}
-  :focus-visible{outline:3px solid var(--amarillo);outline-offset:2px}
+  :focus-visible{outline:3px solid var(--amarillo); outline-offset:2px}
 
-  .top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:4px solid var(--linea)}
-  .top a{color:var(--cian);text-decoration:none;font-family:'Pixelify Sans',monospace}
-  .top h1{font-family:'Pixelify Sans',monospace;font-size:1.4rem;color:var(--amarillo);text-shadow:2px 2px 0 #000;flex:1}
-  .pasos{display:flex;gap:6px}
-  .paso{width:22px;height:22px;border:3px solid var(--linea);background:var(--panel2)}
-  .paso.hecho{background:var(--verde);border-color:#000}
-  .paso.actual{border-color:var(--amarillo)}
-  .btn{
-    font-family:'Pixelify Sans',monospace;font-size:1rem;border:3px solid #000;padding:6px 16px;
-    box-shadow:4px 4px 0 #000;background:var(--panel);color:var(--texto);transition:transform .1s;
+  /* ═══════════ BARRA SUPERIOR ═══════════ */
+  .top{
+    display:flex; align-items:center; gap:14px; padding:10px 18px;
+    background:var(--panel); border-bottom:4px solid var(--linea);
   }
-  .btn:hover:not(:disabled){transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .btn.run{background:var(--cian);color:#050a24}
-  .btn.submit{background:var(--amarillo);color:#050a24}
-  .btn.verde{background:var(--verde);color:#050a24}
+  .top a{color:var(--cian); text-decoration:none; font-family:'Pixelify Sans',monospace}
+  .top h1{
+    font-family:'Pixelify Sans',monospace; font-size:1.4rem; flex:1;
+    color:var(--amarillo); text-shadow:2px 2px 0 #000;
+  }
 
-  main{flex:1;display:grid;grid-template-columns:minmax(280px,5fr) 7fr;min-height:0}
-  .izq{padding:22px 24px;overflow:auto;border-right:4px solid var(--linea);background:var(--panel)}
-  .izq .num{font-family:'Pixelify Sans',monospace;color:var(--rosa);font-size:1rem}
-  .izq h2{font-family:'Pixelify Sans',monospace;font-size:1.8rem;margin:2px 0 12px;color:var(--amarillo)}
-  .izq p{margin-bottom:12px;max-width:62ch}
-  .izq code{font-family:'VT323',monospace;font-size:1.25rem;background:var(--panel2);border:2px solid var(--linea);padding:0 6px;color:var(--cian)}
-  .mision{border:3px dashed var(--verde);padding:12px 14px;margin:16px 0;background:var(--panel2)}
-  .mision b{font-family:'Pixelify Sans',monospace;color:var(--verde)}
-  .esperado{font-family:'VT323',monospace;font-size:1.25rem;background:#000;color:var(--verde);padding:8px 12px;border:2px solid var(--linea);white-space:pre-wrap}
+  /* Cuadritos de progreso */
+  .pasos{display:flex; gap:6px}
+  .paso{width:22px; height:22px; border:3px solid var(--linea); background:var(--panel2)}
+  .paso.hecho{background:var(--verde); border-color:#000}
+  .paso.actual{border-color:var(--amarillo)}
 
-  .der{display:grid;grid-template-rows:1fr auto 260px;min-height:0;background:var(--panel2)}
-  .editor{display:grid;grid-template-columns:44px 1fr;min-height:0;border-bottom:4px solid var(--linea)}
+  /* ═══════════ BOTONES ═══════════ */
+  .btn{
+    font-family:'Pixelify Sans',monospace; font-size:1rem;
+    border:3px solid #000; padding:6px 16px; box-shadow:4px 4px 0 #000;
+    background:var(--panel); color:var(--texto); transition:transform .1s;
+  }
+  .btn:hover:not(:disabled){transform:translate(2px,2px); box-shadow:2px 2px 0 #000}
+  .btn:disabled{opacity:.4; cursor:not-allowed}
+  .btn.run{background:var(--cian); color:#050a24}
+  .btn.submit{background:var(--amarillo); color:#050a24}
+  .btn.verde{background:var(--verde); color:#050a24}
+
+  /* ═══════════ LAYOUT PRINCIPAL ═══════════ */
+  main{
+    flex:1; display:grid; min-height:0;
+    grid-template-columns:minmax(280px,5fr) 7fr;
+  }
+
+  /* Panel izquierdo: explicación */
+  .izq{
+    padding:22px 24px; overflow:auto;
+    border-right:4px solid var(--linea); background:var(--panel);
+  }
+  .izq .num{font-family:'Pixelify Sans',monospace; color:var(--rosa); font-size:1rem}
+  .izq h2{
+    font-family:'Pixelify Sans',monospace; font-size:1.8rem;
+    margin:2px 0 12px; color:var(--amarillo);
+  }
+  .izq p{margin-bottom:12px; max-width:62ch}
+  .izq code{
+    font-family:'VT323',monospace; font-size:1.25rem; color:var(--cian);
+    background:var(--panel2); border:2px solid var(--linea); padding:0 6px;
+  }
+  .mision{border:3px dashed var(--verde); padding:12px 14px; margin:16px 0; background:var(--panel2)}
+  .mision b{font-family:'Pixelify Sans',monospace; color:var(--verde)}
+  .esperado{
+    font-family:'VT323',monospace; font-size:1.25rem; white-space:pre-wrap;
+    background:#000; color:var(--verde); padding:8px 12px; border:2px solid var(--linea);
+  }
+
+  /* Panel derecho: editor + vista previa */
+  .der{
+    display:grid; grid-template-rows:1fr auto 260px; min-height:0;
+    background:var(--panel2);
+  }
+  .editor{
+    display:grid; grid-template-columns:44px 1fr; min-height:0;
+    border-bottom:4px solid var(--linea);
+  }
   #lineas{
-    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;text-align:right;color:var(--suave);
-    padding:14px 8px 14px 0;background:var(--panel);overflow:hidden;white-space:pre;user-select:none;
+    font-family:'VT323',monospace; font-size:1.35rem; line-height:1.4;
+    text-align:right; color:var(--suave);
+    padding:14px 8px 14px 0; background:var(--panel);
+    overflow:hidden; white-space:pre; user-select:none;
   }
   #codigo{
-    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;color:var(--texto);background:transparent;
-    border:0;resize:none;padding:14px;tab-size:4;white-space:pre;overflow:auto;outline:none;min-height:140px;
+    font-family:'VT323',monospace; font-size:1.35rem; line-height:1.4;
+    color:var(--texto); background:transparent;
+    border:0; resize:none; padding:14px; tab-size:4;
+    white-space:pre; overflow:auto; outline:none; min-height:140px;
   }
-  .acciones{display:flex;gap:12px;align-items:center;padding:10px 14px;background:var(--panel);border-bottom:4px solid var(--linea)}
-  .acciones .estado{margin-left:auto;font-size:.85rem;color:var(--suave)}
+  .acciones{
+    display:flex; gap:12px; align-items:center; padding:10px 14px;
+    background:var(--panel); border-bottom:4px solid var(--linea);
+  }
+  .acciones .estado{margin-left:auto; font-size:.85rem; color:var(--suave)}
 
   /* Salida: vista previa + mensajes */
-  .salida{display:grid;grid-template-rows:1fr 66px;min-height:0}
-  #vista{width:100%;height:100%;border:0;background:#fff;display:block}
+  .salida{display:grid; grid-template-rows:1fr 66px; min-height:0}
+  #vista{width:100%; height:100%; border:0; background:#fff; display:block}
   #terminal{
-    font-family:'VT323',monospace;font-size:1.3rem;line-height:1.25;background:#000;color:#d7ffe8;
-    padding:8px 14px;overflow:auto;white-space:pre-wrap;border-top:4px solid var(--linea)
+    font-family:'VT323',monospace; font-size:1.3rem; line-height:1.25;
+    background:#000; color:#d7ffe8; padding:8px 14px;
+    overflow:auto; white-space:pre-wrap; border-top:4px solid var(--linea);
   }
-  #terminal .err{color:#ff8fa8} #terminal .ok{color:var(--verde)} #terminal .info{color:var(--cian)}
+  #terminal .err{color:#ff8fa8}
+  #terminal .ok{color:var(--verde)}
+  #terminal .info{color:var(--cian)}
 
-  .bajo{display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--panel);border-top:4px solid var(--linea)}
-  .bajo .centro{flex:1;text-align:center;font-family:'Pixelify Sans',monospace;font-size:1.1rem}
+  /* ═══════════ BARRA INFERIOR ═══════════ */
+  .bajo{
+    display:flex; align-items:center; gap:12px; padding:10px 18px;
+    background:var(--panel); border-top:4px solid var(--linea);
+  }
+  .bajo .centro{flex:1; text-align:center; font-family:'Pixelify Sans',monospace; font-size:1.1rem}
   .bajo .centro b{color:var(--amarillo)}
 
-  #personaje{position:fixed;right:16px;bottom:70px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-  #personaje button{background:none;border:0;padding:0}
+  /* ═══════════ PERSONAJE DE PISTAS ═══════════ */
+  #personaje{
+    position:fixed; right:16px; bottom:70px; z-index:20;
+    display:flex; flex-direction:column; align-items:flex-end; gap:8px;
+  }
+  #personaje button{background:none; border:0; padding:0}
   #personaje img{
-    width:auto;height:96px;max-width:140px;object-fit:contain;
-    image-rendering:pixelated;display:block;filter:drop-shadow(3px 3px 0 #000);
+    width:auto; height:96px; max-width:140px; object-fit:contain; display:block;
+    image-rendering:pixelated; filter:drop-shadow(3px 3px 0 #000);
   }
   #personaje .emoji{font-size:3rem}
   #burbuja{
-    max-width:260px;background:#fff;color:#050a24;border:4px solid #000;box-shadow:4px 4px 0 var(--amarillo-s);
-    padding:10px 12px;font-size:.95rem;display:none
+    max-width:260px; display:none; padding:10px 12px; font-size:.95rem;
+    background:#fff; color:#050a24; border:4px solid #000;
+    box-shadow:4px 4px 0 var(--amarillo-s);
   }
   #burbuja.ver{display:block}
 
-  .velo{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  /* ═══════════ VENTANAS (INTRO / FINAL) ═══════════ */
+  .velo{
+    position:fixed; inset:0; z-index:50; padding:16px;
+    display:none; align-items:center; justify-content:center; background:#000b;
+  }
   .velo.ver{display:flex}
-  .caja{background:var(--panel);border:5px solid var(--amarillo);box-shadow:8px 8px 0 #000;max-width:560px;width:100%;padding:24px;max-height:90vh;overflow:auto}
-  .caja h2{font-family:'Pixelify Sans',monospace;color:var(--amarillo);font-size:1.9rem;margin-bottom:10px}
+  .caja{
+    width:100%; max-width:560px; max-height:90vh; overflow:auto; padding:24px;
+    background:var(--panel); border:5px solid var(--amarillo); box-shadow:8px 8px 0 #000;
+  }
+  .caja h2{font-family:'Pixelify Sans',monospace; color:var(--amarillo); font-size:1.9rem; margin-bottom:10px}
   .caja p{margin-bottom:12px}
   .caja ul{margin:0 0 14px 22px}
-  .caja code{font-family:'VT323',monospace;font-size:1.25rem;color:var(--cian)}
-  .caja .fila-btn{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
-  .insignia{font-size:4rem;text-align:center}
+  .caja code{font-family:'VT323',monospace; font-size:1.25rem; color:var(--cian)}
+  .caja .fila-btn{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px}
+  .insignia{font-size:4rem; text-align:center}
+
+  /* ═══════════ ANIMACIÓN +XP ═══════════ */
   .xp-pop{
-    position:fixed;left:50%;top:90px;transform:translateX(-50%);z-index:60;font-family:'Pixelify Sans',monospace;
-    font-size:2rem;color:var(--amarillo);text-shadow:3px 3px 0 #000;pointer-events:none;opacity:0
+    position:fixed; left:50%; top:90px; transform:translateX(-50%); z-index:60;
+    font-family:'Pixelify Sans',monospace; font-size:2rem;
+    color:var(--amarillo); text-shadow:3px 3px 0 #000;
+    pointer-events:none; opacity:0;
   }
   .xp-pop.ver{animation:sube 1.4s ease-out}
-  @keyframes sube{0%{opacity:0;top:110px}20%{opacity:1}100%{opacity:0;top:50px}}
-  @media (prefers-reduced-motion:reduce){.xp-pop.ver{animation:none;opacity:1}}
+  @keyframes sube{
+    0%{opacity:0; top:110px}
+    20%{opacity:1}
+    100%{opacity:0; top:50px}
+  }
+  @media (prefers-reduced-motion:reduce){.xp-pop.ver{animation:none; opacity:1}}
 
+  /* ═══════════ RESPONSIVE ═══════════ */
   @media (max-width:820px){
     body{height:auto}
     main{grid-template-columns:1fr}
-    .izq{border-right:0;border-bottom:4px solid var(--linea)}
+    .izq{border-right:0; border-bottom:4px solid var(--linea)}
     .der{grid-template-rows:260px auto 300px}
     .top{flex-wrap:wrap}
   }
 
-  /* CURSOR ESPADA (bloque estándar) */
+  /* ═══════════ CURSOR ESPADA (bloque estándar) ═══════════ */
   html,body,body *{cursor:none!important}
-  #espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
+  #espada-cursor{
+    position:fixed; inset:auto; top:0; left:0; margin:0; padding:0; border:0;
+    background:none; overflow:visible; width:30px; height:30px;
+    pointer-events:none; z-index:999999; mix-blend-mode:difference;
+    will-change:transform; opacity:0;
+  }
   #espada-cursor.on{opacity:1}
-  #espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
-  @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
+  #espada-cursor img{
+    width:100%; height:100%; display:block; filter:invert(1);
+    pointer-events:none; user-select:none; image-rendering:pixelated;
+  }
+  @media (hover:none){
+    html,body,body *{cursor:auto!important}
+    #espada-cursor{display:none}
+  }
 </style>
 </head>
+
 <body>
 
+<!-- ═══════════ BARRA SUPERIOR ═══════════ -->
 <div class="top">
   <a href="juegos.html">← Juegos</a>
   <h1>🌐 HTML</h1>
@@ -131,19 +223,24 @@
   <button class="btn" id="btnIntro">¿Qué es HTML?</button>
 </div>
 
+<!-- ═══════════ CONTENIDO PRINCIPAL ═══════════ -->
 <main>
   <section class="izq" id="izq" aria-live="polite"></section>
+
   <section class="der">
     <div class="editor">
       <div id="lineas" aria-hidden="true"></div>
-      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor de código HTML"></textarea>
+      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off"
+                aria-label="Editor de código HTML"></textarea>
     </div>
+
     <div class="acciones">
       <button class="btn run" id="btnRun">▶ Ejecutar</button>
       <button class="btn submit" id="btnSubmit">✔ Enviar</button>
       <button class="btn" id="btnReset" title="Volver al código inicial">↺ Reiniciar</button>
       <span class="estado" id="estado">Vista previa lista ✔</span>
     </div>
+
     <div class="salida">
       <iframe id="vista" title="Vista previa de tu página" sandbox="" referrerpolicy="no-referrer"></iframe>
       <div id="terminal" role="log" aria-label="Mensajes"></div>
@@ -151,12 +248,14 @@
   </section>
 </main>
 
+<!-- ═══════════ BARRA INFERIOR ═══════════ -->
 <div class="bajo">
   <button class="btn" id="btnBack">← Atrás</button>
   <div class="centro" id="centro"></div>
   <button class="btn verde" id="btnNext">Siguiente →</button>
 </div>
 
+<!-- ═══════════ PERSONAJE DE PISTAS ═══════════ -->
 <div id="personaje">
   <div id="burbuja" role="status"></div>
   <button id="btnPista" aria-label="Pedir una pista (gratis)">
@@ -165,6 +264,7 @@
   </button>
 </div>
 
+<!-- ═══════════ VENTANA: INTRODUCCIÓN ═══════════ -->
 <div class="velo" id="velIntro">
   <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tIntro">
     <h2 id="tIntro">¡Bienvenido a HTML! 🌐</h2>
@@ -180,6 +280,7 @@
   </div>
 </div>
 
+<!-- ═══════════ VENTANA: FINAL ═══════════ -->
 <div class="velo" id="velFin">
   <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
     <div class="insignia">🌐🏅</div>
@@ -196,11 +297,15 @@
 
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
+<!-- ═══════════ FIREBASE (primero las librerías, luego firebase-init) ═══════════ -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
+
+<!-- ═══════════ LÓGICA DEL JUEGO ═══════════ -->
 <script>
-/* XP a la nube: suma atómica en ranking/{usuario} */
+/* ============== XP A LA NUBE ============== */
+/* Suma atómica en ranking/{usuario} */
 function guardarXP(n){
   if (typeof db === 'undefined' || !n) return;
   const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
@@ -222,84 +327,125 @@ const IMG = "67.jpg";   // <-- CAMBIAR_IMAGEN
 /* ═════════════════════ fin de CAMBIAR_IMAGEN ═════════════════════ */
 
 /* Regex que exige que el <img> use justo el archivo IMG (acepta ruta antes, ej. ./67.jpg) */
-const IMG_ESC = IMG.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const IMG_ESC    = IMG.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const RE_IMG_SRC = new RegExp('<img\\s[^>]*src\\s*=\\s*["\'][^"\']*' + IMG_ESC + '["\']', 'i');
 
 /* Comentario que aparece en el editor (ejercicio 3 y prueba final) */
-const NOTA_IMG = '<!-- La imagen se llama: ' + IMG + ' -->\n<!-- Úsala así: src="' + IMG + '" -->\n';
+const NOTA_IMG =
+  '<!-- La imagen se llama: ' + IMG + ' -->\n' +
+  '<!-- Úsala así: src="' + IMG + '" -->\n';
 
+
+/* ============== EJERCICIOS ============== */
 const EJERCICIOS = [
-  { titulo:'Tu primer título', xp:50,
-    explicacion:`<p>HTML usa <b>etiquetas</b>: una de apertura y una de cierre. El texto va en medio.</p>
+
+  /* ---------- 1 · Título ---------- */
+  {
+    titulo: 'Tu primer título', xp: 50,
+    explicacion: `
+      <p>HTML usa <b>etiquetas</b>: una de apertura y una de cierre. El texto va en medio.</p>
       <p>El título más grande de una página es <code>&lt;h1&gt;</code>. Ejemplo:</p>
       <p><code>&lt;h1&gt;Bienvenido&lt;/h1&gt;</code></p>
       <p>Fíjate que la etiqueta de cierre lleva una barra <code>/</code>.</p>`,
-    mision:'Crea un título <code>&lt;h1&gt;</code> que diga <b>Hola, mundo</b>.',
-    inicial:'<!-- Escribe tu código aquí -->\n',
+    mision:  'Crea un título <code>&lt;h1&gt;</code> que diga <b>Hola, mundo</b>.',
+    inicial: '<!-- Escribe tu código aquí -->\n',
     esperado:'Un título grande que dice:\nHola, mundo',
-    exigir:[/<h1[\s>]/i, /<\/h1>/i], reglas:[/<h1[^>]*>\s*Hola, mundo\s*<\/h1>/i],
-    pista:'Escribe <h1>Hola, mundo</h1> sin olvidar la barra / en la etiqueta de cierre.' },
+    exigir:  [/<h1[\s>]/i, /<\/h1>/i],
+    reglas:  [/<h1[^>]*>\s*Hola, mundo\s*<\/h1>/i],
+    pista:   'Escribe <h1>Hola, mundo</h1> sin olvidar la barra / en la etiqueta de cierre.'
+  },
 
-  { titulo:'Párrafos y negritas', xp:50,
-    explicacion:`<p>El texto normal va dentro de <code>&lt;p&gt;</code> (párrafo). Para resaltar una palabra usa <code>&lt;b&gt;</code> (negrita) dentro del párrafo.</p>
+  /* ---------- 2 · Párrafos y negritas ---------- */
+  {
+    titulo: 'Párrafos y negritas', xp: 50,
+    explicacion: `
+      <p>El texto normal va dentro de <code>&lt;p&gt;</code> (párrafo). Para resaltar una palabra usa <code>&lt;b&gt;</code> (negrita) dentro del párrafo.</p>
       <p>Ejemplo:</p>
       <p><code>&lt;p&gt;Soy &lt;b&gt;genial&lt;/b&gt;&lt;/p&gt;</code></p>`,
-    mision:'Escribe <b>dos párrafos</b>. En alguno de ellos pon una palabra en <b>negrita</b> con <code>&lt;b&gt;</code>.',
-    inicial:'<!-- 1. Primer párrafo -->\n\n<!-- 2. Segundo párrafo con una palabra en negrita -->\n',
+    mision:  'Escribe <b>dos párrafos</b>. En alguno de ellos pon una palabra en <b>negrita</b> con <code>&lt;b&gt;</code>.',
+    inicial: '<!-- 1. Primer párrafo -->\n\n<!-- 2. Segundo párrafo con una palabra en negrita -->\n',
     esperado:'Dos párrafos de texto,\ncon al menos una palabra en negrita.',
-    exigir:[/<p[\s>]/i, /<b>/i],
-    reglas:[/<p[^>]*>[\s\S]*?<\/p>[\s\S]*<p[^>]*>[\s\S]*?<\/p>/i, /<b>\s*\S[\s\S]*?<\/b>/i],
-    pista:'<p>Mi primer párrafo</p> y después <p>Esto es <b>importante</b></p>.' },
+    exigir:  [/<p[\s>]/i, /<b>/i],
+    reglas:  [
+      /<p[^>]*>[\s\S]*?<\/p>[\s\S]*<p[^>]*>[\s\S]*?<\/p>/i,
+      /<b>\s*\S[\s\S]*?<\/b>/i
+    ],
+    pista:   '<p>Mi primer párrafo</p> y después <p>Esto es <b>importante</b></p>.'
+  },
 
-  { titulo:'Enlaces e imágenes', xp:50,
-    explicacion:`<p>Un enlace usa <code>&lt;a&gt;</code> con el atributo <code>href</code> (a dónde va). Una imagen usa <code>&lt;img&gt;</code> con <code>src</code> (qué imagen) y <code>alt</code> (descripción). <code>&lt;img&gt;</code> no necesita cierre.</p>
+  /* ---------- 3 · Enlaces e imágenes (usa IMG) ---------- */
+  {
+    titulo: 'Enlaces e imágenes', xp: 50,
+    explicacion: `
+      <p>Un enlace usa <code>&lt;a&gt;</code> con el atributo <code>href</code> (a dónde va). Una imagen usa <code>&lt;img&gt;</code> con <code>src</code> (qué imagen) y <code>alt</code> (descripción). <code>&lt;img&gt;</code> no necesita cierre.</p>
       <p>Ejemplos:</p>
       <p><code>&lt;a href="https://example.com"&gt;Ir&lt;/a&gt;</code><br><code>&lt;img src="foto.png" alt="Mi foto"&gt;</code></p>`,
-    mision:'Crea un enlace <code>&lt;a&gt;</code> con un <code>href</code> y una imagen <code>&lt;img&gt;</code> con <code>src</code> y <code>alt</code>. La imagen es el archivo <code>' + IMG + '</code>: escribe ese nombre en el <code>src</code>.',
+    mision:  'Crea un enlace <code>&lt;a&gt;</code> con un <code>href</code> y una imagen <code>&lt;img&gt;</code> con <code>src</code> y <code>alt</code>. La imagen es el archivo <code>' + IMG + '</code>: escribe ese nombre en el <code>src</code>.',
     inicial: NOTA_IMG + '\n<!-- 1. Enlace -->\n\n<!-- 2. Imagen -->\n',
     esperado:'Un enlace en azul subrayado\ny la imagen ' + IMG + '.',
-    exigir:[/<a\s/i, /<img\s/i],
-    reglas:[/<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>/i,
-            RE_IMG_SRC,
-            /<img\s[^>]*alt\s*=\s*["']/i],
-    pista:'Enlace: <a href="https://example.com">Visitar</a>. Imagen: <img src="' + IMG + '" alt="Mi imagen">. El src es solo el nombre del archivo, entre comillas.' },
+    exigir:  [/<a\s/i, /<img\s/i],
+    reglas:  [
+      /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>[\s\S]*?<\/a>/i,
+      RE_IMG_SRC,
+      /<img\s[^>]*alt\s*=\s*["']/i
+    ],
+    pista:   'Enlace: <a href="https://example.com">Visitar</a>. Imagen: <img src="' + IMG + '" alt="Mi imagen">. El src es solo el nombre del archivo, entre comillas.'
+  },
 
-  { titulo:'Listas', xp:50,
-    explicacion:`<p>Una lista con viñetas es <code>&lt;ul&gt;</code> y cada elemento va en un <code>&lt;li&gt;</code>. Si quieres numerarla, usa <code>&lt;ol&gt;</code>.</p>
+  /* ---------- 4 · Listas ---------- */
+  {
+    titulo: 'Listas', xp: 50,
+    explicacion: `
+      <p>Una lista con viñetas es <code>&lt;ul&gt;</code> y cada elemento va en un <code>&lt;li&gt;</code>. Si quieres numerarla, usa <code>&lt;ol&gt;</code>.</p>
       <p>Ejemplo:</p>
       <p><code>&lt;ul&gt;</code><br><code>&nbsp;&nbsp;&lt;li&gt;Espada&lt;/li&gt;</code><br><code>&nbsp;&nbsp;&lt;li&gt;Escudo&lt;/li&gt;</code><br><code>&lt;/ul&gt;</code></p>`,
-    mision:'Crea una lista con viñetas <code>&lt;ul&gt;</code> con <b>3 elementos</b> <code>&lt;li&gt;</code>.',
-    inicial:'<!-- Crea tu lista aquí -->\n',
+    mision:  'Crea una lista con viñetas <code>&lt;ul&gt;</code> con <b>3 elementos</b> <code>&lt;li&gt;</code>.',
+    inicial: '<!-- Crea tu lista aquí -->\n',
     esperado:'Una lista con 3 viñetas.',
-    exigir:[/<ul[\s>]/i, /<li[\s>]/i],
-    reglas:[/<ul[^>]*>[\s\S]*<\/ul>/i,
-            /<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>/i],
-    pista:'<ul> abre la lista; dentro, tres líneas <li>Texto</li>; y al final </ul>.' },
+    exigir:  [/<ul[\s>]/i, /<li[\s>]/i],
+    reglas:  [
+      /<ul[^>]*>[\s\S]*<\/ul>/i,
+      /<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>[\s\S]*<li[^>]*>[\s\S]*?<\/li>/i
+    ],
+    pista:   '<ul> abre la lista; dentro, tres líneas <li>Texto</li>; y al final </ul>.'
+  },
 
-  { titulo:'Prueba final', xp:100, final:true,
-    explicacion:`<p>Llegó la hora de juntar todo: títulos, párrafos, imágenes y enlaces.</p>
+  /* ---------- 5 · Prueba final (usa IMG) ---------- */
+  {
+    titulo: 'Prueba final', xp: 100, final: true,
+    explicacion: `
+      <p>Llegó la hora de juntar todo: títulos, párrafos, imágenes y enlaces.</p>
       <p>Recuerda: casi toda etiqueta se abre y se cierra, menos <code>&lt;img&gt;</code>.</p>`,
-    mision:`Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen es el archivo <code>${IMG}</code>, igual que en el ejercicio 3.`,
+    mision: `Arma una mini página con: un <code>&lt;h1&gt;</code>, un <code>&lt;p&gt;</code>, una <code>&lt;img&gt;</code> (con <code>alt</code>) y un enlace <code>&lt;a&gt;</code> (con <code>href</code>).<br>El enlace debe decir <b>Visitar</b>. La imagen es el archivo <code>${IMG}</code>, igual que en el ejercicio 3.`,
     inicial: NOTA_IMG + '\n<!-- 1. h1 -->\n\n<!-- 2. p -->\n\n<!-- 3. img -->\n\n<!-- 4. a -->\n',
     esperado:'Un título grande,\nun párrafo,\nla imagen ' + IMG + '\ny un enlace que dice: Visitar',
-    exigir:[/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i],
-    reglas:[/<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,
-            /<p[^>]*>\s*\S[\s\S]*?<\/p>/i,
-            RE_IMG_SRC,
-            /<img\s[^>]*alt\s*=\s*["']/i,
-            /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i],
-    pista:[
-      'Pista 1/3: Empieza con un título y un párrafo: <h1>Mi página</h1> y debajo <p>Mi primer texto</p>. Cada texto va entre su etiqueta de apertura y su cierre.',
-      'Pista 2/3: Agrega la imagen. No lleva cierre y necesita src y alt: <img src="' + IMG + '" alt="Mi imagen">',
+    exigir:  [/<h1[\s>]/i, /<p[\s>]/i, /<img\s/i, /<a\s/i],
+    reglas:  [
+      /<h1[^>]*>\s*\S[\s\S]*?<\/h1>/i,
+      /<p[^>]*>\s*\S[\s\S]*?<\/p>/i,
+      RE_IMG_SRC,
+      /<img\s[^>]*alt\s*=\s*["']/i,
+      /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i
+    ],
+    pista: [
+      'Pista 1/3: Empieza con un título y un párrafo: <h1>Mi página</h1> y debajo <p>Mi primer texto</p>.',
+      'Pista 2/3: Agrega la imagen con src y alt: <img src="' + IMG + '" alt="Mi imagen">',
       'Pista 3/3: Falta el enlace exacto: <a href="https://example.com">Visitar</a>. ¡Revisa y pulsa Enviar!'
-    ] }];
+    ]
+  }
+];
+
 
 /* ============== ESTADO ============== */
 const usuario = (localStorage.getItem('usuarioActual') || '').trim();
 if (!usuario) location.href = 'registro.html';
-const uid = usuario.toLowerCase();
+const uid   = usuario.toLowerCase();
 const CLAVE = 'ca_html_v1_' + uid;
-try { const t = localStorage.getItem('tema'); if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro'; } catch(e){}
+
+try {
+  const t = localStorage.getItem('tema');
+  if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro';
+} catch(e){}
 
 /* Estado por defecto */
 function estadoNuevo(){
@@ -317,18 +463,19 @@ if (!Array.isArray(est.hechos) || est.hechos.length !== EJERCICIOS.length) {
   const viejos = Array.isArray(est.hechos) ? est.hechos : [];
   est.hechos = EJERCICIOS.map((_, i) => !!viejos[i]);
 }
-if (!est.codigo || typeof est.codigo !== 'object') est.codigo = {};
-if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object') est.pistasUsadas = {};
-if (!Number.isInteger(est.actual)) est.actual = 0;
+if (!est.codigo || typeof est.codigo !== 'object')                 est.codigo = {};
+if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object')     est.pistasUsadas = {};
+if (!Number.isInteger(est.actual))                                 est.actual = 0;
 est.actual = Math.max(0, Math.min(est.actual, EJERCICIOS.length - 1));
 
-const $ = id => document.getElementById(id);
+const $       = id => document.getElementById(id);
 const xpGanado = () => EJERCICIOS.reduce((s, e, i) => s + (est.hechos[i] ? e.xp : 0), 0);
-const XP_MAX = EJERCICIOS.reduce((s, e) => s + e.xp, 0);
+const XP_MAX   = EJERCICIOS.reduce((s, e) => s + e.xp, 0);
 
 function guardar(){
   try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch(e){}
 }
+
 
 /* ============== MOTOR HTML (vista previa + validación) ============== */
 const VACIAS = ['img','br','hr','input','meta','link'];
@@ -339,13 +486,16 @@ function revisarEtiquetas(codigo){
   const re = /<\s*(\/?)\s*([a-zA-Z][a-zA-Z0-9]*)\b[^>]*?(\/?)>/g;
   let m;
   while ((m = re.exec(codigo))) {
-    const cierre = m[1] === '/', nombre = m[2].toLowerCase();
+    const cierre = m[1] === '/';
+    const nombre = m[2].toLowerCase();
     if (VACIAS.includes(nombre) || m[3] === '/') continue;
     if (!cierre) { pila.push(nombre); continue; }
     const ult = pila.pop();
-    if (ult !== nombre) return ult
-      ? 'Esperaba </' + ult + '> pero encontré </' + nombre + '>.'
-      : 'Sobra la etiqueta de cierre </' + nombre + '>.';
+    if (ult !== nombre) {
+      return ult
+        ? 'Esperaba </' + ult + '> pero encontré </' + nombre + '>.'
+        : 'Sobra la etiqueta de cierre </' + nombre + '>.';
+    }
   }
   if (pila.length) return 'Falta cerrar la etiqueta <' + pila[pila.length - 1] + '>.';
   return '';
@@ -353,10 +503,12 @@ function revisarEtiquetas(codigo){
 
 /* <base> hace que "67.jpg" se busque en la misma carpeta que esta página (necesario dentro del iframe) */
 function mostrarVista(codigo){
-  const base = '<base href="' + new URL('./', location.href).href + '">' +
+  const base =
+    '<base href="' + new URL('./', location.href).href + '">' +
     '<style>body{font-family:Arial,sans-serif;color:#111;background:#fff;padding:10px;margin:0}img{max-width:100%}</style>';
   $('vista').srcdoc = base + codigo;
 }
+
 
 /* ============== INTERFAZ ============== */
 function escribir(t, clase){
@@ -387,6 +539,7 @@ function pintarPasos(){
 function cargar(i){
   est.actual = Math.max(0, Math.min(i, EJERCICIOS.length - 1));
   const e = EJERCICIOS[est.actual];
+
   $('izq').innerHTML = `
     <div class="num">${e.final ? 'PRUEBA FINAL' : 'Ejercicio ' + (est.actual + 1) + ' de ' + (EJERCICIOS.length - 1)}</div>
     <h2>${e.titulo}</h2>
@@ -395,11 +548,13 @@ function cargar(i){
     <p style="margin-bottom:6px">Tu página debe verse así:</p>
     <div class="esperado"></div>`;
   $('izq').querySelector('.esperado').textContent = e.esperado;
+
   $('codigo').value = est.codigo[est.actual] ?? e.inicial;
   numerarLineas();
   limpiarTerminal();
   mostrarVista($('codigo').value);
   if (est.hechos[est.actual]) escribir('✔ Ya completaste este ejercicio.', 'ok');
+
   $('burbuja').classList.remove('ver');
   $('centro').innerHTML = `Ejercicio <b>${est.actual + 1}/${EJERCICIOS.length}</b> · XP <b>${xpGanado()}/${XP_MAX}</b>`;
   $('btnBack').disabled = est.actual === 0;
@@ -410,13 +565,14 @@ function cargar(i){
 
 function guardarCodigo(){ est.codigo[est.actual] = $('codigo').value; guardar(); }
 
+
 /* ============== VALIDAR Y PREMIAR ============== */
 let popT;
 function mostrarXP(n){
   const pop = $('xpPop');
   pop.textContent = '+' + n + ' XP';
   pop.classList.remove('ver');
-  void pop.offsetWidth;
+  void pop.offsetWidth;            // reinicia la animación
   pop.classList.add('ver');
   clearTimeout(popT);
   popT = setTimeout(() => pop.classList.remove('ver'), 1600);
@@ -428,6 +584,7 @@ function enviar(){
   limpiarTerminal();
   mostrarVista(codigo);
 
+  /* Se ignoran los comentarios al validar */
   const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
   if (!limpio.trim()) return escribir('✘ Aún no escribes nada. Revisa la misión.', 'err');
 
@@ -436,23 +593,28 @@ function enviar(){
 
   if (e.exigir.some(r => !r.test(limpio)))
     return escribir('✘ Faltan etiquetas que pide la misión. Usa la pista si la necesitas.', 'err');
+
   if (!e.reglas.every(r => r.test(limpio)))
     return escribir('✘ Casi. Revisa el texto, los atributos (el src debe ser ' + IMG + ') y la cantidad de elementos que pide la misión.', 'err');
+
   exito();
 }
 
 async function exito(){
   const i = est.actual, e = EJERCICIOS[i];
   escribir('✔ ¡Correcto!', 'ok');
+
   const primeraVez = !est.hechos[i];
   est.hechos[i] = true;
   guardarCodigo();
+
   if (primeraVez) {
     try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
     try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
     mostrarXP(e.xp);
     guardarXP(e.xp);
   }
+
   cargar(i);
   if (est.hechos.every(Boolean)) terminar();
 }
@@ -463,15 +625,19 @@ async function terminar(){
   if (typeof db === 'undefined') return;
   try {
     await db.collection('ranking').doc(uid).set(
-      { insignias: firebase.firestore.FieldValue.arrayUnion('html') }, { merge: true });
+      { insignias: firebase.firestore.FieldValue.arrayUnion('html') },
+      { merge: true }
+    );
   } catch(err){ console.error('insignia', err); }
 }
 
+
 /* ============== EVENTOS ============== */
-$('codigo').addEventListener('input', () => { numerarLineas(); guardarCodigo(); });
+/* Editor */
+$('codigo').addEventListener('input',  () => { numerarLineas(); guardarCodigo(); });
 $('codigo').addEventListener('scroll', () => { $('lineas').scrollTop = $('codigo').scrollTop; });
 $('codigo').addEventListener('keydown', ev => {
-  if (ev.key === 'Tab') {
+  if (ev.key === 'Tab') {                       // Tab inserta 4 espacios
     ev.preventDefault();
     const t = ev.target, a = t.selectionStart;
     t.value = t.value.slice(0, a) + '    ' + t.value.slice(t.selectionEnd);
@@ -480,15 +646,16 @@ $('codigo').addEventListener('keydown', ev => {
   }
 });
 
+/* Botones de acción */
 $('btnRun').onclick = () => {
   limpiarTerminal();
   const codigo = $('codigo').value;
   mostrarVista(codigo);
   const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
   const err = revisarEtiquetas(limpio);
-  if (err) escribir('Aviso: ' + err, 'err');
-  else if (!limpio.trim()) escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
-  else escribir('Vista previa actualizada.', 'info');
+  if (err)                     escribir('Aviso: ' + err, 'err');
+  else if (!limpio.trim())     escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
+  else                         escribir('Vista previa actualizada.', 'info');
 };
 
 $('btnSubmit').onclick = () => enviar();
@@ -499,34 +666,42 @@ $('btnReset').onclick = () => {
     numerarLineas(); guardarCodigo(); limpiarTerminal(); mostrarVista($('codigo').value);
   }
 };
+
+/* Navegación */
 $('btnBack').onclick = () => { if (est.actual > 0) cargar(est.actual - 1); };
 $('btnNext').onclick = () => { if (est.actual < EJERCICIOS.length - 1) cargar(est.actual + 1); };
 
+/* Pistas (texto plano: las etiquetas se muestran tal cual) */
 $('btnPista').onclick = () => {
   const e = EJERCICIOS[est.actual];
   const b = $('burbuja');
-  if (Array.isArray(e.pista)) {
+
+  if (Array.isArray(e.pista)) {                 // varias pistas por ejercicio
     const usadas = est.pistasUsadas[est.actual] || 0;
     if (usadas >= e.pista.length) {
       b.textContent = '🧙 Ya usaste tus ' + e.pista.length + ' pistas. ¡Ahora te toca a ti terminar y pulsar Enviar!';
       b.classList.add('ver');
       return;
     }
-    est.pistasUsadas[est.actual] = usadas + 1; guardar();
+    est.pistasUsadas[est.actual] = usadas + 1;
+    guardar();
     b.textContent = '💡 ' + e.pista[usadas];
     b.classList.add('ver');
     return;
   }
-  b.textContent = '💡 ' + e.pista;
+
+  b.textContent = '💡 ' + e.pista;              // una sola pista
   b.classList.toggle('ver');
 };
 
-$('btnIntro').onclick = () => $('velIntro').classList.add('ver');
+/* Ventana de introducción */
+$('btnIntro').onclick   = () => $('velIntro').classList.add('ver');
 $('btnEmpezar').onclick = () => { $('velIntro').classList.remove('ver'); est.intro = true; guardar(); };
+
 
 /* ============== ARRANQUE ============== */
 /* Reanuda donde se quedó; si no hay índice válido, va al primer ejercicio pendiente */
-const primero = est.hechos.findIndex(h => !h);
+const primero  = est.hechos.findIndex(h => !h);
 const arranque = Number.isInteger(est.actual) ? est.actual : (primero === -1 ? 0 : primero);
 cargar(arranque);
 if (!est.intro) $('velIntro').classList.add('ver');
@@ -545,13 +720,18 @@ if (typeof db !== 'undefined') {
   }).catch(err => console.warn('No se pudo verificar la insignia:', err));
 }
 </script>
+
+<!-- ═══════════ CURSOR ESPADA + MODO KIOSKO ═══════════ -->
 <script>
-/* CURSOR ESPADA */
+/* ============== CURSOR ESPADA ============== */
 (function(){
   const s = document.getElementById('espada-cursor');
-  if(!s){ console.warn('⚠️ No se encontró #espada-cursor'); return; }
-  const raise = () => { try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){} };
-  window.raiseSword = raise; raise();
+  if (!s) { console.warn('⚠️ No se encontró #espada-cursor'); return; }
+
+  const raise = () => { try{ s.hidePopover() }catch(e){} try{ s.showPopover() }catch(e){} };
+  window.raiseSword = raise;
+  raise();
+
   document.addEventListener('mousemove', e => {
     s.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
     s.classList.add('on');
@@ -559,48 +739,60 @@ if (typeof db !== 'undefined') {
   document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
 })();
 
+
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
    ========================================= */
+// 🔴 IMPORTANTE:
+// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
+const MODO_KIOSKO_ACTIVO = false;
+
 function salirYLimpiar() {
-    localStorage.removeItem('usuarioActual');
-    Object.keys(localStorage).forEach(k => {
-        if (k.startsWith('ca_python_v1_') ||
-            k.startsWith('ca_html_v1_') ||
-            k.startsWith('ca_juegos_v1_') ||
-            k.startsWith('ca_arcade_profile_v1_')) {
-            localStorage.removeItem(k);
-        }
-    });
-    location.href = 'registro.html';
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
 }
 
 /* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
 document.addEventListener('click', e => {
-    if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
-        e.preventDefault();
-        salirYLimpiar();
-    }
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
 });
 
+/* Temporizador de inactividad (solo si el modo kiosko está activo) */
 let timerInactividad;
 function resetearTimer() {
-    clearTimeout(timerInactividad);
-    timerInactividad = setTimeout(() => {
-        console.log("Inactividad detectada. Reseteando PC para el siguiente...");
-        salirYLimpiar();
-    }, 90000);
+  if (!MODO_KIOSKO_ACTIVO) return;
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    salirYLimpiar();
+  }, 90000); // 90 segundos
 }
-['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-    document.addEventListener(evt, resetearTimer, { passive: true });
-});
-resetearTimer();
 
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
+
+/* F8: salir y limpiar (con confirmación) */
 document.addEventListener('keydown', e => {
-    if (e.key === 'F8') {
-        e.preventDefault();
-        salirYLimpiar();
+  if (e.key === 'F8') {
+    e.preventDefault();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
     }
+  }
 });
 </script>
 </body>
