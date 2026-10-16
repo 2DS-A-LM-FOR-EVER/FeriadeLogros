@@ -228,6 +228,43 @@
   }
   .gx-card.featured .gx-play{margin-top:auto}
 }
+/* ═══════════ GRID ORDENADO Y RESPONSIVE ═══════════ */
+.gx-grid{
+  display:grid !important;
+  gap:20px;
+  align-items:stretch;
+  grid-template-columns:repeat(4, minmax(0,1fr)) !important;  /* escritorio: 4 en fila */
+}
+.gx-card{
+  display:flex; flex-direction:column; height:100%; min-width:0;
+}
+.gx-card .gx-body{display:flex; flex-direction:column; flex:1}
+.gx-card .gx-play{margin-top:auto}   /* botón JUGAR siempre abajo y alineado */
+.gx-card.featured{grid-column:1 / -1}
+
+/* Tablet: 2x2 */
+@media (max-width:1000px){
+  .gx-grid{grid-template-columns:repeat(2, minmax(0,1fr)) !important}
+}
+
+/* Celular: 1 columna */
+@media (max-width:600px){
+  .gx-grid{grid-template-columns:1fr !important; gap:16px}
+  .gx-card .gx-art{height:150px}
+}
+
+/* Textos y bloques superiores en pantallas chicas */
+.gx-title{font-size:clamp(1.6rem, 6vw, 3.4rem); overflow-wrap:anywhere}
+.gx-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+@media (max-width:560px){
+  .gx-stats{grid-template-columns:repeat(2,1fr)}
+}
+.gx-tools{display:flex; flex-wrap:wrap; gap:12px}
+.gx-tools .gx-search{flex:1 1 260px; min-width:0}
+.gx-chips{display:flex; flex-wrap:wrap; gap:8px}
+@media (max-width:560px){
+  .gx-tools .gx-search{flex-basis:100%}
+}
 </style>
 </head>
 <body>
