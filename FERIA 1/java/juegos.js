@@ -39,6 +39,7 @@ const SPRITES = {
     '.W..W...','.W..W...','PPPPPP..','PDDDDPP.','PDDDDPP.','PPPPPP..','.PPPP...','........']}
 };
 function drawArt(cv, name){
+  if(!cv) return;
   const s = SPRITES[name] || SPRITES.python, x = cv.getContext('2d');
   cv.width = cv.height = 8; x.clearRect(0,0,8,8);
   s.rows.forEach((row,y)=>[...row].forEach((ch,i)=>{
@@ -76,13 +77,18 @@ const xpDe     = id => progresoDe(id).reduce((s,h,i)=> s + (h ? XP_POR_HECHO[i] 
 /* ---------- Toast ---------- */
 let toastT;
 function toast(m){
-  const t = $('gxToast'); t.textContent = m; t.classList.add('show');
+  const t = $('gxToast'); if(!t) return;
+  t.textContent = m; t.classList.add('show');
   clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
-/* ---------- Cabecera: avatar y datos ---------- */
+/* ---------- Cabecera: avatar y datos ----------
+   La navbar la crea pixelword-nav.js, asi que buscamos sus elementos
+   por ID o por clase, y si todavia no existen simplemente no hacemos nada. */
 function drawMiniAvatar(){
-  const box = $('gxAv'); box.replaceChildren();
+  const box = $('gxAv') || document.querySelector('.gx-me-av');
+  if(!box) return;
+  box.replaceChildren();
   if(profile.char === -1 && profile.gif){
     const im = document.createElement('img'); im.src = profile.gif; im.alt = ''; box.append(im);
   } else {
@@ -97,12 +103,15 @@ function drawMiniAvatar(){
   }
 }
 function renderStats(){
-  $('gxName').textContent = profile.name || usuario;
+  const nameEl = $('gxName') || document.querySelector('.gx-me-name');
+  if(nameEl) nameEl.textContent = profile.name || usuario;
+
   const xpTotal = GAMES.reduce((s,g)=> s + xpDe(g.id), 0);
   $('stGames').textContent  = GAMES.length;
   $('stPlayed').textContent = GAMES.filter(g => hechosDe(g.id) > 0 || st.played[g.id]).length;
   $('stXp').textContent     = xpTotal;
   $('stLvl').textContent    = Math.floor(xpTotal / 100) + 1;
+
   const last = GAMES.find(g => g.id === st.last && g.url);
   const box = $('gxLast');
   box.hidden = !last;
@@ -210,13 +219,21 @@ document.addEventListener('keydown', function(e){
   if(e.key === '/' && document.activeElement !== $('gxQ')){ e.preventDefault(); $('gxQ').focus(); }
   if(e.key === 'Escape') $('gxQ').blur();
 });
-$('gxTheme').onclick = function(){
+
+/* Boton de tema: delegacion de eventos (funciona aunque la navbar
+   se cree despues de que cargue este script).
+   OJO: si tu pixelword-nav.js YA cambia el tema por su cuenta y el boton
+   "no hace nada" o se cambia dos veces, borra este bloque. */
+document.addEventListener('click', function(e){
+  if(!e.target.closest('#gxTheme, .gx-theme-btn')) return;
   const light = document.documentElement.getAttribute('data-theme') === 'light';
   if(light) document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme','light');
-  try { localStorage.setItem('tema', light ? 'dark' : 'light'); } catch(e){}
-};
-$('gxLogout').onclick = function(){ localStorage.removeItem('usuarioActual'); location.href = 'registro.html'; };
+  try { localStorage.setItem('tema', light ? 'dark' : 'light'); } catch(err){}
+});
+
+/* El boton SALIR lo maneja el script del modo kiosco (salirYLimpiar) en el HTML */
+
 window.addEventListener('pageshow', function(){ $('gxLoad').classList.remove('on'); });
 
 /* ---------- Cursor de espada ---------- */
@@ -270,4 +287,7 @@ window.addEventListener('pageshow', function(){ $('gxLoad').classList.remove('on
 })();
 
 /* ---------- Inicio ---------- */
-drawMiniAvatar(); renderStats(); renderChips(); renderGrid();
+renderStats(); renderChips(); renderGrid();
+drawMiniAvatar();
+/* Por si la navbar se inyecta despues, repetimos avatar y nombre */
+window.addEventListener('load', function(){ drawMiniAvatar(); renderStats(); });
