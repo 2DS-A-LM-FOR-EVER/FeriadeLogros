@@ -358,18 +358,37 @@
 
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
-<script src="java/juegos.js"></script>
-
-<!-- ═════════════ NAVBAR OFICIAL PIXELWORLD ═════════════ -->
+<!-- ═════════════ NAVBAR OFICIAL PIXELWORLD (primero) ═════════════ -->
 <script>
   window.PIXELNAV_CONFIG = {
-    active  : 'juegos',            // marca "Juegos" como activo
+    active  : 'juegos',
     salirUrl: 'registro.html',
     logoUrl : 'ho.png',
     marca   : 'PIXELWORD'
   };
 </script>
 <script src="pixelword-nav.js"></script>
+
+<!-- Guardián anti-duplicado -->
+<script>
+(function(){
+  const OFICIAL = 'header.gx-navbar';
+  function limpiar(){
+    const of = document.querySelectorAll(OFICIAL);
+    for (let i = 1; i < of.length; i++) of[i].remove();
+    document.querySelectorAll('#navbar,.navbar,.nav-bar,.topbar').forEach(n => {
+      if (!n.matches(OFICIAL)) n.remove();
+    });
+  }
+  limpiar();
+  document.addEventListener('DOMContentLoaded', limpiar);
+  window.addEventListener('load', limpiar);
+  let n = 0; const iv = setInterval(()=>{limpiar(); if(++n>20) clearInterval(iv);},150);
+})();
+</script>
+
+<!-- ═════════════ AHORA sí, juegos.js (el nav ya existe) ═════════════ -->
+<script src="java/juegos.js"></script>
 
 <!-- ═════════════ ANTI-NAV DUPLICADO ═════════════
      pixelword-nav.js es el ÚNICO que debe crear la navbar (header.gx-navbar).
