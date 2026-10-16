@@ -20,7 +20,7 @@ const GAMES = [
   { id:'python', name:'Python', short:'Python', cat:'Basico', lvl:1, art:'python', color:'#7cffb2', url:'python.html',
     desc:'Tu primer lenguaje: print, variables, if y for. Resuelve 4 ejercicios y la prueba final.' },
 
-  { id:'java', name:'Java', short:'Java', cat:'Reto', lvl:3, art:'java', color:'#ff4f9a', url:'java.html',
+  { id:'java', name:'JavaScript', short:'JS', cat:'Reto', lvl:3, art:'java', color:'#ff4f9a', url:'javascript.html',
     desc:'El reto final: clases, objetos y logica fuerte. Demuestra lo aprendido.' }
 ];
 const XP_POR_HECHO = [50, 50, 50, 50, 100]; // 4 ejercicios + prueba final = 300 por lenguaje
