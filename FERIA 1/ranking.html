@@ -150,7 +150,7 @@
     {id:'oro',      nombre:'Oro',      min:300,  emoji:'🥇', color:'#fdc815'},
     {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'🥉', color:'#cd7f32'}
   ];
-  const rangoDe = xp => RANGOS.find(r => xp >= r.min);
+  const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
   const MEDALLAS = ['🥇','','🥉'];
   const COLORES_PODIO = ['#fdc815','#c9d6ff','#cd7f32'];
   const EMO_INSIGNIA = {python:'🐍', html:'🌐', css:'🎨', java:'☕'};
