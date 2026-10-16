@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PIXELWORD | Perfil Arcade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="icon" href="ho.png">
 <style>
 :root{
   --bg:#071016; --panel:#0d1c26; --panel2:#112734; --line:#1e3d4f;
@@ -27,17 +29,9 @@ body{
 button{font-family:inherit;color:inherit;cursor:pointer}
 canvas,img.pix{image-rendering:pixelated}
 
-/* NAV */
-nav{display:flex;align-items:center;gap:28px;padding:14px 28px;border-bottom:4px solid var(--line);background:#050b10;position:sticky;top:0;z-index:20}
-.logo{display:flex;align-items:center;gap:12px;font-family:var(--px);font-size:13px;color:var(--amber);letter-spacing:1px;text-decoration:none}
-.logo small{color:var(--lime);font-size:13px}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:16px}
-.mini-av{width:36px;height:36px;border:3px solid var(--frame);background:#000;display:grid;place-items:center;overflow:hidden}
-.mini-av canvas,.mini-av img{width:100%;height:100%;object-fit:contain}
-
 /* LAYOUT */
 main{max-width:1120px;margin:0 auto;padding:44px 22px 70px;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:34px;align-items:start}
-@media(min-height:780px){main>section{position:sticky;top:84px}}
+@media(min-height:780px){main>section{position:sticky;top:96px}}
 @media(max-width:900px){main{grid-template-columns:1fr}main>section{position:static}}
 h2.t{font-family:var(--px);font-size:12px;color:var(--amber);letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 h2.t::before{content:"";width:10px;height:10px;background:var(--pink);box-shadow:4px 4px 0 #000}
@@ -97,12 +91,6 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .play:active{transform:translateY(6px);box-shadow:0 1px 0 #a06a00,0 5px 0 #000}
 .play:hover{filter:brightness(1.12)}
 .play:focus-visible{outline:3px dashed var(--amber);outline-offset:6px}
-
-/* BOTÓN SALIR */
-.exit-btn{font-family:var(--px);font-size:10px;padding:10px 14px;background:var(--pink);color:#1a0610;border:3px solid #000;box-shadow:0 4px 0 #7a1d48,0 7px 0 #000;transition:transform .08s,box-shadow .08s}
-.exit-btn:hover{filter:brightness(1.15)}
-.exit-btn:active{transform:translateY(4px);box-shadow:0 0 0 #7a1d48,0 3px 0 #000}
-.exit-btn:focus-visible{outline:3px dashed var(--amber);outline-offset:4px}
 
 /* RANGO */
 .rk{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
@@ -209,27 +197,11 @@ html,body,body *{cursor:none!important}
   pointer-events:none;user-select:none;image-rendering:pixelated;
 }
 @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
-/* ═══════════ LOGO PIXELWORD ═══════════ */
-.logo{gap:10px !important}
-.logo-icon{
-  width:36px;height:36px;object-fit:contain;image-rendering:pixelated;
-  display:block;filter:drop-shadow(0 0 4px rgba(255,255,255,.25));
-}
-.logo span{font-size:14px !important;letter-spacing:1.5px}
 </style>
 </head>
 <body>
 
-<nav>
-<a class="logo" href="juegos.html">
-    <img class="logo-icon" src="ho.png" alt="">
-    <span>PIXELWORD</span>
-</a>
-  <div class="nav-right">
-    <div class="mini-av" id="navAv"></div>
-    <button class="exit-btn" id="logout" type="button">SALIR</button>
-  </div>
-</nav>
+<!-- La navbar (header.gx-navbar) la crea pixelword-nav.js, igual que en index -->
 
 <main>
   <section>
@@ -554,15 +526,6 @@ window.CA={addXP,setXP:n=>addXP((Math.floor(+n)||0)-S.xp)};
 
 $('play').onclick=()=>{location.href='juegos.html'};
 
-$('logout').onclick=()=>{
-  const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
-  localStorage.removeItem('usuarioActual');
-  localStorage.removeItem('ca_arcade_profile_v1_' + u);
-  localStorage.removeItem('ca_python_v1_' + u);
-  localStorage.removeItem('ca_juegos_v1_' + u);
-  location.href='index.html';
-};
-
 /* ---------- RENDER ---------- */
 function applyLook(screen,st){
   screen.querySelectorAll('.stage').forEach(e=>e.remove());
@@ -571,7 +534,7 @@ function applyLook(screen,st){
 function render(){
   document.documentElement.style.setProperty('--frame',FRAMES[S.frame]);
   applyLook($('heroScreen'),S);
-  put($('heroAv'),avatarNode(S));put($('navAv'),avatarNode(S));
+  put($('heroAv'),avatarNode(S));
   S.user='@'+usuarioCanonico;
   $('hudUser').textContent=S.user;
   $('hudScore').textContent=String(S.xp).padStart(6,'0');
@@ -670,8 +633,9 @@ function salirYLimpiar() {
   location.href = 'registro.html';
 }
 
-document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
-  btn.onclick = salirYLimpiar;
+/* Delegación: funciona aunque pixelword-nav.js cree el botón SALIR después */
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout')) salirYLimpiar();
 });
 
 let timerInactividad;
@@ -693,6 +657,21 @@ document.addEventListener('keydown', e => {
     salirYLimpiar();
   }
 });
+</script>
+
+<!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
+<script src="pixelword-nav.js"></script>
+<script>
+(function(){
+  // Deja solo la navbar oficial si algún script inyecta otra
+  const limpiar = () => {
+    const o = document.querySelectorAll('header.gx-navbar');
+    for (let i = 1; i < o.length; i++) o[i].remove();
+  };
+  limpiar();
+  window.addEventListener('load', limpiar);
+  try{ if (localStorage.getItem('tema') === 'light') document.documentElement.setAttribute('data-theme','light'); }catch(e){}
+})();
 </script>
 </body>
 </html>
