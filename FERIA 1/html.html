@@ -428,9 +428,9 @@ const EJERCICIOS = [
       /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*Visitar\s*<\/a>/i
     ],
     pista: [
-      'Pista 1/3: Empieza con un título y un párrafo: <h1>Mi página</h1> y debajo <p>Mi primer texto</p>.',
-      'Pista 2/3: Agrega la imagen con src y alt: <img src="' + IMG + '" alt="Mi imagen">',
-      'Pista 3/3: Falta el enlace a [Visitar]. Usa: href="https://example.com" con el texto Visitar. ¡Pulsa Enviar!'
+      'Pista 1/3: Empieza con un título <h1> y un párrafo <p> bien cerrados.',
+      'Pista 2/3: Inserta la imagen obligatoria con el atributo src="' + IMG + '" y su alt.',
+      'Pista 3/3: Usa la etiqueta a con su href y escribe exactamente Visitar entre la apertura y el cierre.'
     ]
   }
 ];
@@ -463,12 +463,12 @@ if (!Array.isArray(est.hechos) || est.hechos.length !== EJERCICIOS.length) {
   const viejos = Array.isArray(est.hechos) ? est.hechos : [];
   est.hechos = EJERCICIOS.map((_, i) => !!viejos[i]);
 }
-if (!est.codigo || typeof est.codigo !== 'object')                 est.codigo = {};
-if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object')     est.pistasUsadas = {};
-if (!Number.isInteger(est.actual))                                 est.actual = 0;
+if (!est.codigo || typeof est.codigo !== 'object')             est.codigo = {};
+if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object') est.pistasUsadas = {};
+if (!Number.isInteger(est.actual))                             est.actual = 0;
 est.actual = Math.max(0, Math.min(est.actual, EJERCICIOS.length - 1));
 
-const $       = id => document.getElementById(id);
+const $        = id => document.getElementById(id);
 const xpGanado = () => EJERCICIOS.reduce((s, e, i) => s + (est.hechos[i] ? e.xp : 0), 0);
 const XP_MAX   = EJERCICIOS.reduce((s, e) => s + e.xp, 0);
 
@@ -653,9 +653,9 @@ $('btnRun').onclick = () => {
   mostrarVista(codigo);
   const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
   const err = revisarEtiquetas(limpio);
-  if (err)                     escribir('Aviso: ' + err, 'err');
-  else if (!limpio.trim())     escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
-  else                         escribir('Vista previa actualizada.', 'info');
+  if (err)                 escribir('Aviso: ' + err, 'err');
+  else if (!limpio.trim()) escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
+  else                     escribir('Vista previa actualizada.', 'info');
 };
 
 $('btnSubmit').onclick = () => enviar();
