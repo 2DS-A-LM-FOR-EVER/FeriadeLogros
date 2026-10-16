@@ -11,6 +11,7 @@
 <script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/juegos.css">
+<link rel="icon" href="ho.png">
 <style>
   /* ═══════════ CURSOR ESPADA ═══════════ */
   html,body,body *{cursor:none!important}
@@ -21,154 +22,91 @@
 
   /* ═══════════ TIPOGRAFÍA PIXEL-ART GLOBAL ═══════════ */
   html,body,body *:not(svg):not(svg *){
-    font-family:'Pixelify Sans',monospace !important;
+    font-family:'Pixelify Sans', monospace !important;
   }
   h1,h2,h3,h4,p,a,li,span,div,button,input,label,kbd{
-    font-family:'Pixelify Sans',monospace !important;
-    letter-spacing:.5px;
+    font-family:'Pixelify Sans', monospace !important;
+    letter-spacing: .5px;
   }
 
-  /* ═══════════ LOGO PIXELWORLD (img estrella) ═══════════ */
-  .logo .coin,
-  img.coin{
-    width:36px !important;height:36px !important;
-    object-fit:contain;image-rendering:pixelated;
-    background:none !important;border:0 !important;border-radius:0 !important;
-    padding:0 !important;box-shadow:none !important;
-    color:transparent !important;font-size:0 !important;
-    display:block;
-  }
-  .logo-t{
-    font-size:clamp(14px, 2.5vw, 18px) !important;
-    letter-spacing:1px !important;
-    font-weight:700 !important;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     NAVBAR PIXELWORLD — REDISEÑADO
-     ═══════════════════════════════════════════════════════════ */
+  /* ═══════════ NAVBAR PIXELWORLD (compartido) ═══════════ */
   header.gx-navbar{
-    position:sticky;
-    top:0;
-    z-index:50;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-    padding:12px 24px;
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:20px; padding:12px 24px;
     background:linear-gradient(180deg, #050a24 0%, #071232 100%);
     border-bottom:4px solid #0e1a4a;
     box-shadow:0 4px 0 #000, 0 8px 24px rgba(0,0,0,.6);
-    font-family:'Pixelify Sans',monospace;
+    font-family:'Pixelify Sans', monospace !important;
     overflow:visible;
   }
-  /* Línea de colores arcade debajo del nav */
   header.gx-navbar::after{
-    content:"";
-    position:absolute;
-    left:0;right:0;bottom:-4px;
-    height:4px;
-    background:repeating-linear-gradient(
-      90deg,
-      #fdc815 0 8px,
-      #ff4f9a 8px 16px,
-      #4fd8ff 16px 24px,
-      #7cffb2 24px 32px
-    );
-    opacity:.75;
-    pointer-events:none;
+    content:""; position:absolute; left:0; right:0; bottom:-4px; height:4px;
+    background:repeating-linear-gradient(90deg,
+      #fdc815 0 8px, #ff4f9a 8px 16px, #4fd8ff 16px 24px, #7cffb2 24px 32px);
+    opacity:.75; pointer-events:none;
   }
+  header.gx-navbar .left{display:flex; align-items:center; gap:28px; min-width:0}
+  header.gx-navbar .right{display:flex; align-items:center; gap:14px; flex:none}
 
-  header.gx-navbar .left{
-    display:flex;
-    align-items:center;
-    gap:28px;
-    min-width:0;
-  }
-  header.gx-navbar .right{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    flex:none;
-  }
-
-  /* Logo con estrella que gira suave */
   header.gx-navbar .logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    text-decoration:none;
-    flex:none;
+    display:flex; align-items:center; gap:10px; text-decoration:none; flex:none;
   }
-  header.gx-navbar .logo .coin{
-    width:38px !important;height:38px !important;
+  header.gx-navbar .logo .coin,
+  header.gx-navbar .logo img.coin{
+    width:38px !important; height:38px !important;
+    object-fit:contain; image-rendering:pixelated;
     filter:drop-shadow(0 0 10px #fdc815);
     animation:gxSpin 4s ease-in-out infinite;
+    background:none !important; border:0 !important; box-shadow:none !important;
+    padding:0 !important; display:block;
   }
   @keyframes gxSpin{
     0%,100%{transform:rotate(-8deg) scale(1)}
     50%   {transform:rotate(8deg) scale(1.08)}
   }
   header.gx-navbar .logo-t{
-    color:#fff;
-    text-shadow:2px 2px 0 #000;
+    color:#fff; text-shadow:2px 2px 0 #000;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:clamp(16px, 2.2vw, 20px) !important;
+    font-weight:700 !important; letter-spacing:1.5px !important;
   }
 
-  /* Nav links como botones arcade */
   .gx-nav{
-    display:flex;
-    gap:4px;
-    padding:4px;
-    background:#0a1440;
-    border:3px solid #000;
+    display:flex; gap:4px; padding:4px;
+    background:#0a1440; border:3px solid #000;
     box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
   }
   .gx-nav a{
-    position:relative;
-    padding:8px 16px;
-    font-size:14px;
-    letter-spacing:1px;
-    color:#8fa0d6;
-    text-decoration:none;
-    border:2px solid transparent;
-    transition:all .12s ease;
+    position:relative; padding:8px 16px;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:14px; letter-spacing:1px;
+    color:#8fa0d6; text-decoration:none;
+    border:2px solid transparent; transition:all .12s ease;
   }
   .gx-nav a:hover{
-    color:#fdc815;
-    text-shadow:0 0 10px #fdc815;
+    color:#fdc815; text-shadow:0 0 10px #fdc815;
     background:rgba(253,200,21,.06);
   }
   .gx-nav a.on{
     background:linear-gradient(180deg, #fdc815 0%, #c9940a 100%);
-    color:#050a24;
-    border:2px solid #000;
+    color:#050a24; border:2px solid #000;
     box-shadow:inset 0 -3px 0 #7a5a00, 0 0 14px rgba(253,200,21,.65);
     text-shadow:none;
   }
   .gx-nav a.on::after{
-    content:"";
-    position:absolute;
-    left:8px;right:8px;bottom:-10px;
-    height:3px;
-    background:#fdc815;
-    box-shadow:0 0 8px #fdc815;
+    content:""; position:absolute; left:8px; right:8px; bottom:-10px;
+    height:3px; background:#fdc815; box-shadow:0 0 8px #fdc815;
   }
 
-  /* Botón de tema circular */
   .gx-theme-btn{
-    width:42px;height:42px;
-    display:grid;place-items:center;
-    background:#0a1440;
-    border:3px solid #000;
+    width:42px; height:42px; display:grid; place-items:center;
+    background:#0a1440; border:3px solid #000;
     box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
-    color:#4fd8ff;
-    cursor:pointer;
-    transition:all .12s ease;
-    padding:0;
+    color:#4fd8ff; cursor:pointer; transition:all .12s ease; padding:0;
   }
   .gx-theme-btn:hover{
-    color:#fdc815;
-    transform:translate(1px,1px);
+    color:#fdc815; transform:translate(1px,1px);
     box-shadow:inset 0 0 0 2px #1b2a6b, 2px 2px 0 #000;
   }
   .gx-theme-btn:active{
@@ -176,68 +114,64 @@
     box-shadow:inset 0 0 0 2px #1b2a6b, 0 0 0 #000;
   }
   .gx-theme-btn svg{
-    width:20px;height:20px;
-    fill:none;stroke:currentColor;
-    stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;
+    width:20px; height:20px; fill:none; stroke:currentColor;
+    stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;
   }
   .gx-theme-btn .i-sun{display:none}
   [data-theme="light"] .gx-theme-btn .i-moon{display:none}
   [data-theme="light"] .gx-theme-btn .i-sun{display:block}
 
-  /* Chip de usuario */
   .gx-me{
-    display:flex;
-    align-items:center;
-    gap:10px;
+    display:flex; align-items:center; gap:10px;
     padding:5px 14px 5px 5px;
-    background:#0a1440;
-    border:3px solid #000;
+    background:#0a1440; border:3px solid #000;
     box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
-    text-decoration:none;
-    transition:all .12s ease;
+    text-decoration:none; transition:all .12s ease;
   }
   .gx-me:hover{
     box-shadow:inset 0 0 0 2px #fdc815, 3px 3px 0 #000;
     transform:translate(1px,1px);
   }
   .gx-me-av{
-    width:32px;height:32px;
-    background:#000;
+    width:32px; height:32px; background:#000;
     border:2px solid #7cffb2;
-    display:grid;place-items:center;
-    overflow:hidden;
-    image-rendering:pixelated;
-    flex:none;
+    display:grid; place-items:center; overflow:hidden;
+    image-rendering:pixelated; flex:none;
   }
   .gx-me-av canvas,
-  .gx-me-av img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+  .gx-me-av img{width:100%; height:100%; object-fit:contain; image-rendering:pixelated}
   .gx-me-name{
-    font-size:14px;
-    color:#eaf1ff;
-    letter-spacing:.5px;
-    max-width:120px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:14px; color:#eaf1ff; letter-spacing:.5px;
+    max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
 
-  /* Botón Salir */
+  .gx-login-btn{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:13px; letter-spacing:1.5px;
+    padding:10px 18px;
+    background:linear-gradient(180deg, #fdc815 0%, #c9940a 100%);
+    color:#050a24; text-decoration:none;
+    border:3px solid #000; text-transform:uppercase;
+    box-shadow:3px 3px 0 #000, inset 0 -3px 0 rgba(0,0,0,.25);
+    transition:all .12s ease; display:inline-block;
+  }
+  .gx-login-btn:hover{
+    filter:brightness(1.1); transform:translate(1px,1px);
+    box-shadow:2px 2px 0 #000, inset 0 -3px 0 rgba(0,0,0,.25);
+  }
+
   .gx-logout{
-    font-family:'Pixelify Sans',monospace;
-    font-size:13px;
-    letter-spacing:1.5px;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:13px; letter-spacing:1.5px;
     padding:10px 18px;
     background:linear-gradient(180deg, #ff4f9a 0%, #a8235c 100%);
-    color:#fff;
-    border:3px solid #000;
+    color:#fff; border:3px solid #000; cursor:pointer;
     box-shadow:3px 3px 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
-    cursor:pointer;
-    transition:all .12s ease;
-    text-transform:uppercase;
+    transition:all .12s ease; text-transform:uppercase;
   }
   .gx-logout:hover{
-    filter:brightness(1.12);
-    transform:translate(1px,1px);
+    filter:brightness(1.12); transform:translate(1px,1px);
     box-shadow:2px 2px 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
   }
   .gx-logout:active{
@@ -245,28 +179,29 @@
     box-shadow:0 0 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
   }
 
-  /* Responsive */
   @media (max-width:900px){
-    header.gx-navbar{padding:10px 16px;gap:12px}
+    header.gx-navbar{padding:10px 16px; gap:12px}
     header.gx-navbar .left{gap:16px}
-    .gx-nav a{padding:7px 12px;font-size:13px}
+    .gx-nav a{padding:7px 12px; font-size:13px}
     .gx-me-name{display:none}
     .gx-me{padding:4px}
   }
   @media (max-width:620px){
     header.gx-navbar .logo-t{display:none}
     .gx-nav{padding:3px}
-    .gx-nav a{padding:6px 9px;font-size:11px}
-    .gx-theme-btn{width:38px;height:38px}
-    .gx-theme-btn svg{width:18px;height:18px}
-    .gx-logout{padding:9px 12px;font-size:11px}
+    .gx-nav a{padding:6px 9px; font-size:11px}
+    .gx-theme-btn{width:38px; height:38px}
+    .gx-theme-btn svg{width:18px; height:18px}
+    .gx-logout, .gx-login-btn{padding:9px 12px; font-size:11px}
   }
   @media (max-width:420px){
-    .gx-nav a{padding:5px 7px;font-size:10px}
-    .gx-logout{padding:8px 10px}
-    .gx-logout span{display:none}
-    .gx-logout::before{content:"✕";font-size:16px}
+    .gx-nav a{padding:5px 7px; font-size:10px}
+    .gx-logout, .gx-login-btn{padding:8px 10px}
+    .gx-logout span, .gx-login-btn span{display:none}
+    .gx-logout::before{content:"✕"; font-size:16px}
+    .gx-login-btn::before{content:"→"; font-size:16px}
   }
+
   /* ═══════════ TARJETA PRINCIPAL ═══════════ */
 .gx-card.featured{
   grid-column:1/-1;
@@ -299,32 +234,7 @@
 
 <canvas id="gxSky" aria-hidden="true"></canvas>
 
-<header class="gx-navbar">
-  <div class="left">
-    <a class="logo" href="index.html">
-      <img class="coin" src="ho.png" alt="">
-      <span class="logo-t">PIXELWORLD</span>
-    </a>
-    <nav class="gx-nav" role="navigation">
-      <a href="index.html">Inicio</a>
-      <a href="juegos.html" class="on">Juegos</a>
-      <a href="perfil.html">Perfil</a>
-    </nav>
-  </div>
-  <div class="right">
-    <button class="gx-theme-btn" id="gxTheme" aria-label="Cambiar tema" type="button">
-      <svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-      <svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
-    </button>
-    <a class="gx-me" href="perfil.html" title="Ir a mi perfil">
-      <span class="gx-me-av" id="gxAv"></span>
-      <span class="gx-me-name" id="gxName">jugador</span>
-    </a>
-    <button class="gx-logout" id="gxLogout" type="button">
-      <span>SALIR</span>
-    </button>
-  </div>
-</header>
+<!-- El NAV se inyecta desde pixelword-nav.js igual que en index.html -->
 
 <main class="gx-wrap">
 
@@ -380,7 +290,37 @@
 
 <div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
+<script src="pixelword-nav.js"></script>
 <script src="java/juegos.js"></script>
+
+<script>
+/* ═════════════ ANTI-NAV DUPLICADO ═════════════
+   pixelword-nav.js es el ÚNICO que debe crear la navbar (header.gx-navbar).
+   Si algún otro script/archivo inyecta una segunda barra, la borramos aquí. */
+(function(){
+  const OFICIAL = 'header.gx-navbar';
+
+  function limpiar(){
+    // 1) Si hay varias navbar oficiales, conservamos SOLO la primera (la de pixelword-nav.js)
+    const oficiales = document.querySelectorAll(OFICIAL);
+    for (let i = 1; i < oficiales.length; i++) oficiales[i].remove();
+
+    // 2) Barra(s) vieja(s) que no sean la oficial
+    document.querySelectorAll('#navbar, .navbar, .nav-bar, .topbar').forEach(n => {
+      if (!n.matches(OFICIAL)) n.remove();
+    });
+  }
+
+  limpiar();
+  document.addEventListener('DOMContentLoaded', limpiar);
+  window.addEventListener('load', limpiar);
+
+  // Por si algún script la inyecta con retraso
+  let n = 0;
+  const iv = setInterval(() => { limpiar(); if (++n > 20) clearInterval(iv); }, 150);
+})();
+</script>
+
 <script>
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
