@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript · Coding Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Mulish:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noche:#050a24; --panel:#0b1236; --panel2:#070d2b; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
+    --amarillo:#fdc815; --amarillo-s:#c9940a; --cian:#4fd8ff; --rosa:#ff4f9a; --verde:#7cffb2;
+  }
+  :root[data-tema="claro"]{
+    --noche:#eef3ff; --panel:#ffffff; --panel2:#f3f6ff; --linea:#223a9a; --texto:#0a1240; --suave:#4a5a99;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{
+    background:var(--noche);color:var(--texto);font-family:'Mulish',sans-serif;line-height:1.55;
+    display:flex;flex-direction:column;
+  }
+  button,a{font-family:inherit}
+  :focus-visible{outline:3px solid var(--amarillo);outline-offset:2px}
+
+  /* Barra superior */
+  .top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:4px solid var(--linea)}
+  .top a{color:var(--cian);text-decoration:none;font-family:'Pixelify Sans',monospace}
+  .top h1{font-family:'Pixelify Sans',monospace;font-size:1.4rem;color:var(--amarillo);text-shadow:2px 2px 0 #000;flex:1}
+  .pasos{display:flex;gap:6px}
+  .paso{width:22px;height:22px;border:3px solid var(--linea);background:var(--panel2)}
+  .paso.hecho{background:var(--verde);border-color:#000}
+  .paso.actual{border-color:var(--amarillo)}
+  .btn{
+    font-family:'Pixelify Sans',monospace;font-size:1rem;border:3px solid #000;padding:6px 16px;
+    box-shadow:4px 4px 0 #000;background:var(--panel);color:var(--texto);transition:transform .1s;cursor:pointer;
+  }
+  .btn:hover:not(:disabled){transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.run{background:var(--cian);color:#050a24}
+  .btn.submit{background:var(--amarillo);color:#050a24}
+  .btn.verde{background:var(--verde);color:#050a24}
+
+  /* Zona principal */
+  main{flex:1;display:grid;grid-template-columns:minmax(280px,5fr) 7fr;min-height:0}
+  .izq{padding:22px 24px;overflow:auto;border-right:4px solid var(--linea);background:var(--panel)}
+  .izq .num{font-family:'Pixelify Sans',monospace;color:var(--rosa);font-size:1rem}
+  .izq h2{font-family:'Pixelify Sans',monospace;font-size:1.8rem;margin:2px 0 12px;color:var(--amarillo)}
+  .izq p{margin-bottom:12px;max-width:62ch}
+  .izq code{font-family:'VT323',monospace;font-size:1.25rem;background:var(--panel2);border:2px solid var(--linea);padding:0 6px;color:var(--cian)}
+  .mision{border:3px dashed var(--verde);padding:12px 14px;margin:16px 0;background:var(--panel2)}
+  .mision b{font-family:'Pixelify Sans',monospace;color:var(--verde)}
+  .esperado{font-family:'VT323',monospace;font-size:1.25rem;background:#000;color:var(--verde);padding:8px 12px;border:2px solid var(--linea);white-space:pre-wrap}
+
+  .der{display:grid;grid-template-rows:1fr auto 190px;min-height:0;background:var(--panel2)}
+  .editor{display:grid;grid-template-columns:44px 1fr;min-height:0;border-bottom:4px solid var(--linea)}
+  #lineas{
+    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;text-align:right;color:var(--suave);
+    padding:14px 8px 14px 0;background:var(--panel);overflow:hidden;white-space:pre;user-select:none;
+  }
+  #codigo{
+    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;color:var(--texto);background:transparent;
+    border:0;resize:none;padding:14px;tab-size:4;white-space:pre;overflow:auto;outline:none;min-height:140px;
+  }
+  .acciones{display:flex;gap:12px;align-items:center;padding:10px 14px;background:var(--panel);border-bottom:4px solid var(--linea)}
+  .acciones .estado{margin-left:auto;font-size:.85rem;color:var(--suave)}
+  #terminal{
+    font-family:'VT323',monospace;font-size:1.3rem;line-height:1.25;background:#000;color:#d7ffe8;
+    padding:10px 14px;overflow:auto;white-space:pre-wrap;
+  }
+  #terminal .err{color:#ff8fa8} #terminal .ok{color:var(--verde)} #terminal .info{color:var(--cian)}
+
+  /* Barra inferior */
+  .bajo{display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--panel);border-top:4px solid var(--linea)}
+  .bajo .centro{flex:1;text-align:center;font-family:'Pixelify Sans',monospace;font-size:1.1rem}
+  .bajo .centro b{color:var(--amarillo)}
+
+  /* Personaje 67 con pistas */
+  #personaje{position:fixed;right:16px;bottom:70px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  #personaje button{background:none;border:0;padding:0;cursor:pointer}
+  #personaje img{
+    width:auto;height:96px;max-width:140px;object-fit:contain;image-rendering:pixelated;display:block;
+    filter:drop-shadow(3px 3px 0 #000);
+  }
+  #personaje .emoji{font-size:3rem}
+  #burbuja{
+    max-width:260px;background:#fff;color:#050a24;border:4px solid #000;box-shadow:4px 4px 0 var(--amarillo-s);
+    padding:10px 12px;font-size:.95rem;display:none
+  }
+  #burbuja.ver{display:block}
+
+  /* Ventanas */
+  .velo{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .velo.ver{display:flex}
+  .caja{background:var(--panel);border:5px solid var(--amarillo);box-shadow:8px 8px 0 #000;max-width:560px;width:100%;padding:24px;max-height:90vh;overflow:auto}
+  .caja h2{font-family:'Pixelify Sans',monospace;color:var(--amarillo);font-size:1.9rem;margin-bottom:10px}
+  .caja p{margin-bottom:12px}
+  .caja ul{margin:0 0 14px 22px}
+  .caja .fila-btn{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  .insignia{font-size:4rem;text-align:center}
+  .xp-pop{
+    position:fixed;left:50%;top:90px;transform:translateX(-50%);z-index:60;font-family:'Pixelify Sans',monospace;
+    font-size:2rem;color:var(--amarillo);text-shadow:3px 3px 0 #000;pointer-events:none;opacity:0
+  }
+  .xp-pop.ver{animation:sube 1.4s ease-out}
+  @keyframes sube{0%{opacity:0;top:110px}20%{opacity:1}100%{opacity:0;top:50px}}
+  @media (prefers-reduced-motion:reduce){.xp-pop.ver{animation:none;opacity:1}}
+
+  @media (max-width:820px){
+    body{height:auto}
+    main{grid-template-columns:1fr}
+    .izq{border-right:0;border-bottom:4px solid var(--linea)}
+    .der{grid-template-rows:260px auto 180px}
+    .top{flex-wrap:wrap}
+  }
+
+  /* CURSOR ESPADA (solo se oculta el cursor normal si ARMA.png carga) */
+  html.con-espada,html.con-espada body,html.con-espada body *{cursor:none!important}
+  #espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
+  #espada-cursor.on{opacity:1}
+  #espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
+  @media (hover:none){html.con-espada,html.con-espada body,html.con-espada body *{cursor:auto!important}#espada-cursor{display:none}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a href="juegos.html">← Juegos</a>
+  <h1>🟨 JavaScript</h1>
+  <div class="pasos" id="pasos" aria-label="Progreso"></div>
+  <button class="btn" id="btnIntro">¿Qué es JavaScript?</button>
+</div>
+
+<main>
+  <section class="izq" id="izq" aria-live="polite"></section>
+  <section class="der">
+    <div class="editor">
+      <div id="lineas" aria-hidden="true"></div>
+      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor de código JavaScript"></textarea>
+    </div>
+    <div class="acciones">
+      <button class="btn run" id="btnRun">▶ Ejecutar</button>
+      <button class="btn submit" id="btnSubmit">✔ Enviar</button>
+      <button class="btn" id="btnReset" title="Volver al código inicial">↺ Reiniciar</button>
+      <span class="estado" id="estado">JavaScript listo ✔</span>
+    </div>
+    <div id="terminal" role="log" aria-label="Terminal"></div>
+  </section>
+</main>
+
+<div class="bajo">
+  <button class="btn" id="btnBack">← Atrás</button>
+  <div class="centro" id="centro"></div>
+  <button class="btn verde" id="btnNext">Siguiente →</button>
+</div>
+
+<!-- Personaje 67: las pistas son GRATIS (si tu GIF es otro, cambia solo el src) -->
+<div id="personaje">
+  <div id="burbuja" role="status"></div>
+  <button id="btnPista" aria-label="Pedir una pista (gratis)">
+    <img id="imgPj" src="67.gif" alt="Personaje que da pistas"
+         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji',textContent:'🧙'}))">
+  </button>
+</div>
+
+<!-- Intro del lenguaje -->
+<div class="velo" id="velIntro">
+  <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tIntro">
+    <h2 id="tIntro">¡Bienvenido a JavaScript! 🟨</h2>
+    <p>JavaScript es el lenguaje que le da vida a las páginas web. Cada vez que un botón reacciona, aparece un menú o se mueve un juego en tu navegador, ahí hay JavaScript.</p>
+    <p>Con JavaScript se hacen cosas como:</p>
+    <ul>
+      <li>páginas web interactivas</li>
+      <li>videojuegos en el navegador</li>
+      <li>aplicaciones web y móviles</li>
+    </ul>
+    <p>Aquí vas a resolver <b>4 ejercicios</b> y una <b>prueba final</b>. Si te atoras, toca al personaje: las pistas no cuestan nada.</p>
+    <div class="fila-btn"><button class="btn submit" id="btnEmpezar">¡Empezar!</button></div>
+  </div>
+</div>
+
+<!-- Victoria -->
+<div class="velo" id="velFin">
+  <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
+    <div class="insignia">🟨🏅</div>
+    <h2 id="tFin">¡Completaste JavaScript!</h2>
+    <p>Ganaste la <b>Insignia JavaScript</b> y <b id="xpTotal">300</b> XP en total. Mira dónde quedaste en el ranking.</p>
+    <div class="fila-btn">
+      <a class="btn submit" href="ranking.html" style="text-decoration:none">Ver ranking</a>
+      <a class="btn" href="juegos.html" style="text-decoration:none;color:var(--texto)">Otros juegos</a>
+    </div>
+  </div>
+</div>
+
+<div class="xp-pop" id="xpPop"></div>
+
+<div id="espada-cursor" popover="manual"><img id="imgEspada" src="ARMA.png" alt=""></div>
+
+<!-- Firebase compat + init ANTES del script que usa db/sumarXP -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="java/firebase-init.js"></script>
+<script>
+/* XP a la nube: suma atómica en ranking/{usuario} (solo si Firebase y usuario existen) */
+function guardarXP(n){
+  if (typeof db === 'undefined' || typeof firebase === 'undefined' || !n) return;
+  const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
+  if (!u) return;
+  db.collection('ranking').doc(u).set({
+    xp: firebase.firestore.FieldValue.increment(n)
+  }, { merge: true });
+}
+
+/* ============== EJERCICIOS ============== */
+const EJERCICIOS = [
+  { titulo:'Tu primer mensaje', xp:50,
+    explicacion:`<p>Los programas le hablan al mundo con <code>console.log()</code>. Lo que escribas entre comillas aparece en la terminal.</p>
+      <p>Ejemplo: <code>console.log("Hola");</code> muestra la palabra Hola.</p>`,
+    mision:'Haz que la computadora diga <b>Hola, mundo</b>.',
+    inicial:'// Escribe tu código aquí\n',
+    esperado:'Hola, mundo',
+    exigir:[/console\.log\s*\(/], reglas:[/Hola, mundo/],
+    pista:'Escribe console.log("Hola, mundo"); con las comillas, los paréntesis y el punto y coma.' },
+
+  { titulo:'Guardar datos', xp:50,
+    explicacion:`<p>Una <b>variable</b> es una cajita con nombre donde guardas un dato. Se crea con <code>let</code> y el signo <code>=</code>.</p>
+      <p>Ejemplo: <code>let nivel = 5;</code> guarda el 5 en la caja llamada nivel. Luego puedes mostrarla con <code>console.log(nivel);</code></p>`,
+    mision:'Crea una variable llamada <b>x</b> con el valor <b>50</b> y muéstrala con console.log.',
+    inicial:'// 1. Crea la variable x\n\n// 2. Muéstrala con console.log\n',
+    esperado:'50',
+    exigir:[/\b(let|const|var)\s+x\s*=/, /console\.log\s*\(/], reglas:[/\bx\s*=\s*50\b/, /console\.log\s*\(\s*x\s*\)/],
+    pista:'Primero escribe let x = 50; y en otra línea console.log(x); No lleva comillas.' },
+
+  { titulo:'Tomar decisiones', xp:50,
+    explicacion:`<p>Con <code>if</code> el programa decide qué hacer. Si la condición entre paréntesis es verdadera, ejecuta lo que está dentro de las llaves <code>{ }</code>.</p>
+      <p>Ejemplo:</p>
+      <p><code>if (vidas &gt; 0) {</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;console.log("Sigues");</code><br><code>}</code></p>`,
+    mision:'Si <b>x</b> es mayor a <b>20</b>, muestra <b>Mayor</b>.',
+    inicial:'let x = 30;\n\n// Escribe tu if aquí\n',
+    esperado:'Mayor',
+    exigir:[/\bif\b/], reglas:[/if\s*\(\s*x\s*>\s*20\s*\)/, /Mayor/],
+    pista:'Escribe if (x > 20) { y dentro console.log("Mayor"); y cierra con }.' },
+
+  { titulo:'Repetir sin cansarse', xp:50,
+    explicacion:`<p>Un <b>ciclo for</b> repite instrucciones. Tiene tres partes: dónde empieza, hasta cuándo sigue y cómo avanza.</p>
+      <p>Ejemplo:</p>
+      <p><code>for (let i = 1; i &lt;= 2; i++) {</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;console.log("Hola");</code><br><code>}</code></p>
+      <p>Eso escribe Hola dos veces.</p>`,
+    mision:'Muestra los números <b>1, 2 y 3</b>, cada uno en su línea, usando un ciclo for.',
+    inicial:'// Usa for\n',
+    esperado:'1\n2\n3',
+    exigir:[/\bfor\b/], reglas:[/for\s*\(/],
+    pista:'for (let i = 1; i <= 3; i++) { y dentro console.log(i); luego cierra con }.' },
+
+  { titulo:'Prueba final', xp:100, final:true,
+    explicacion:`<p>Llegó la hora de juntar todo: variables, decisiones y ciclos.</p>
+      <p>Puedes poner un <code>for</code> dentro de un <code>if</code>: primero se decide y luego se repite.</p>`,
+    mision:`Declara <code>let n = 5;</code>. Si <b>n</b> es mayor que 3, usa un bucle para mostrar los números del <b>1 al n</b>, cada uno en su línea.`,
+    inicial:'let n = 5;\n\n// 1. if (n > 3) { ... }\n\n// 2. dentro, un for del 1 al n\n',
+    esperado:'1\n2\n3\n4\n5',
+    exigir:[/\bfor\b/, /\bif\b/, /console\.log/], reglas:[/if\s*\(\s*n\s*>\s*3\s*\)/, /for\s*\(/],
+    pista:[
+      'Pista 1/3: Empieza con if (n > 3) { y deja espacio dentro. Todo el ciclo va adentro de las llaves.',
+      'Pista 2/3: Dentro del if escribe for (let i = 1; i <= n; i++) { y adentro console.log(i);',
+      'Pista 3/3: Última ayuda: cierra el for con } y luego el if con }. ¡De acá en adelante es todo tuyo!'
+    ] }];
+
+/* ============== ESTADO ============== */
+const usuario = (localStorage.getItem('usuarioActual') || '').trim() || 'invitado';
+const uid = usuario.toLowerCase();
+const CLAVE = 'ca_javascript_v1_' + uid;
+try { const t = localStorage.getItem('tema'); if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro'; } catch(e){}
+
+let est = { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
+try { Object.assign(est, JSON.parse(localStorage.getItem(CLAVE) || '{}')); } catch(e){}
+if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object') est.pistasUsadas = {};
+
+const $ = id => document.getElementById(id);
+const xpGanado = () => EJERCICIOS.reduce((s, e, i) => s + (est.hechos[i] ? e.xp : 0), 0);
+const XP_MAX = EJERCICIOS.reduce((s, e) => s + e.xp, 0);
+
+function guardar(){
+  try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch(e){}
+}
+
+/* ============== EJECUTAR JAVASCRIPT ============== */
+function ejecutar(codigo){
+  const logs = [];
+  const fmt = a => (typeof a === 'string') ? a : (() => { try { return typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a); } catch(e){ return String(a); } })();
+  const consolaFalsa = {
+    log:   (...a) => logs.push(a.map(fmt).join(' ')),
+    info:  (...a) => logs.push(a.map(fmt).join(' ')),
+    warn:  (...a) => logs.push(a.map(fmt).join(' ')),
+    error: (...a) => logs.push(a.map(fmt).join(' '))
+  };
+  try {
+    new Function('console', codigo)(consolaFalsa);
+    return { ok:true, texto:logs.join('\n'), error:'' };
+  } catch(e){
+    return { ok:false, texto:logs.join('\n'), error:e.message };
+  }
+}
+
+/* ============== INTERFAZ ============== */
+function escribir(t, clase){
+  const term = $('terminal');
+  const s = document.createElement('span');
+  if (clase) s.className = clase;
+  s.textContent = t + '\n';
+  term.append(s);
+  term.scrollTop = term.scrollHeight;
+}
+function limpiarTerminal(){ $('terminal').textContent = ''; }
+
+function numerarLineas(){
+  const n = $('codigo').value.split('\n').length;
+  $('lineas').textContent = Array.from({length:n}, (_, i) => i + 1).join('\n');
+}
+
+function pintarPasos(){
+  $('pasos').innerHTML = '';
+  EJERCICIOS.forEach((e, i) => {
+    const d = document.createElement('div');
+    d.className = 'paso' + (est.hechos[i] ? ' hecho' : '') + (i === est.actual ? ' actual' : '');
+    d.title = e.final ? 'Prueba final' : 'Ejercicio ' + (i + 1);
+    $('pasos').append(d);
+  });
+}
+
+function cargar(i){
+  est.actual = i;
+  const e = EJERCICIOS[i];
+  $('izq').innerHTML = `
+    <div class="num">${e.final ? 'PRUEBA FINAL' : 'Ejercicio ' + (i + 1) + ' de ' + (EJERCICIOS.length - 1)}</div>
+    <h2>${e.titulo}</h2>
+    ${e.explicacion}
+    <div class="mision"><b>Misión:</b> ${e.mision}</div>
+    <p style="margin-bottom:6px">Tu programa debe mostrar:</p>
+    <div class="esperado"></div>`;
+  $('izq').querySelector('.esperado').textContent = e.esperado;
+  $('codigo').value = est.codigo[i] ?? e.inicial;
+  numerarLineas();
+  limpiarTerminal();
+  if (est.hechos[i]) escribir('✔ Ya completaste este ejercicio.', 'ok');
+  $('burbuja').classList.remove('ver');
+  $('centro').innerHTML = `Ejercicio <b>${i + 1}/${EJERCICIOS.length}</b> · XP <b>${xpGanado()}/${XP_MAX}</b>`;
+  $('btnBack').disabled = i === 0;
+  $('btnNext').disabled = !(est.hechos[i] && i < EJERCICIOS.length - 1);
+  pintarPasos();
+  guardar();
+}
+
+function guardarCodigo(){ est.codigo[est.actual] = $('codigo').value; guardar(); }
+
+/* ============== VALIDAR Y PREMIAR ============== */
+function normalizar(t){ return t.split('\n').map(l => l.trimEnd()).join('\n').trim(); }
+
+/* Popup de XP: se muestra y SE VA solo (timeout de seguridad) */
+let popT;
+function mostrarXP(n){
+  const pop = $('xpPop');
+  pop.textContent = '+' + n + ' XP';
+  pop.classList.remove('ver');
+  void pop.offsetWidth;
+  pop.classList.add('ver');
+  clearTimeout(popT);
+  popT = setTimeout(() => pop.classList.remove('ver'), 1600);
+}
+
+function enviar(){
+  const e = EJERCICIOS[est.actual];
+  const codigo = $('codigo').value;
+  limpiarTerminal();
+
+  const sinComentarios = codigo.split('\n').filter(l => !l.trim().startsWith('//')).join('\n');
+  const faltan = e.exigir.some(r => !r.test(sinComentarios));
+
+  const r = ejecutar(codigo);
+  if (r.texto) escribir(r.texto);
+  if (!r.ok) return escribir('✘ Error: ' + r.error, 'err');
+  if (normalizar(r.texto) !== normalizar(e.esperado))
+    return escribir('✘ La salida no coincide con lo que se pide. Compara con el cuadro verde.', 'err');
+  if (faltan || !e.reglas.every(rg => rg.test(sinComentarios)))
+    return escribir('✘ La salida es correcta, pero falta usar lo que pide la misión (variable, if, for…).', 'err');
+  exito();
+}
+
+async function exito(){
+  const i = est.actual, e = EJERCICIOS[i];
+  escribir('✔ ¡Correcto!', 'ok');
+  const primeraVez = !est.hechos[i];
+  est.hechos[i] = true;
+  guardarCodigo();
+  if (primeraVez) {
+    try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
+    try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
+    mostrarXP(e.xp);
+    guardarXP(e.xp);
+  }
+  cargar(i);
+  if (est.hechos.every(Boolean)) terminar();
+}
+async function terminar(){
+  $('xpTotal').textContent = xpGanado();
+  $('velFin').classList.add('ver');
+  try {
+    if (typeof db !== 'undefined' && typeof firebase !== 'undefined')
+      await db.collection('ranking').doc(uid).set(
+        { insignias: firebase.firestore.FieldValue.arrayUnion('javascript') }, { merge: true });
+  } catch(err){ console.error('insignia', err); }
+}
+
+/* ============== EVENTOS ============== */
+$('codigo').addEventListener('input', () => { numerarLineas(); guardarCodigo(); });
+$('codigo').addEventListener('scroll', () => { $('lineas').scrollTop = $('codigo').scrollTop; });
+$('codigo').addEventListener('keydown', ev => {
+  if (ev.key === 'Tab') {
+    ev.preventDefault();
+    const t = ev.target, a = t.selectionStart;
+    t.value = t.value.slice(0, a) + '    ' + t.value.slice(t.selectionEnd);
+    t.selectionStart = t.selectionEnd = a + 4;
+    numerarLineas(); guardarCodigo();
+  }
+});
+
+$('btnRun').onclick = () => {
+  limpiarTerminal();
+  const r = ejecutar($('codigo').value);
+  if (r.texto) escribir(r.texto);
+  if (!r.ok) escribir('Error: ' + r.error, 'err');
+  else if (!r.texto) escribir('(tu programa no mostró nada: usa console.log)', 'info');
+};
+
+$('btnSubmit').onclick = enviar;
+
+$('btnReset').onclick = () => {
+  if (confirm('¿Volver al código inicial de este ejercicio?')) {
+    $('codigo').value = EJERCICIOS[est.actual].inicial; numerarLineas(); guardarCodigo(); limpiarTerminal();
+  }
+};
+$('btnBack').onclick = () => { if (est.actual > 0) cargar(est.actual - 1); };
+$('btnNext').onclick = () => { if (est.actual < EJERCICIOS.length - 1) cargar(est.actual + 1); };
+
+$('btnPista').onclick = () => {
+  const e = EJERCICIOS[est.actual];
+  const b = $('burbuja');
+  // Prueba final: pistas progresivas con límite
+  if (Array.isArray(e.pista)) {
+    const usadas = est.pistasUsadas[est.actual] || 0;
+    if (usadas >= e.pista.length) {
+      b.textContent = '🧙 Ya gastaste tus ' + e.pista.length + ' pistas. ¡Ahora demuestra lo que aprendiste solo!';
+      b.classList.add('ver');
+      return;
+    }
+    est.pistasUsadas[est.actual] = usadas + 1; guardar();
+    b.textContent = '💡 ' + e.pista[usadas] + '  [' + (usadas + 1) + '/' + e.pista.length + ']';
+    b.classList.add('ver');
+    return;
+  }
+  // Ejercicios normales: pista gratis ilimitada
+  b.textContent = '💡 ' + e.pista;
+  b.classList.toggle('ver');
+};
+
+$('btnIntro').onclick = () => $('velIntro').classList.add('ver');
+$('btnEmpezar').onclick = () => { $('velIntro').classList.remove('ver'); est.intro = true; guardar(); };
+
+/* ============== ARRANQUE ============== */
+const primero = est.hechos.findIndex(h => !h);
+cargar(Math.min(est.actual || (primero === -1 ? 0 : primero), EJERCICIOS.length - 1));
+if (!est.intro) $('velIntro').classList.add('ver');
+</script>
+<script>
+/* CURSOR ESPADA: solo reemplaza el cursor si ARMA.png existe */
+(function(){
+  const s = document.getElementById('espada-cursor');
+  const img = document.getElementById('imgEspada');
+  if(!s || !img) return;
+  const activar = () => {
+    document.documentElement.classList.add('con-espada');
+    const raise = () => { try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){} };
+    window.raiseSword = raise; raise();
+    document.addEventListener('mousemove', e => {
+      s.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
+      s.classList.add('on');
+    });
+    document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
+  };
+  if (img.complete && img.naturalWidth) activar();
+  else img.addEventListener('load', activar);
+})();
+</script>
+</body>
+</html>
