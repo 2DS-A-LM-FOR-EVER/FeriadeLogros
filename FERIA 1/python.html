@@ -552,46 +552,56 @@ iniciarPython();
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
    ========================================= */
+// 🔴 IMPORTANTE:
+// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
+const MODO_KIOSKO_ACTIVO = false;
+
 function salirYLimpiar() {
-    // 1. Borra la sesión actual
-    localStorage.removeItem('usuarioActual');
-    // 2. Barre con cualquier progreso local de juegos de esta PC
-    Object.keys(localStorage).forEach(k => {
-        if (k.startsWith('ca_python_v1_') || 
-            k.startsWith('ca_juegos_v1_') || 
-            k.startsWith('ca_arcade_profile_v1_')) {
-            localStorage.removeItem(k);
-        }
-    });
-    // 3. Manda al registro para el siguiente jugador
-    location.href = 'registro.html';
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
 }
 
-// 1. Secuestrar los botones de SALIR existentes
-document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
-    btn.onclick = salirYLimpiar;
+/* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
 });
 
-// 2. Auto-Reset por Inactividad (90 segundos sin tocar nada)
+/* Temporizador de inactividad (solo si el modo kiosko está activo) */
 let timerInactividad;
 function resetearTimer() {
-    clearTimeout(timerInactividad);
-    timerInactividad = setTimeout(() => {
-        console.log("Inactividad detectada. Reseteando PC para el siguiente...");
-        salirYLimpiar();
-    }, 90000); // 90,000 ms = 90 segundos
+  if (!MODO_KIOSKO_ACTIVO) return;
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    salirYLimpiar();
+  }, 90000); // 90 segundos
 }
-['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-    document.addEventListener(evt, resetearTimer, { passive: true });
-});
-resetearTimer(); // Iniciar el contador al cargar
 
-// 3. Botón de Pánico para Cris y el equipo (Tecla F8)
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
+
+/* F8: salir y limpiar (con confirmación) */
 document.addEventListener('keydown', e => {
-    if (e.key === 'F8') {
-        e.preventDefault();
-        salirYLimpiar();
+  if (e.key === 'F8') {
+    e.preventDefault();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
     }
+  }
 });
 </script>
 </body>
