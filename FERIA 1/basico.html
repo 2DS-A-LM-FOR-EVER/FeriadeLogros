@@ -861,21 +861,60 @@ $('#btnPista').addEventListener('click',darPista);
   document.addEventListener('mouseleave',()=>e.classList.remove('on'));
 })();
 
-/* modo feria (kiosco): reinicio por inactividad, F8 y botón SALIR */
-function resetKiosco(){
-  const pref=['ca_basico_v1_','ca_python_v1_','ca_juegos_v1_','ca_arcade_profile_v1_'];
-  Object.keys(localStorage).forEach(k=>{ if(pref.some(p=>k.startsWith(p))) localStorage.removeItem(k); });
-  localStorage.removeItem('usuarioActual'); location.href='registro.html';
+/* =========================================
+   MODO FERIA (KIOSCO) - Supervivencia
+   ========================================= */
+// 🔴 IMPORTANTE:
+// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
+const MODO_KIOSKO_ACTIVO = false;
+
+function salirYLimpiar() {
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
 }
-$('#btnSalir').addEventListener('click',e=>{ e.preventDefault(); resetKiosco(); });
-addEventListener('keydown',e=>{ if(e.key==='F8'){ e.preventDefault(); resetKiosco(); } });
-let ultimo=Date.now();
-['mousemove','mousedown','keydown','touchstart','scroll'].forEach(ev=>addEventListener(ev,()=>{ ultimo=Date.now(); $('#toast').classList.remove('on'); },{passive:true}));
-setInterval(()=>{
-  const s=(Date.now()-ultimo)/1000;
-  if(s>=KIOSCO_SEG) resetKiosco();
-  else if(s>=AVISO_SEG) toast('¿Sigues ahí? Mueve el mouse para continuar 👀',3000);
-},1000);
+
+/* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
+});
+
+/* Temporizador de inactividad (solo si el modo kiosko está activo) */
+let timerInactividad;
+function resetearTimer() {
+  if (!MODO_KIOSKO_ACTIVO) return;
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    salirYLimpiar();
+  }, 90000); // 90 segundos
+}
+
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
+
+/* F8: salir y limpiar (con confirmación) */
+document.addEventListener('keydown', e => {
+  if (e.key === 'F8') {
+    e.preventDefault();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
+    }
+  }
+});
 
 /* ---------------------------------------------------------------------
    ARRANQUE
