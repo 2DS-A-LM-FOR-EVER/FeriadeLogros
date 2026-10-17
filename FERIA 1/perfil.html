@@ -111,6 +111,16 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .tier.lock{opacity:.45}
 @media(max-width:560px){.tiers{grid-template-columns:repeat(2,1fr)}.rk{flex-direction:column;text-align:center}.rk>div:last-child{width:100%}}
 
+/* ★ INSIGNIAS */
+.ins-row{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px;min-height:40px}
+.ins-row .badge{
+  display:grid;place-items:center;width:52px;height:52px;font-size:30px;line-height:1;
+  background:var(--panel);border:3px solid var(--line);border-radius:10px;
+  box-shadow:0 4px 0 #000;transition:transform .12s;
+}
+.ins-row .badge:hover{transform:translateY(-3px);border-color:var(--rk)}
+.ins-row .empty{color:var(--muted);font-size:18px;text-align:center}
+
 /* ESCENARIOS */
 .stage{position:absolute;inset:0;overflow:hidden}
 .st-grid{background:linear-gradient(#150a33 0,#3b0f55 52%,#0a0d1c 52%)}
@@ -234,7 +244,8 @@ html,body,body *{cursor:none!important}
       <div class="lvlrow"><span class="lvl" id="lvlTxt">NIVEL 01</span><span id="xpTxt">0 / 100 XP</span></div>
       <div class="bar" role="progressbar" aria-label="Experiencia del nivel" id="xpBar"><i id="xpFill"></i></div>
       <div class="stats">
-        <div id="insigniasContainer" style="grid-column: 1 / -1; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:10px; min-height:40px;"></div>
+        <!-- ★ INSIGNIAS -->
+        <div id="insigniasContainer" class="ins-row"></div>
         <div><b id="stXp">0</b><span>XP total</span></div>
         <div><b id="stLvl">1</b><span>Nivel</span></div>
       </div>
@@ -400,13 +411,14 @@ S.xp = Math.max(0, Math.floor(+S.xp) || 0);
 if (!(S.char >= -1 && S.char < SPRITES.length)) S.char = 0;
 if (!(S.stage >= 0 && S.stage < STAGES.length)) S.stage = 0;
 if (!(S.frame >= 0 && S.frame < FRAMES.length)) S.frame = 0;
+if (!Array.isArray(S.insignias)) S.insignias = [];
 
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(usuarioCanonico.toLowerCase()).get().then(doc => {
     if (doc.exists) {
       const data = doc.data();
       S.xp = data.xp || 0;
-      S.insignias = data.insignias || [];
+      S.insignias = Array.isArray(data.insignias) ? data.insignias : [];
       render();
     }
   }).catch(err => console.log("Error leyendo perfil:", err));
@@ -452,16 +464,30 @@ let t=0;const SEQ=[0,1,0,1,0,2];
 setInterval(()=>{const f=SEQ[t++%SEQ.length];document.querySelectorAll('canvas[data-char]').forEach(c=>drawSprite(c,SPRITES[+c.dataset.char],f))},280);
 
 /* ---------- RANGOS + EMBLEMAS ---------- */
-/* ORDEN: Bronce → Plata → Oro → Platino */
 const RANKS=[
   {n:'Bronce', min:0,    c:'#cd7f32', l:'#f2bb86', d:'#6b3a10', g:'I'},
   {n:'Plata',  min:300,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
   {n:'Oro',    min:700,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
   {n:'Platino',min:1200, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
 ];
-/* Imágenes en el mismo orden que RANKS */
 const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
+
+/* ★ INSIGNIAS: mapa único reutilizable (incluye 'basico') */
+const INSIGNIA_META = {
+  basico: { emoji:'🖥️', label:'Computación Básica' },
+  python: { emoji:'🐍', label:'Python' },
+  html:   { emoji:'🌐', label:'HTML' },
+  css:    { emoji:'🎨', label:'CSS' },
+  java:   { emoji:'☕', label:'Java' }
+};
+const INSIGNIA_FALLBACK = { emoji:'🏅', label:'Insignia' };
+
+function insigniaMeta(raw){
+  const key = String(raw||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const hit = Object.keys(INSIGNIA_META).find(b => key.includes(b));
+  return hit ? INSIGNIA_META[hit] : INSIGNIA_FALLBACK;
+}
 
 function renderProgress(){
   const xp=S.xp,ri=rankOf(xp),R=RANKS[ri],N=RANKS[ri+1],lv=Math.floor(xp/100)+1,cur=xp%100;
@@ -489,20 +515,25 @@ function renderProgress(){
     return d;
   }));
 
-  /* Insignias */
+  /* ★ INSIGNIAS (con 'basico' incluida) */
   const insCont = document.getElementById('insigniasContainer');
   if(insCont){
-    if(S.insignias && S.insignias.length > 0){
-      insCont.innerHTML = S.insignias.map(i=>{
-        let icon='🏆';
-        if(i.includes('python')) icon='🐍';
-        else if(i.includes('html')) icon='🌐';
-        else if(i.includes('css')) icon='🎨';
-        else if(i.includes('java')) icon='☕';
-        return '<span style="font-size:28px; filter:drop-shadow(0 0 4px var(--rk))" title="'+i+'">'+icon+'</span>';
-      }).join('');
-    }else{
-      insCont.innerHTML='<span style="color:var(--muted); font-size:18px;">Aún no tienes insignias. ¡Juega para ganarlas!</span>';
+    const lista = Array.isArray(S.insignias) ? S.insignias : [];
+    if (lista.length){
+      insCont.replaceChildren(...lista.map(raw => {
+        const meta = insigniaMeta(raw);
+        const span = document.createElement('span');
+        span.className = 'badge';
+        span.textContent = meta.emoji;
+        span.title = meta.label + ' · ' + raw;
+        span.setAttribute('aria-label', meta.label);
+        return span;
+      }));
+    } else {
+      const p = document.createElement('span');
+      p.className = 'empty';
+      p.textContent = 'Aún no tienes insignias. ¡Juega para ganarlas!';
+      insCont.replaceChildren(p);
     }
   }
 }
@@ -633,7 +664,6 @@ function salirYLimpiar() {
   location.href = 'registro.html';
 }
 
-/* Delegación: funciona aunque pixelword-nav.js cree el botón SALIR después */
 document.addEventListener('click', e => {
   if (e.target.closest('#logout, .exit-btn, #gxLogout')) salirYLimpiar();
 });
@@ -663,7 +693,6 @@ document.addEventListener('keydown', e => {
 <script src="pixelword-nav.js"></script>
 <script>
 (function(){
-  // Deja solo la navbar oficial si algún script inyecta otra
   const limpiar = () => {
     const o = document.querySelectorAll('header.gx-navbar');
     for (let i = 1; i < o.length; i++) o[i].remove();
