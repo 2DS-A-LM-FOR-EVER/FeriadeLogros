@@ -126,11 +126,12 @@
     <h2>Premios por completar</h2>
     <p>Cada lenguaje completo te da una insignia. Completar los cuatro te da el trofeo final.</p>
     <div class="insignias">
+      <div class="ins"><div class="ico">🖥️</div><h3>Insignia Básico</h3><p>Completa los 5 retos de Computación Básica.</p></div>
       <div class="ins"><div class="ico">🐍</div><h3>Insignia Python</h3><p>Resuelve los 4 ejercicios y la prueba final.</p></div>
       <div class="ins"><div class="ico">🌐</div><h3>Insignia HTML</h3><p>Construye tu primera página web.</p></div>
       <div class="ins"><div class="ico">🎨</div><h3>Insignia CSS</h3><p>Dale color y estilo a tu página.</p></div>
       <div class="ins"><div class="ico">☕</div><h3>Insignia Java</h3><p>Resuelve los retos de Java.</p></div>
-      <div class="ins final"><div class="ico">🏆</div><h3>Trofeo Maestro del Código</h3><p>Para quien completa los 4 lenguajes y llega a Diamante.</p></div>
+      <div class="ins final"><div class="ico">🏆</div><h3>Trofeo Maestro del Código</h3><p>Para quien completa los 5 lenguajes y llega a Platino.</p></div>
     </div>
   </section>
 </div>
@@ -154,9 +155,18 @@
   const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
   const MEDALLAS = ['🥇','','🥉'];
   const COLORES_PODIO = ['#fdc815','#c9d6ff','#cd7f32'];
-  const EMO_INSIGNIA = {python:'🐍', html:'🌐', css:'🎨', java:'☕'};
 
-  let TODOS = [];          // todos los jugadores ordenados por XP
+  /* ★ MAPA DE INSIGNIAS (incluye 'basico') */
+  const EMO_INSIGNIA = {
+    basico: '🖥️',
+    python: '🐍',
+    html:   '🌐',
+    css:    '🎨',
+    java:   '☕'
+  };
+  const EMO_FALLBACK = '🏅'; // por si aparece una insignia que aún no está en el mapa
+
+  let TODOS = [];
   let filtro = 'todos';
   let yo = '';
   try{ yo = (localStorage.getItem('usuarioActual')||'').toLowerCase(); }catch(e){}
@@ -173,8 +183,15 @@
     return img;
   }
   function badgesSpan(j){
-    const txt = (j.insignias||[]).map(k => EMO_INSIGNIA[k] || '').join('');
-    return txt ? el('span', {className:'badges', title:'Insignias'}, txt) : '';
+    const lista = Array.isArray(j.insignias) ? j.insignias : [];
+    if (!lista.length) return '';
+    // Normaliza por si llega algo como 'Insignia Basico' o 'BASICO'
+    const txt = lista.map(k => {
+      const key = String(k).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const hit = Object.keys(EMO_INSIGNIA).find(b => key.includes(b));
+      return hit ? EMO_INSIGNIA[hit] : EMO_FALLBACK;
+    }).join('');
+    return el('span', {className:'badges', title:'Insignias'}, txt);
   }
 
   function pintarTabs(){
