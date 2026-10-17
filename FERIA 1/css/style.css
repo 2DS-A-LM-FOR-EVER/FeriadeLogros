@@ -1,6 +1,9 @@
 /* =========================================================
    CODING ADVENTURE — HOJA DE ESTILOS COMPLETA Y RESPONSIVE
    Coloca este archivo en: css/style.css
+
+   ★ CAMBIO: outline negro pixel en .kicker, .sub, .rk-s
+     (para que se lean sobre el fondo pixel-art)
 ========================================================= */
 
 :root {
@@ -259,12 +262,23 @@ svg.chev {
   z-index: 2;
 }
 
+/* ★ TEXTO SOBRE FONDO PIXEL-ART — "Comience su" */
 .kicker {
   color: #bcd6ff;
   font-size: clamp(13px, 1.5vw, 18px);
   font-weight: 800;
   letter-spacing: .22em;
   text-transform: uppercase;
+  text-shadow:
+    2px 0   0 #000,
+   -2px 0   0 #000,
+    0   2px 0 #000,
+    0  -2px 0 #000,
+    2px 2px 0 #000,
+   -2px -2px 0 #000,
+    2px -2px 0 #000,
+   -2px 2px 0 #000,
+    0   6px 12px rgba(0,0,0,.7);
 }
 
 .title {
@@ -281,6 +295,7 @@ svg.chev {
   filter: drop-shadow(0 4px 0 #0006);
 }
 
+/* ★ TEXTO SOBRE FONDO PIXEL-ART — "La forma más divertida..." */
 .sub {
   width: 100%;
   max-width: 650px;
@@ -290,7 +305,16 @@ svg.chev {
   font-weight: 700;
   line-height: 1.5;
   overflow-wrap: anywhere;
-  text-shadow: 0 2px 0 #0008;
+  text-shadow:
+    2px 0   0 #000,
+   -2px 0   0 #000,
+    0   2px 0 #000,
+    0  -2px 0 #000,
+    2px 2px 0 #000,
+   -2px -2px 0 #000,
+    2px -2px 0 #000,
+   -2px 2px 0 #000,
+    0   6px 12px rgba(0,0,0,.7);
 }
 
 .rk-link {
@@ -330,12 +354,23 @@ svg.chev {
   text-shadow: 0 4px 0 var(--yellow-d), 0 8px 0 #000;
 }
 
+/* ★ TEXTO SOBRE FONDO PIXEL-ART — "Los que más XP han ganado" */
 .rk-s {
   margin: 8px 0 28px;
-  color: var(--muted);
+  color: #e8edfb;
   font-weight: 700;
   line-height: 1.45;
   text-align: center;
+  text-shadow:
+    2px 0   0 #000,
+   -2px 0   0 #000,
+    0   2px 0 #000,
+    0  -2px 0 #000,
+    2px 2px 0 #000,
+   -2px -2px 0 #000,
+    2px -2px 0 #000,
+   -2px 2px 0 #000,
+    0   6px 12px rgba(0,0,0,.7);
 }
 
 .rk-list {
