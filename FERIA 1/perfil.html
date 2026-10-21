@@ -193,20 +193,16 @@ dialog::backdrop{background:transparent}
 .toast.show{transform:translateX(-50%) translateY(0)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
-/* CURSOR ESPADA */
-html,body,body *{cursor:none!important}
-#espada-cursor{
-  position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;
-  overflow:visible;width:30px;height:30px;pointer-events:none;
-  z-index:2147483647;will-change:transform;opacity:0;
-}
-#espada-cursor.on{opacity:1}
-#espada-cursor img{
-  width:100%;height:100%;display:block;
-  filter:invert(1) drop-shadow(0 0 4px rgba(0,0,0,.9)) drop-shadow(0 0 8px rgba(255,255,255,.4));
-  pointer-events:none;user-select:none;image-rendering:pixelated;
-}
-@media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
+</style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
 </style>
 </head>
 <body>
@@ -310,10 +306,6 @@ html,body,body *{cursor:none!important}
   </div>
 </dialog>
 <div class="toast" id="toast" popover="manual"></div>
-<div id="espada-cursor" popover="manual" aria-hidden="true">
-  <img src="ARMA.png" alt="">
-</div>
-
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -604,15 +596,8 @@ $('openEd').onclick=()=>{
   $('iUrl').value='';
   buildPickers();
   ed.showModal();
-  ed.appendChild(document.getElementById('espada-cursor'));
-  requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
   sync();
 };
-
-ed.addEventListener('close', ()=>{
-  document.body.appendChild(document.getElementById('espada-cursor'));
-  requestAnimationFrame(()=>{ if(window.raiseSword) raiseSword(); });
-});
 
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
@@ -641,15 +626,6 @@ $('save').onclick=()=>{
 ed.addEventListener('click',e=>{if(e.target===ed)ed.close()});
 
 render();
-
-/* ---------- CURSOR ESPADA ---------- */
-(function(){
-  const s=document.getElementById('espada-cursor');
-  const raise=()=>{try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){}};
-  window.raiseSword=raise; raise();
-  document.addEventListener('mousemove',e=>{s.style.transform='translate('+e.clientX+'px,'+e.clientY+'px)';s.classList.add('on')});
-  document.documentElement.addEventListener('mouseleave',()=>s.classList.remove('on'));
-})();
 
 /* ---------- MODO FERIA (KIOSCO) ---------- */
 function salirYLimpiar() {

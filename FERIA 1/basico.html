@@ -16,7 +16,6 @@ body.light{--bg:#e9efff;--panel:#ffffff;--panel2:#e3e9ff;--txt:#0a1030;--muted:#
 html,body{margin:0}
 *{font-family:'Pixelify Sans',monospace !important}
 body{background:var(--bg);color:var(--txt);font-size:19px;line-height:1.5;min-height:100vh;overflow-x:hidden;padding-bottom:210px}
-html.espada,html.espada *{cursor:none !important}
 a{color:inherit}
 h1,h2,h3,h4{margin:0;line-height:1.15}
 :focus-visible{outline:4px dashed var(--yellow);outline-offset:3px}
@@ -263,12 +262,6 @@ body.light .fb.ok{color:#0b6b3a}
 @keyframes cae{to{transform:translateY(110vh) rotate(540deg)}}
 footer{text-align:center;color:var(--muted);padding:20px;font-size:16px}
 
-/* espada */
-#espada-cursor{position:fixed;inset:0 auto auto 0;margin:0;padding:0;border:0;background:transparent;overflow:visible;width:40px;height:40px;pointer-events:none;display:none;z-index:2147483647;will-change:transform}
-#espada-cursor:popover-open,#espada-cursor.on{display:block}
-#espada-cursor img{width:40px;height:40px;image-rendering:pixelated;filter:invert(1) drop-shadow(0 0 2px #000);display:block;margin:-2px 0 0 -2px}
-body.light #espada-cursor img{filter:drop-shadow(0 0 2px #fff)}
-#espada-cursor:not(.on){opacity:0}
 
 @media (max-width:620px){
  body{font-size:17px;padding-bottom:230px}
@@ -280,6 +273,16 @@ body.light #espada-cursor img{filter:drop-shadow(0 0 2px #fff)}
  .nav{gap:6px;padding:6px 8px}.logo{font-size:20px}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important}}
+</style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
 </style>
 </head>
 <body>
@@ -331,8 +334,6 @@ body.light #espada-cursor img{filter:drop-shadow(0 0 2px #fff)}
 <div class="ctx" id="ctx" hidden>
   <div>Copiar</div><div>Pegar</div><hr><div>Nuevo</div><div>Cambiar nombre</div><hr><div>Propiedades</div>
 </div>
-<div id="espada-cursor" popover="manual" aria-hidden="true"><img src="ARMA.png" alt=""></div>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
@@ -849,16 +850,6 @@ $('#btnPista').addEventListener('click',darPista);
   const aplicar=l=>{ document.body.classList.toggle('light',l); b.textContent=l?'☀️':'🌙'; };
   aplicar(t==='light'||t==='claro');
   b.addEventListener('click',()=>{ const l=!document.body.classList.contains('light'); localStorage.setItem('tema',l?'light':'dark'); aplicar(l); });
-})();
-
-/* cursor de espada */
-(function(){
-  const e=$('#espada-cursor'); if(!e) return; const img=e.querySelector('img');
-  const mostrar=()=>{ document.documentElement.classList.add('espada'); try{e.showPopover();}catch(_){} };
-  if(img.complete&&img.naturalWidth) mostrar(); else{ img.addEventListener('load',mostrar); img.addEventListener('error',()=>{e.style.display='none';}); }
-  const mover=ev=>{ e.style.transform=`translate(${ev.clientX}px,${ev.clientY}px)`; e.classList.add('on'); };
-  addEventListener('mousemove',mover,{passive:true}); document.addEventListener('dragover',mover);
-  document.addEventListener('mouseleave',()=>e.classList.remove('on'));
 })();
 
 /* =========================================

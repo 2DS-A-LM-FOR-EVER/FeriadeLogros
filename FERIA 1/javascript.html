@@ -113,12 +113,16 @@
     .top{flex-wrap:wrap}
   }
 
-  /* CURSOR ESPADA (solo se oculta el cursor normal si ARMA.png carga) */
-  html.con-espada,html.con-espada body,html.con-espada body *{cursor:none!important}
-  #espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
-  #espada-cursor.on{opacity:1}
-  #espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
-  @media (hover:none){html.con-espada,html.con-espada body,html.con-espada body *{cursor:auto!important}#espada-cursor{display:none}}
+</style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
 </style>
 </head>
 <body>
@@ -192,8 +196,6 @@
 </div>
 
 <div class="xp-pop" id="xpPop"></div>
-
-<div id="espada-cursor" popover="manual"><img id="imgEspada" src="ARMA.png" alt=""></div>
 
 <!-- Firebase compat + init ANTES del script que usa db/sumarXP -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -470,25 +472,6 @@ cargar(Math.min(est.actual || (primero === -1 ? 0 : primero), EJERCICIOS.length 
 if (!est.intro) $('velIntro').classList.add('ver');
 </script>
 <script>
-/* CURSOR ESPADA: solo reemplaza el cursor si ARMA.png existe */
-(function(){
-  const s = document.getElementById('espada-cursor');
-  const img = document.getElementById('imgEspada');
-  if(!s || !img) return;
-  const activar = () => {
-    document.documentElement.classList.add('con-espada');
-    const raise = () => { try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){} };
-    window.raiseSword = raise; raise();
-    document.addEventListener('mousemove', e => {
-      s.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
-      s.classList.add('on');
-    });
-    document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
-  };
-  if (img.complete && img.naturalWidth) activar();
-  else img.addEventListener('load', activar);
-})();
-
 /* =========================================
    MODO FERIA (KIOSCO) - Supervivencia
    ========================================= */

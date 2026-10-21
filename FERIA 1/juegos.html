@@ -13,12 +13,6 @@
 <link rel="stylesheet" href="css/juegos.css">
 <link rel="icon" href="ho.png">
 <style>
-  /* ═══════════ CURSOR ESPADA ═══════════ */
-  html,body,body *{cursor:none!important}
-  #espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
-  #espada-cursor.on{opacity:1}
-  #espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
-  @media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
 
   /* ═══════════ TIPOGRAFÍA PIXEL-ART GLOBAL ═══════════ */
   html,body,body *:not(svg):not(svg *){
@@ -266,6 +260,16 @@
   .gx-tools .gx-search{flex-basis:100%}
 }
 </style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
+</style>
 </head>
 <body>
 
@@ -324,8 +328,6 @@
 </div>
 
 <div class="gx-toast" id="gxToast" role="status"></div>
-
-<div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
 <script src="pixelword-nav.js"></script>
 <script src="java/juegos.js"></script>

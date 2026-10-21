@@ -277,6 +277,16 @@
     letter-spacing:1px !important;
   }
 </style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
+</style>
 </head>
 <body>
 
@@ -297,8 +307,6 @@
   <p class="rk-s">Los que más XP han ganado</p>
   <ol class="rk-list" id="rkList"><li class="rk-msg">Cargando ranking…</li></ol>
 </section>
-
-<div id="espada-cursor" popover="manual"><img src="ARMA.png" alt=""></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -378,19 +386,6 @@
       msg('No se pudo leer el ranking. Revisa las reglas de Firestore.');
     }
   );
-})();
-
-/* ═════════════ CURSOR ESPADA ═════════════ */
-(function(){
-  const s = document.getElementById('espada-cursor');
-  if (!s) { console.warn('⚠️ No se encontró #espada-cursor'); return; }
-  const raise = () => { try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){} };
-  window.raiseSword = raise; raise();
-  document.addEventListener('mousemove', e => {
-    s.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)';
-    s.classList.add('on');
-  });
-  document.documentElement.addEventListener('mouseleave', () => s.classList.remove('on'));
 })();
 
 /* ═════════════ MODO FERIA (KIOSCO) ═════════════ */
