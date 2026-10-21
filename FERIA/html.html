@@ -324,6 +324,7 @@ body{min-height:100dvh}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
+<script src="java/progreso-cloud.js"></script>
 
 <!-- ═══════════ LÓGICA DEL JUEGO ═══════════ -->
 <script>
@@ -764,12 +765,10 @@ if (typeof db !== 'undefined') {
 
 <!-- ═══════════ MODO KIOSKO ═══════════ -->
 <script>
-
 /* =========================================
-   MODO FERIA (KIOSCO) - Supervivencia
+   MODO FERIA (KIOSCO) - Universal para todos los juegos
    ========================================= */
-// 🔴 IMPORTANTE:
-// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// 🔴 IMPORTANTE: FALSE mientras programas/pruebas. 
 // TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
 const MODO_KIOSKO_ACTIVO = false;
 
@@ -779,14 +778,15 @@ function salirYLimpiar() {
     if (k.startsWith('ca_python_v1_') ||
         k.startsWith('ca_html_v1_') ||
         k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_')) {
+        k.startsWith('ca_arcade_profile_v1_') ||
+        k.startsWith('ca_basico_v1_')) { // Agregado por si acaso
       localStorage.removeItem(k);
     }
   });
   location.href = 'registro.html';
 }
 
-/* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
+// Delegación de eventos: atrapa el click en el botón de salir de la navbar
 document.addEventListener('click', e => {
   if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
     e.preventDefault();
@@ -794,13 +794,13 @@ document.addEventListener('click', e => {
   }
 });
 
-/* Temporizador de inactividad (solo si el modo kiosko está activo) */
+// Temporizador de inactividad
 let timerInactividad;
 function resetearTimer() {
-  if (!MODO_KIOSKO_ACTIVO) return;
+  if (!MODO_KIOSKO_ACTIVO) return; // Si es false, esto no hace NADA.
   clearTimeout(timerInactividad);
   timerInactividad = setTimeout(() => {
-    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    console.log('Inactividad detectada. Reseteando PC...');
     salirYLimpiar();
   }, 90000); // 90 segundos
 }
@@ -810,7 +810,7 @@ function resetearTimer() {
 });
 if (MODO_KIOSKO_ACTIVO) resetearTimer();
 
-/* F8: salir y limpiar (con confirmación) */
+// F8: salir y limpiar (con confirmación)
 document.addEventListener('keydown', e => {
   if (e.key === 'F8') {
     e.preventDefault();
