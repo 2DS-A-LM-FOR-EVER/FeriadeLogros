@@ -429,19 +429,6 @@ document.addEventListener('click', e => {
     }
 });
 
-let timerInactividad;
-function resetearTimer() {
-    clearTimeout(timerInactividad);
-    timerInactividad = setTimeout(() => {
-        console.log("Inactividad detectada. Reseteando PC para el siguiente...");
-        salirYLimpiar();
-    }, 90000);
-}
-['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-    document.addEventListener(evt, resetearTimer, { passive: true });
-});
-resetearTimer();
-
 document.addEventListener('keydown', e => {
     if (e.key === 'F8') {
         e.preventDefault();
