@@ -233,7 +233,7 @@ const gs = (D, sel) => { const el = D.querySelector(sel); return el ? D.defaultV
 /* html: contenido de la página · base: CSS que ya viene puesto · solucion: lo que se ve en "Así debe verse"
    checks: cada una revisa un estilo real ya calculado por el navegador */
 const EJERCICIOS = [
-  { titulo:'Pintar el texto', xp:150,
+  { titulo:'Pintar el texto', xp:50,
     explicacion:`<p>CSS cambia cómo se ve el HTML. Una regla elige un elemento (el <b>selector</b>) y le da estilos dentro de llaves.</p>
       <p>Ejemplo: <code>p { color: blue; }</code> pinta de azul todos los párrafos.</p>`,
     mision:'Haz que el título <b>h1</b> tenga el color <b>red</b> (rojo).',
@@ -244,7 +244,7 @@ const EJERCICIOS = [
     checks:[ { d:'el h1 debe tener color: red;', f:D => { const s = gs(D,'h1'); return s && s.color === 'rgb(255, 0, 0)'; } } ],
     pista:'Escribe h1 { color: red; } con las llaves y el punto y coma al final.' },
 
-  { titulo:'Fondo y tamaño', xp:150,
+  { titulo:'Fondo y tamaño', xp:50,
     explicacion:`<p>Con <code>background-color</code> cambias el fondo de un elemento y con <code>font-size</code> el tamaño de su letra.</p>
       <p>Para elegir un elemento por su clase se usa un punto: <code>.caja { ... }</code></p>`,
     mision:'A la clase <b>.caja</b> ponle fondo <b>blue</b> y letra de <b>24px</b>.',
@@ -258,7 +258,7 @@ const EJERCICIOS = [
     ],
     pista:'.caja { background-color: blue; font-size: 24px; } Cada propiedad termina con punto y coma.' },
 
-  { titulo:'Espacios y bordes', xp:150,
+  { titulo:'Espacios y bordes', xp:50,
     explicacion:`<p><code>padding</code> es el espacio por dentro de una caja y <code>border</code> es su borde. Con <code>border-radius</code> las esquinas se redondean.</p>
       <p>Ejemplo: <code>border: 2px solid black;</code> (grosor, estilo y color).</p>`,
     mision:'A <b>.tarjeta</b> ponle <b>padding: 20px</b>, un borde <b>3px solid</b> (del color que quieras) y <b>border-radius: 10px</b>.',
@@ -273,7 +273,7 @@ const EJERCICIOS = [
     ],
     pista:'Dentro de .tarjeta { } escribe padding: 20px; border: 3px solid black; border-radius: 10px;' },
 
-  { titulo:'Acomodar con Flexbox', xp:150,
+  { titulo:'Acomodar con Flexbox', xp:50,
     explicacion:`<p><b>Flexbox</b> acomoda elementos en fila. Se activa en el contenedor (el papá) con <code>display: flex;</code></p>
       <p>Luego <code>justify-content</code> decide cómo se reparten: <code>center</code> los junta en el centro, <code>space-between</code> los separa.</p>`,
     mision:'Haz que <b>.fila</b> use <b>display: flex</b> y que sus cuadros queden en el <b>center</b> con <b>justify-content</b>.',
@@ -287,7 +287,7 @@ const EJERCICIOS = [
     ],
     pista:'.fila { display: flex; justify-content: center; } Sin display: flex, justify-content no hace nada.' },
 
-  { titulo:'Prueba final', xp:200, final:true,
+  { titulo:'Prueba final', xp:100, final:true,
     explicacion:`<p>Llegó la hora de juntar todo: colores, espacios, bordes y Flexbox.</p>
       <p>Para separar elementos dentro de un contenedor flex usa <code>gap</code>, por ejemplo <code>gap: 10px;</code></p>`,
     mision:`Diseña un menú:<br>
