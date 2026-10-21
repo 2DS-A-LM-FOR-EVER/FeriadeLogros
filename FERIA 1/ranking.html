@@ -230,6 +230,9 @@ body button:disabled,body .btn:disabled{cursor:not-allowed!important}
 img,video,canvas,svg,iframe{max-width:100%}
 body{overflow-wrap:break-word}
 @media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+/* Barra de navegacion: solo logo + PIXELWORD (enlace a index.html) */
+#pixelword-nav .pw-lk,#pixelword-nav .pw-tema,#pixelword-nav .pw-chip,#pixelword-nav .pw-salir,#pixelword-nav .pw-burger{display:none !important}
+#pwOverlay,#pwDrawer{display:none !important}
 </style>
 </head>
 <body>
@@ -481,7 +484,7 @@ body{overflow-wrap:break-word}
 </script>
 
 <!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
-<script src="pixelword-nav.js?v=4"></script>
+<script src="pixelword-nav.js"></script>
 <script>
 (function(){
   // deja SOLO una navbar oficial
