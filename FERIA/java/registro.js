@@ -5,7 +5,7 @@
   const msg     = document.getElementById('msg');
   const overlay = document.getElementById('loadingOverlay');
   const btn     = document.getElementById('btnSubmit');
-  const REDIRECT = 'perfil.html';
+  const REDIRECT = 'juegos.html';
 
   const firebaseConfig = {
     apiKey: "AIzaSyCXxXUiIdPSz5uKnUijwd49ntGuJBtfQCY",
@@ -52,12 +52,21 @@
     const password = document.getElementById('password').value;
     const telefono = limpiarTelefono(document.getElementById('telefono').value);
 
-    if (!/^(?=.*[\p{L}\p{N}])[\p{L}\p{N}_.\-]{3,20}$/u.test(usuario)) {
-      return mostrar('Usuario: de 3 a 20 letras o números (puede llevar ñ, acentos, punto, guion o guion bajo). Sin espacios.', 'err');
+    // --- Usuario: SIN validación de formato. Solo se evita lo que rompe Firestore ---
+    // (los IDs de documento no pueden estar vacíos ni contener "/")
+    if (!usuario) {
+      return mostrar('Escribe un nombre de usuario', 'err');
     }
-    if (password.length < 4) {
-      return mostrar('La contraseña debe tener al menos 4 caracteres', 'err');
+    if (usuario.includes('/')) {
+      return mostrar('El usuario no puede contener el símbolo "/"', 'err');
     }
+
+    // --- Contraseña: SIN mínimo de caracteres ---
+    // (se acepta cualquier contraseña, incluso vacía si así lo quieres permitir)
+    // Si prefieres exigir al menos 1 caracter, descomenta la línea de abajo:
+    // if (password.length < 1) return mostrar('Escribe una contraseña', 'err');
+
+    // --- Teléfono: se mantiene igual ---
     if (!telefono) {
       return mostrar('Escribe un teléfono válido de 8 dígitos (ej: 7000 0000)', 'err');
     }

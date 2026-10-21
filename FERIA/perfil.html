@@ -3,9 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Perfil Arcade | Coding Adventure</title>
+<title>PIXELWORD | Perfil Arcade</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="icon" href="ho.png">
 <style>
 :root{
   --bg:#071016; --panel:#0d1c26; --panel2:#112734; --line:#1e3d4f;
@@ -27,21 +29,10 @@ body{
 button{font-family:inherit;color:inherit;cursor:pointer}
 canvas,img.pix{image-rendering:pixelated}
 
-/* NAV */
-nav{display:flex;align-items:center;gap:28px;padding:14px 28px;border-bottom:4px solid var(--line);background:#050b10;position:sticky;top:0;z-index:20}
-.logo{display:flex;align-items:center;gap:12px;font-family:var(--px);font-size:13px;color:var(--amber);letter-spacing:1px;text-decoration:none}
-.logo small{color:var(--lime);font-size:13px}
-.nav-links{display:flex;gap:22px;color:var(--muted)}
-.nav-links a{color:inherit;text-decoration:none}
-.nav-links a:hover{color:var(--lime)}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:16px}
-.mini-av{width:36px;height:36px;border:3px solid var(--frame);background:#000;display:grid;place-items:center;overflow:hidden}
-.mini-av canvas,.mini-av img{width:100%;height:100%;object-fit:contain}
-
-/* LAYOUT: perfil a la izquierda, progreso a la derecha */
+/* LAYOUT */
 main{max-width:1120px;margin:0 auto;padding:44px 22px 70px;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:34px;align-items:start}
-@media(min-height:780px){main>section{position:sticky;top:84px}}
-@media(max-width:900px){.nav-links{display:none}main{grid-template-columns:1fr}main>section{position:static}}
+@media(min-height:780px){main>section{position:sticky;top:96px}}
+@media(max-width:900px){main{grid-template-columns:1fr}main>section{position:static}}
 h2.t{font-family:var(--px);font-size:12px;color:var(--amber);letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 h2.t::before{content:"";width:10px;height:10px;background:var(--pink);box-shadow:4px 4px 0 #000}
 h2.t span{margin-left:auto;color:var(--rk)}
@@ -101,30 +92,34 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .play:hover{filter:brightness(1.12)}
 .play:focus-visible{outline:3px dashed var(--amber);outline-offset:6px}
 
-/* BOTÓN SALIR */
-.exit-btn{font-family:var(--px);font-size:10px;padding:10px 14px;background:var(--pink);color:#1a0610;border:3px solid #000;box-shadow:0 4px 0 #7a1d48,0 7px 0 #000;transition:transform .08s,box-shadow .08s}
-.exit-btn:hover{filter:brightness(1.15)}
-.exit-btn:active{transform:translateY(4px);box-shadow:0 0 0 #7a1d48,0 3px 0 #000}
-.exit-btn:focus-visible{outline:3px dashed var(--amber);outline-offset:4px}
-
 /* RANGO */
-.rk{display:flex;align-items:center;gap:22px;margin-bottom:22px}
+.rk{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
 .rk>div:last-child{flex:1;min-width:0}
-.embw{flex:none;filter:drop-shadow(0 0 12px var(--rk));animation:glow 1.8s steps(4) infinite}
-@keyframes glow{50%{filter:drop-shadow(0 0 22px var(--rk)) brightness(1.18)}}
-.emb{width:92px;height:104px;display:grid;place-items:center;padding-bottom:18px;font-family:var(--px);font-size:16px;color:#120a05;
-  background:linear-gradient(135deg,var(--rk-l),var(--rk) 50%,var(--rk-d));box-shadow:inset -8px -8px 0 #0003,inset 6px 6px 0 #fff4;
-  clip-path:polygon(0 0,100% 0,100% 58%,88% 58%,88% 72%,74% 72%,74% 86%,60% 86%,60% 100%,40% 100%,40% 86%,26% 86%,26% 72%,12% 72%,12% 58%,0 58%)}
+.embw{flex:none;width:88px;filter:drop-shadow(0 0 12px var(--rk));animation:glow 1.8s steps(4) infinite}
+.emb{width:110px;height:150px;display:block;overflow:visible}
+.emb img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
 .rkn{font-family:var(--px);font-size:18px;color:var(--rk);text-shadow:0 0 14px var(--rk);margin-bottom:10px}
 #rkSub{color:var(--muted);margin-bottom:12px}
 .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.tier{background:var(--panel2);border:3px solid var(--line);padding:12px 6px;text-align:center;display:grid;gap:4px;justify-items:center}
-.tier i{width:22px;height:22px;background:linear-gradient(135deg,var(--cl),var(--c));border:3px solid #000;transform:rotate(45deg);box-shadow:inset -3px -3px 0 #0004;margin-bottom:6px}
+.tier{background:var(--panel2);border:3px solid var(--line);padding:10px 6px;text-align:center;display:grid;gap:4px;justify-items:center}
+.tier img{width:44px;height:44px;object-fit:cover;object-position:center 30%;image-rendering:pixelated;display:block;pointer-events:none;user-select:none}.tier.done img{filter:drop-shadow(0 0 4px var(--c))}
+.tier.lock img{filter:grayscale(1) brightness(.55)}
+.tier.now img{filter:drop-shadow(0 0 8px var(--c)) drop-shadow(0 0 14px var(--c))}
 .tier b{font-family:var(--px);font-size:9px;color:var(--c)}
 .tier small{color:var(--muted);font-size:17px}
 .tier.now{border-color:var(--c);box-shadow:0 0 0 3px #000,0 0 0 6px var(--c),0 0 18px var(--c)}
-.tier.lock{opacity:.45;filter:grayscale(.85)}
+.tier.lock{opacity:.45}
 @media(max-width:560px){.tiers{grid-template-columns:repeat(2,1fr)}.rk{flex-direction:column;text-align:center}.rk>div:last-child{width:100%}}
+
+/* ★ INSIGNIAS */
+.ins-row{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px;min-height:40px}
+.ins-row .badge{
+  display:grid;place-items:center;width:52px;height:52px;font-size:30px;line-height:1;
+  background:var(--panel);border:3px solid var(--line);border-radius:10px;
+  box-shadow:0 4px 0 #000;transition:transform .12s;
+}
+.ins-row .badge:hover{transform:translateY(-3px);border-color:var(--rk)}
+.ins-row .empty{color:var(--muted);font-size:18px;text-align:center}
 
 /* ESCENARIOS */
 .stage{position:absolute;inset:0;overflow:hidden}
@@ -193,31 +188,33 @@ dialog::backdrop{background:transparent}
 .note{color:var(--muted);font-size:18px;margin-top:6px}
 .actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px;position:sticky;bottom:-20px;background:var(--panel);padding:12px 0 4px}
 
-/* TOAST: popover para que se vea por encima del editor */
+/* TOAST */
 .toast{position:fixed;top:auto;right:auto;left:50%;bottom:28px;margin:0;width:auto;height:auto;overflow:visible;transform:translateX(-50%) translateY(120px);background:#000;border:3px solid var(--lime);padding:10px 18px;font-family:var(--px);font-size:10px;line-height:1.5;color:var(--lime);transition:transform .25s steps(5);z-index:99;max-width:calc(100vw - 24px)}
 .toast.show{transform:translateX(-50%) translateY(0)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
-/* CURSOR ESPADA (bloque estándar) */
-html,body,body *{cursor:none!important}
-#espada-cursor{position:fixed;inset:auto;top:0;left:0;margin:0;padding:0;border:0;background:none;overflow:visible;width:30px;height:30px;pointer-events:none;z-index:999999;mix-blend-mode:difference;will-change:transform;opacity:0}
-#espada-cursor.on{opacity:1}
-#espada-cursor img{width:100%;height:100%;display:block;filter:invert(1);pointer-events:none;user-select:none;image-rendering:pixelated}
-@media (hover:none){html,body,body *{cursor:auto!important}#espada-cursor{display:none}}
+</style>
+<style id="ajustes">
+/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,body *{cursor:auto!important}
+body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
+body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
+body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
+body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
+body button:disabled,body .btn:disabled{cursor:not-allowed!important}
+#espada-cursor{display:none!important}
+img,video,canvas,svg,iframe{max-width:100%}
+body{overflow-wrap:break-word}
+@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+/* Perfil: modal y columnas ajustados al ancho disponible */
+dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto}
+@media (max-width:480px){main{padding:24px 14px 50px}}
 </style>
 </head>
 <body>
 
-<nav>
-  <a class="logo" href="juegos.html">
-    <svg width="22" height="22" viewBox="0 0 8 8" shape-rendering="crispEdges"><path fill="#000" d="M2 0h4v1h1v1h1v4h-1v1h-1v1H2V7H1V6H0V2h1V1h1z"/><path fill="#ffc24b" d="M2 1h4v1h1v4h-1v1H2V6H1V2h1z"/><path fill="#fff3b0" d="M2 2h1v3H2zM3 2h1v1H3z"/><path fill="#c98a12" d="M5 3h1v3H5zM4 6h2v1H4z"/></svg>
-    <span>CODING <small>ADVENTURE</small></span>
-  </a>
-  <div class="nav-right">
-    <div class="mini-av" id="navAv"></div>
-    <button class="exit-btn" id="logout" type="button">SALIR</button>
-  </div>
-</nav>
+<!-- La navbar (header.gx-navbar) la crea pixelword-nav.js, igual que en index -->
 
 <main>
   <section>
@@ -250,9 +247,8 @@ html,body,body *{cursor:none!important}
       <div class="lvlrow"><span class="lvl" id="lvlTxt">NIVEL 01</span><span id="xpTxt">0 / 100 XP</span></div>
       <div class="bar" role="progressbar" aria-label="Experiencia del nivel" id="xpBar"><i id="xpFill"></i></div>
       <div class="stats">
-        <div id="insigniasContainer" style="grid-column: 1 / -1; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:10px; min-height:40px;">
-  <!-- Aquí se inyectarán las insignias -->
-</div>
+        <!-- ★ INSIGNIAS -->
+        <div id="insigniasContainer" class="ins-row"></div>
         <div><b id="stXp">0</b><span>XP total</span></div>
         <div><b id="stLvl">1</b><span>Nivel</span></div>
       </div>
@@ -317,15 +313,12 @@ html,body,body *{cursor:none!important}
   </div>
 </dialog>
 <div class="toast" id="toast" popover="manual"></div>
-<div id="espada-cursor" aria-hidden="true">
-  <img src="ARMA.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
 <script>
-/* ---------- SPRITES (cada avatar es pixel-art animado de 16x16) ---------- */
+/* ---------- SPRITES ---------- */
 const BODY=[
   '..KhSSSShK..','..KSESSESK..','..KSSSSSSK..','...KSSSSK...',
   '..KAOOOOAK..','.KSKOOOOKSK.','.KSKOOOOKSK.','..KKPPPPKK..',
@@ -391,7 +384,7 @@ function makeStage(i){
 }
 const FRAMES=['#7cffb2','#ff4f9a','#ffc24b','#4fd8ff','#a77bff'];
 
-/* ---------- PERFIL INDIVIDUAL POR CUENTA ---------- */
+/* ---------- PERFIL ---------- */
 const usuarioSesion = localStorage.getItem('usuarioActual');
 if (!usuarioSesion) {
   window.location.replace('registro.html');
@@ -417,29 +410,26 @@ S.xp = Math.max(0, Math.floor(+S.xp) || 0);
 if (!(S.char >= -1 && S.char < SPRITES.length)) S.char = 0;
 if (!(S.stage >= 0 && S.stage < STAGES.length)) S.stage = 0;
 if (!(S.frame >= 0 && S.frame < FRAMES.length)) S.frame = 0;
-// 🔥 Cargar datos reales desde Firestore al iniciar
+if (!Array.isArray(S.insignias)) S.insignias = [];
+
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(usuarioCanonico.toLowerCase()).get().then(doc => {
     if (doc.exists) {
       const data = doc.data();
-      S.xp = data.xp || S.xp;
-      S.insignias = data.insignias || [];
-      // Opcional: Si quieres que la nube sobrescriba el nombre/bio local
-      // if(data.name) S.name = data.name;
-      // if(data.bio) S.bio = data.bio;
-      render(); // Refrescar la pantalla con los datos reales de la nube
+      S.xp = data.xp || 0;
+      S.insignias = Array.isArray(data.insignias) ? data.insignias : [];
+      render();
     }
   }).catch(err => console.log("Error leyendo perfil:", err));
 }
+
 const persist = async () => {
-  try { 
-    localStorage.setItem(KEY, JSON.stringify(S)); 
-    
+  try {
+    localStorage.setItem(KEY, JSON.stringify(S));
     if (typeof db !== 'undefined') {
       await db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
         name: S.name,
         bio: S.bio,
-        // ❌ NO van aquí: xp ni insignias
         char: S.char,
         stage: S.stage,
         frame: S.frame,
@@ -447,10 +437,10 @@ const persist = async () => {
         edited: S.edited || false
       }, { merge: true });
     }
-    return true; 
-  } catch (e) { 
+    return true;
+  } catch (e) {
     console.error("Error guardando en nube:", e);
-    return false; 
+    return false;
   }
 };
 const $=id=>document.getElementById(id);
@@ -472,14 +462,31 @@ function put(el,node){el.replaceChildren(node)}
 let t=0;const SEQ=[0,1,0,1,0,2];
 setInterval(()=>{const f=SEQ[t++%SEQ.length];document.querySelectorAll('canvas[data-char]').forEach(c=>drawSprite(c,SPRITES[+c.dataset.char],f))},280);
 
-/* ---------- RANGOS ---------- */
+/* ---------- RANGOS + EMBLEMAS ---------- */
 const RANKS=[
-  {n:'Bronce',min:0,c:'#cd7f32',l:'#f2bb86',d:'#6b3a10',g:'I'},
-  {n:'Oro',min:300,c:'#ffc24b',l:'#fff3b0',d:'#a06a00',g:'II'},
-  {n:'Platino',min:700,c:'#8fe8d8',l:'#effffb',d:'#2f857c',g:'III'},
-  {n:'Diamante',min:1200,c:'#4fd8ff',l:'#e0f8ff',d:'#6a4cff',g:'IV'}
+  {n:'Bronce', min:0,    c:'#cd7f32', l:'#f2bb86', d:'#6b3a10', g:'I'},
+  {n:'Plata',  min:300,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
+  {n:'Oro',    min:700,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
+  {n:'Platino',min:1200, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
 ];
+const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
+
+/* ★ INSIGNIAS: mapa único reutilizable (incluye 'basico') */
+const INSIGNIA_META = {
+  basico: { emoji:'🖥️', label:'Computación Básica' },
+  python: { emoji:'🐍', label:'Python' },
+  html:   { emoji:'🌐', label:'HTML' },
+  css:    { emoji:'🎨', label:'CSS' },
+  java:   { emoji:'☕', label:'Java' }
+};
+const INSIGNIA_FALLBACK = { emoji:'🏅', label:'Insignia' };
+
+function insigniaMeta(raw){
+  const key = String(raw||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const hit = Object.keys(INSIGNIA_META).find(b => key.includes(b));
+  return hit ? INSIGNIA_META[hit] : INSIGNIA_FALLBACK;
+}
 
 function renderProgress(){
   const xp=S.xp,ri=rankOf(xp),R=RANKS[ri],N=RANKS[ri+1],lv=Math.floor(xp/100)+1,cur=xp%100;
@@ -490,45 +497,56 @@ function renderProgress(){
   $('xpFill').style.width=cur+'%';
   $('xpBar').setAttribute('aria-valuenow',cur);
   $('stXp').textContent=xp;$('stLvl').textContent=lv;
-  $('emb').textContent=R.g;$('rkName').textContent='RANGO '+R.n.toUpperCase();
+
+  /* Emblema grande */
+  $('emb').innerHTML = '<img src="'+EMBLEMAS[ri]+'" alt="'+R.n+'">';
+  $('rkName').textContent='RANGO '+R.n.toUpperCase();
   $('rkFill').style.width=(N?Math.round((xp-R.min)/(N.min-R.min)*100):100)+'%';
   $('rkSub').textContent=N?'Faltan '+(N.min-xp)+' XP para '+N.n:'¡Rango máximo alcanzado!';
   $('pTag').textContent='RANGO '+R.n.toUpperCase();
+
+  /* Tiers chiquitos */
   $('tiers').replaceChildren(...RANKS.map((r,k)=>{
-    const d=document.createElement('div');d.className='tier '+(k<ri?'done':k===ri?'now':'lock');
+    const d=document.createElement('div');
+    d.className='tier '+(k<ri?'done':k===ri?'now':'lock');
     d.style.setProperty('--c',r.c);d.style.setProperty('--cl',r.l);
-    d.innerHTML='<i></i><b>'+r.n+'</b><small>'+r.min+' XP</small>';return d}));
+    d.innerHTML='<img src="'+EMBLEMAS[k]+'" alt=""><b>'+r.n+'</b><small>'+r.min+' XP</small>';
+    return d;
+  }));
+
+  /* ★ INSIGNIAS (con 'basico' incluida) */
   const insCont = document.getElementById('insigniasContainer');
-if(insCont) {
-  if(S.insignias && S.insignias.length > 0) {
-    insCont.innerHTML = S.insignias.map(i => {
-      let icon = '🏆';
-      if(i.includes('python')) icon = '🐍';
-      else if(i.includes('html')) icon = '🌐';
-      else if(i.includes('css')) icon = '🎨';
-      else if(i.includes('java')) icon = '☕';
-      return `<span style="font-size:28px; filter:drop-shadow(0 0 4px var(--rk))" title="${i}">${icon}</span>`;
-    }).join('');
-  } else {
-    insCont.innerHTML = '<span style="color:var(--muted); font-size:18px;">Aún no tienes insignias. ¡Juega para ganarlas!</span>';
+  if(insCont){
+    const lista = Array.isArray(S.insignias) ? S.insignias : [];
+    if (lista.length){
+      insCont.replaceChildren(...lista.map(raw => {
+        const meta = insigniaMeta(raw);
+        const span = document.createElement('span');
+        span.className = 'badge';
+        span.textContent = meta.emoji;
+        span.title = meta.label + ' · ' + raw;
+        span.setAttribute('aria-label', meta.label);
+        return span;
+      }));
+    } else {
+      const p = document.createElement('span');
+      p.className = 'empty';
+      p.textContent = 'Aún no tienes insignias. ¡Juega para ganarlas!';
+      insCont.replaceChildren(p);
+    }
   }
 }
-}
-/* API para tus juegos: CA.addXP(50) suma XP; CA.setXP(300) fija el total */
+
+/* ---------- XP API ---------- */
 function addXP(n){
   const before=S.xp,rb=rankOf(before);
   S.xp=Math.max(0,before+Math.floor(+n||0));
-  
-  // Actualizar local
   try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){}
-  
-  // Actualizar Firebase de forma segura (incremento atómico)
   if (typeof db !== 'undefined' && n > 0) {
     db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
       xp: firebase.firestore.FieldValue.increment(Math.floor(+n||0))
     }, { merge: true }).catch(err => console.error("Error sumando XP:", err));
   }
-  
   render();
   const ra=rankOf(S.xp);
   if(ra>rb)toast('¡Subiste a rango '+RANKS[ra].n+'!');
@@ -536,21 +554,9 @@ function addXP(n){
 }
 window.CA={addXP,setXP:n=>addXP((Math.floor(+n)||0)-S.xp)};
 
-/* Comenzar a jugar -> índice de juegos */
 $('play').onclick=()=>{location.href='juegos.html'};
 
-/* Salir del perfil: cierra sesión (el progreso queda guardado por cuenta) */
-$('logout').onclick=()=>{
-  const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
-  localStorage.removeItem('usuarioActual');
-  // Borra el perfil arcade y el progreso de los juegos de este usuario
-  localStorage.removeItem('ca_arcade_profile_v1_' + u);
-  localStorage.removeItem('ca_python_v1_' + u);
-  localStorage.removeItem('ca_juegos_v1_' + u);
-  location.href='index.html';
-};
-
-/* ---------- RENDER PERFIL ---------- */
+/* ---------- RENDER ---------- */
 function applyLook(screen,st){
   screen.querySelectorAll('.stage').forEach(e=>e.remove());
   screen.prepend(makeStage(st.stage));
@@ -558,7 +564,7 @@ function applyLook(screen,st){
 function render(){
   document.documentElement.style.setProperty('--frame',FRAMES[S.frame]);
   applyLook($('heroScreen'),S);
-  put($('heroAv'),avatarNode(S));put($('navAv'),avatarNode(S));
+  put($('heroAv'),avatarNode(S));
   S.user='@'+usuarioCanonico;
   $('hudUser').textContent=S.user;
   $('hudScore').textContent=String(S.xp).padStart(6,'0');
@@ -588,10 +594,18 @@ function sync(){
   document.querySelectorAll('#pStage .pick').forEach((b,i)=>b.setAttribute('aria-pressed',D.stage===i));
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
+
 $('openEd').onclick=()=>{
-  D={...S,user:'@'+usuarioCanonico};$('iName').value=D.name;$('iUser').value=D.user;$('iBio').value=D.bio;$('iUrl').value='';
-  buildPickers();ed.showModal();if(window.raiseSword)raiseSword();sync();
+  D={...S,user:'@'+usuarioCanonico};
+  $('iName').value=D.name;
+  $('iUser').value=D.user;
+  $('iBio').value=D.bio;
+  $('iUrl').value='';
+  buildPickers();
+  ed.showModal();
+  sync();
 };
+
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
 $('iBio').oninput=e=>D.bio=e.target.value;
@@ -620,99 +634,56 @@ ed.addEventListener('click',e=>{if(e.target===ed)ed.close()});
 
 render();
 
-/* ---------- CURSOR ESPADA ---------- */
-(function(){
-  const s=document.getElementById('espada-cursor');
-  const raise=()=>{try{s.hidePopover()}catch(e){} try{s.showPopover()}catch(e){}};
-  window.raiseSword=raise; raise();
-  document.addEventListener('mousemove',e=>{s.style.transform='translate('+e.clientX+'px,'+e.clientY+'px)';s.classList.add('on')});
-  document.documentElement.addEventListener('mouseleave',()=>s.classList.remove('on'));
-})();
-/* 🔥 SINCRONIZACIÓN DEFINITIVA - Nube = fuente de verdad */
-function sincronizarDesdeNube() {
-    if (typeof db === 'undefined') {
-        console.error("🚨 db no existe. Faltan scripts de Firebase.");
-        return;
-    }
-    console.log("🔄 Buscando perfil en la nube para:", usuarioCanonico);
-
-    db.collection('ranking').doc(usuarioCanonico.toLowerCase()).get().then(doc => {
-        if (!doc.exists) {
-            console.warn("⚠️ No existe el documento en 'ranking'.");
-            return;
-        }
-
-        const data = doc.data();
-        // 🔍 ESTO TE DICE EXACTAMENTE QUÉ CAMPOS TIENE FIRESTORE
-        console.log("🔍 CAMPOS encontrados:", Object.keys(data));
-        console.log("🔍 VALOR de xp:", data.xp);
-        console.log("🔍 VALOR de insignias:", data.insignias);
-
-        // Sincronizar SIEMPRE desde la nube (aunque sea 0)
-        if (typeof data.xp === 'number') {
-            S.xp = data.xp;
-            console.log("☁️ XP cargado de la nube:", S.xp);
-        } else {
-            console.warn("⚠️ El campo 'xp' NO existe o no es número en Firestore.");
-        }
-
-        if (Array.isArray(data.insignias)) {
-            S.insignias = data.insignias;
-        }
-
-        persist(); // guarda lo sincronizado en local
-        render();  // redibuja pantalla
-    }).catch(err => {
-        console.error("❌ Error leyendo Firestore:", err);
-    });
-}
-
-// Ejecutar al cargar
-setTimeout(sincronizarDesdeNube, 1000);
-/* =========================================
-   MODO FERIA (KIOSCO) - Supervivencia
-   ========================================= */
+/* ---------- MODO FERIA (KIOSCO) ---------- */
 function salirYLimpiar() {
-    // 1. Borra la sesión actual
-    localStorage.removeItem('usuarioActual');
-    // 2. Barre con cualquier progreso local de juegos de esta PC
-    Object.keys(localStorage).forEach(k => {
-        if (k.startsWith('ca_python_v1_') || 
-            k.startsWith('ca_juegos_v1_') || 
-            k.startsWith('ca_arcade_profile_v1_')) {
-            localStorage.removeItem(k);
-        }
-    });
-    // 3. Manda al registro para el siguiente jugador
-    location.href = 'registro.html';
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
 }
 
-// 1. Secuestrar los botones de SALIR existentes
-document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
-    btn.onclick = salirYLimpiar;
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout')) salirYLimpiar();
 });
 
-// 2. Auto-Reset por Inactividad (90 segundos sin tocar nada)
 let timerInactividad;
 function resetearTimer() {
-    clearTimeout(timerInactividad);
-    timerInactividad = setTimeout(() => {
-        console.log("Inactividad detectada. Reseteando PC para el siguiente...");
-        salirYLimpiar();
-    }, 90000); // 90,000 ms = 90 segundos
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log("Inactividad detectada. Reseteando PC...");
+    salirYLimpiar();
+  }, 90000);
 }
 ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
-    document.addEventListener(evt, resetearTimer, { passive: true });
+  document.addEventListener(evt, resetearTimer, { passive: true });
 });
-resetearTimer(); // Iniciar el contador al cargar
+resetearTimer();
 
-// 3. Botón de Pánico para Cris y el equipo (Tecla F8)
 document.addEventListener('keydown', e => {
-    if (e.key === 'F8') {
-        e.preventDefault();
-        salirYLimpiar();
-    }
+  if (e.key === 'F8') {
+    e.preventDefault();
+    salirYLimpiar();
+  }
 });
+</script>
+
+<!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
+<script src="pixelword-nav.js?v=4"></script>
+<script>
+(function(){
+  const limpiar = () => {
+    const o = document.querySelectorAll('header.gx-navbar');
+    for (let i = 1; i < o.length; i++) o[i].remove();
+  };
+  limpiar();
+  window.addEventListener('load', limpiar);
+  try{ if (localStorage.getItem('tema') === 'light') document.documentElement.setAttribute('data-theme','light'); }catch(e){}
+})();
 </script>
 </body>
 </html>
