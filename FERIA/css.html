@@ -229,7 +229,7 @@ body{min-height:100dvh}
   <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
     <div class="insignia">🎨🏅</div>
     <h2 id="tFin">¡Completaste CSS!</h2>
-    <p>Ganaste la <b>Insignia CSS</b> y <b id="xpTotal">800</b> XP en total. Mira dónde quedaste en el ranking.</p>
+    <p>Ganaste la <b>Insignia CSS</b> y <b id="xpTotal">500</b> XP en total. Mira dónde quedaste en el ranking.</p>
     <div class="fila-btn">
       <a class="btn submit" href="ranking.html" style="text-decoration:none">Ver ranking</a>
       <a class="btn" href="juegos.html" style="text-decoration:none;color:var(--texto)">Otros juegos</a>
@@ -245,13 +245,18 @@ body{min-height:100dvh}
 <script src="java/firebase-init.js"></script>
 <script>
 /* XP a la nube: suma atómica en ranking/{usuario} (solo si Firebase y usuario existen) */
-function guardarXP(n){
-  if (typeof db === 'undefined' || typeof firebase === 'undefined' || !n) return;
+function guardarXP(n, juego, idx){
+  if (typeof db === 'undefined' || !n) return;
   const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
   if (!u) return;
-  db.collection('ranking').doc(u).set({
-    xp: firebase.firestore.FieldValue.increment(n)
-  }, { merge: true });
+  const ref = db.collection('ranking').doc(u);
+  const marca = juego + '_' + idx;              // ej: html_0, html_1...
+  db.runTransaction(async tx => {
+    const s = await tx.get(ref);
+    const d = s.exists ? s.data() : {};
+    if ((d.pruebas || {})[marca]) return;       // esta prueba ya dio su XP: no se repite
+    tx.set(ref, { xp: (d.xp || 0) + n, pruebas: { [marca]: true } }, { merge: true });
+  }).catch(err => console.error('guardarXP', err));
 }
 
 /* Estilo computado de un elemento dentro de la vista previa */
@@ -261,7 +266,7 @@ const gs = (D, sel) => { const el = D.querySelector(sel); return el ? D.defaultV
 /* html: contenido de la página · base: CSS que ya viene puesto · solucion: lo que se ve en "Así debe verse"
    checks: cada una revisa un estilo real ya calculado por el navegador */
 const EJERCICIOS = [
-  { titulo:'Pintar el texto', xp:150,
+  { titulo:'Pintar el texto', xp:100,
     explicacion:`<p>CSS cambia cómo se ve el HTML. Una regla elige un elemento (el <b>selector</b>) y le da estilos dentro de llaves.</p>
       <p>Ejemplo: <code>p { color: blue; }</code> pinta de azul todos los párrafos.</p>`,
     mision:'Haz que el título <b>h1</b> tenga el color <b>red</b> (rojo).',
@@ -272,7 +277,7 @@ const EJERCICIOS = [
     checks:[ { d:'el h1 debe tener color: red;', f:D => { const s = gs(D,'h1'); return s && s.color === 'rgb(255, 0, 0)'; } } ],
     pista:'Escribe h1 { color: red; } con las llaves y el punto y coma al final.' },
 
-  { titulo:'Fondo y tamaño', xp:150,
+  { titulo:'Fondo y tamaño', xp:100,
     explicacion:`<p>Con <code>background-color</code> cambias el fondo de un elemento y con <code>font-size</code> el tamaño de su letra.</p>
       <p>Para elegir un elemento por su clase se usa un punto: <code>.caja { ... }</code></p>`,
     mision:'A la clase <b>.caja</b> ponle fondo <b>blue</b> y letra de <b>24px</b>.',
@@ -286,7 +291,7 @@ const EJERCICIOS = [
     ],
     pista:'.caja { background-color: blue; font-size: 24px; } Cada propiedad termina con punto y coma.' },
 
-  { titulo:'Espacios y bordes', xp:150,
+  { titulo:'Espacios y bordes', xp:100,
     explicacion:`<p><code>padding</code> es el espacio por dentro de una caja y <code>border</code> es su borde. Con <code>border-radius</code> las esquinas se redondean.</p>
       <p>Ejemplo: <code>border: 2px solid black;</code> (grosor, estilo y color).</p>`,
     mision:'A <b>.tarjeta</b> ponle <b>padding: 20px</b>, un borde <b>3px solid</b> (del color que quieras) y <b>border-radius: 10px</b>.',
@@ -301,7 +306,7 @@ const EJERCICIOS = [
     ],
     pista:'Dentro de .tarjeta { } escribe padding: 20px; border: 3px solid black; border-radius: 10px;' },
 
-  { titulo:'Acomodar con Flexbox', xp:150,
+  { titulo:'Acomodar con Flexbox', xp:100,
     explicacion:`<p><b>Flexbox</b> acomoda elementos en fila. Se activa en el contenedor (el papá) con <code>display: flex;</code></p>
       <p>Luego <code>justify-content</code> decide cómo se reparten: <code>center</code> los junta en el centro, <code>space-between</code> los separa.</p>`,
     mision:'Haz que <b>.fila</b> use <b>display: flex</b> y que sus cuadros queden en el <b>center</b> con <b>justify-content</b>.',
@@ -315,7 +320,7 @@ const EJERCICIOS = [
     ],
     pista:'.fila { display: flex; justify-content: center; } Sin display: flex, justify-content no hace nada.' },
 
-  { titulo:'Prueba final', xp:200, final:true,
+  { titulo:'Prueba final', xp:100, final:true,
     explicacion:`<p>Llegó la hora de juntar todo: colores, espacios, bordes y Flexbox.</p>
       <p>Para separar elementos dentro de un contenedor flex usa <code>gap</code>, por ejemplo <code>gap: 10px;</code></p>`,
     mision:`Diseña un menú:<br>
@@ -474,10 +479,9 @@ async function exito(){
   est.hechos[i] = true;
   guardarCodigo();
   if (primeraVez) {
-    try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
     try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
     mostrarXP(e.xp);
-    guardarXP(e.xp);
+    guardarXP(e.xp, 'css', i);
   }
   cargar(i);
   escribir('✔ ¡Correcto!', 'ok');

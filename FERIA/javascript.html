@@ -215,7 +215,7 @@ body{min-height:100dvh}
   <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
     <div class="insignia">🟨🏅</div>
     <h2 id="tFin">¡Completaste JavaScript!</h2>
-    <p>Ganaste la <b>Insignia JavaScript</b> y <b id="xpTotal">300</b> XP en total. Mira dónde quedaste en el ranking.</p>
+    <p>Ganaste la <b>Insignia JavaScript</b> y <b id="xpTotal">500</b> XP en total. Mira dónde quedaste en el ranking.</p>
     <div class="fila-btn">
       <a class="btn submit" href="ranking.html" style="text-decoration:none">Ver ranking</a>
       <a class="btn" href="juegos.html" style="text-decoration:none;color:var(--texto)">Otros juegos</a>
@@ -231,18 +231,23 @@ body{min-height:100dvh}
 <script src="java/firebase-init.js"></script>
 <script>
 /* XP a la nube: suma atómica en ranking/{usuario} (solo si Firebase y usuario existen) */
-function guardarXP(n){
-  if (typeof db === 'undefined' || typeof firebase === 'undefined' || !n) return;
+function guardarXP(n, juego, idx){
+  if (typeof db === 'undefined' || !n) return;
   const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
   if (!u) return;
-  db.collection('ranking').doc(u).set({
-    xp: firebase.firestore.FieldValue.increment(n)
-  }, { merge: true });
+  const ref = db.collection('ranking').doc(u);
+  const marca = juego + '_' + idx;              // ej: html_0, html_1...
+  db.runTransaction(async tx => {
+    const s = await tx.get(ref);
+    const d = s.exists ? s.data() : {};
+    if ((d.pruebas || {})[marca]) return;       // esta prueba ya dio su XP: no se repite
+    tx.set(ref, { xp: (d.xp || 0) + n, pruebas: { [marca]: true } }, { merge: true });
+  }).catch(err => console.error('guardarXP', err));
 }
 
 /* ============== EJERCICIOS ============== */
 const EJERCICIOS = [
-  { titulo:'Tu primer mensaje', xp:50,
+  { titulo:'Tu primer mensaje', xp:100,
     explicacion:`<p>Los programas le hablan al mundo con <code>console.log()</code>. Lo que escribas entre comillas aparece en la terminal.</p>
       <p>Ejemplo: <code>console.log("Hola");</code> muestra la palabra Hola.</p>`,
     mision:'Haz que la computadora diga <b>Hola, mundo</b>.',
@@ -251,7 +256,7 @@ const EJERCICIOS = [
     exigir:[/console\.log\s*\(/], reglas:[/Hola, mundo/],
     pista:'Escribe console.log("Hola, mundo"); con las comillas, los paréntesis y el punto y coma.' },
 
-  { titulo:'Guardar datos', xp:50,
+  { titulo:'Guardar datos', xp:100,
     explicacion:`<p>Una <b>variable</b> es una cajita con nombre donde guardas un dato. Se crea con <code>let</code> y el signo <code>=</code>.</p>
       <p>Ejemplo: <code>let nivel = 5;</code> guarda el 5 en la caja llamada nivel. Luego puedes mostrarla con <code>console.log(nivel);</code></p>`,
     mision:'Crea una variable llamada <b>x</b> con el valor <b>50</b> y muéstrala con console.log.',
@@ -260,7 +265,7 @@ const EJERCICIOS = [
     exigir:[/\b(let|const|var)\s+x\s*=/, /console\.log\s*\(/], reglas:[/\bx\s*=\s*50\b/, /console\.log\s*\(\s*x\s*\)/],
     pista:'Primero escribe let x = 50; y en otra línea console.log(x); No lleva comillas.' },
 
-  { titulo:'Tomar decisiones', xp:50,
+  { titulo:'Tomar decisiones', xp:100,
     explicacion:`<p>Con <code>if</code> el programa decide qué hacer. Si la condición entre paréntesis es verdadera, ejecuta lo que está dentro de las llaves <code>{ }</code>.</p>
       <p>Ejemplo:</p>
       <p><code>if (vidas &gt; 0) {</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;console.log("Sigues");</code><br><code>}</code></p>`,
@@ -270,7 +275,7 @@ const EJERCICIOS = [
     exigir:[/\bif\b/], reglas:[/if\s*\(\s*x\s*>\s*20\s*\)/, /Mayor/],
     pista:'Escribe if (x > 20) { y dentro console.log("Mayor"); y cierra con }.' },
 
-  { titulo:'Repetir sin cansarse', xp:50,
+  { titulo:'Repetir sin cansarse', xp:100,
     explicacion:`<p>Un <b>ciclo for</b> repite instrucciones. Tiene tres partes: dónde empieza, hasta cuándo sigue y cómo avanza.</p>
       <p>Ejemplo:</p>
       <p><code>for (let i = 1; i &lt;= 2; i++) {</code><br><code>&nbsp;&nbsp;&nbsp;&nbsp;console.log("Hola");</code><br><code>}</code></p>
@@ -421,10 +426,9 @@ async function exito(){
   est.hechos[i] = true;
   guardarCodigo();
   if (primeraVez) {
-    try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
     try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
     mostrarXP(e.xp);
-    guardarXP(e.xp);
+    guardarXP(e.xp, 'javascript', i);
   }
   cargar(i);
   if (est.hechos.every(Boolean)) terminar();

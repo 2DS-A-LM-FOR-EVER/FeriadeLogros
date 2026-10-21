@@ -23,7 +23,7 @@ const GAMES = [
   { id:'java', name:'JavaScript', short:'JS', cat:'Reto', lvl:3, art:'java', color:'#ff4f9a', url:'javascript.html',
     desc:'El reto final: clases, objetos y logica fuerte. Demuestra lo aprendido.' }
 ];
-const XP_POR_HECHO = [50, 50, 50, 50, 100]; // 4 ejercicios + prueba final = 300 por lenguaje
+const XP_POR_HECHO = [100, 100, 100, 100, 100]; // 5 pruebas x 100 = 500 por juego
 
 /* ---------- Dibujos pixel 8x8 ---------- */
 const SPRITES = {

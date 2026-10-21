@@ -1,9 +1,9 @@
 (function () {
   const RANGOS = [
     { n: 'Bronce',   min: 0,    c: '#cd7f32' },
-    { n: 'Oro',      min: 300,  c: '#ffc24b' },
-    { n: 'Platino',  min: 700,  c: '#8fe8d8' },
-    { n: 'Diamante', min: 1200, c: '#4fd8ff' }
+    { n: 'Oro',      min: 500, c: '#ffc24b' },
+    { n: 'Platino',  min: 1500, c: '#8fe8d8' },
+    { n: 'Diamante', min: 2500, c: '#4fd8ff' }
   ];
   const rangoDe = xp => RANGOS.reduce((a, r) => xp >= r.min ? r : a, RANGOS[0]);
 

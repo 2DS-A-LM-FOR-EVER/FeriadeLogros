@@ -465,9 +465,9 @@ setInterval(()=>{const f=SEQ[t++%SEQ.length];document.querySelectorAll('canvas[d
 /* ---------- RANGOS + EMBLEMAS ---------- */
 const RANKS=[
   {n:'Bronce', min:0,    c:'#cd7f32', l:'#f2bb86', d:'#6b3a10', g:'I'},
-  {n:'Plata',  min:300,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
-  {n:'Oro',    min:700,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
-  {n:'Platino',min:1200, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
+  {n:'Plata',  min:500,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
+  {n:'Oro',    min:1500,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
+  {n:'Platino',min:2500, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
 ];
 const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);

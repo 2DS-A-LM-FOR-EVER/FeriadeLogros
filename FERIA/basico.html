@@ -357,7 +357,7 @@ body{overflow-wrap:break-word}
 const KIOSCO_SEG = 90;          // segundos sin tocar nada para reiniciar la PC (modo feria)
 const AVISO_SEG  = 70;          // aviso amable antes del reinicio
 const INSIGNIA_ID = 'basico';   // valor que se guarda en ranking/{usuario}.insignias
-const XP = [50, 50, 50, 50, 100];   // total = 300
+const XP = [100, 100, 100, 100, 100];   // total = 500
 
 const $ = s => document.querySelector(s);
 const HW = /^(?!.*sof)(?=.*har)/i;      // "hardware" (tolera faltas de ortografía)
@@ -692,7 +692,20 @@ async function flush(){
     S.pend.xp-=xp; if(ins) S.pend.ins=false; guardar(); nube('ok');
   }catch(e){ console.warn('[basico] no se pudo guardar en Firebase:',e); nube('warn'); }
 }
-async function sumar(n,ins){ S.pend.xp+=n; if(ins) S.pend.ins=true; guardar(); await flush(); }
+async function sumar(n,ins,i){
+  const d=getDB(); if(!d||!UID){ nube(UID?'warn':'login'); return; }
+  const ref=d.collection('ranking').doc(UID), marca='basico_'+i;
+  try{
+    await d.runTransaction(async tx=>{
+      const s=await tx.get(ref), dat=s.exists?s.data():{};
+      if((dat.pruebas||{})[marca]) return;          // esta prueba ya dio su XP
+      const u={ usuario:UID, xp:(dat.xp||0)+n, pruebas:{[marca]:true} };
+      if(ins) u.insignias=firebase.firestore.FieldValue.arrayUnion(INSIGNIA_ID);
+      tx.set(ref,u,{merge:true});
+    });
+    nube('ok');
+  }catch(e){ console.warn('[basico] no se pudo guardar',e); nube('warn'); }
+}
 
 async function sincronizar(){
   const d=getDB(); if(!d||!UID) return;
@@ -734,7 +747,7 @@ function renderMapa(){
     const est=S.done[i]?'hecho':(i===S.sel?'act':(hay(i)?'':'lock'));
     return `<button class="nodo ${est}" data-act="ir" data-i="${i}" ${hay(i)?'':'disabled'}><span class="ic">${r.icono}</span>Reto ${i+1}<b>${r.corto} · ${XP[i]} XP</b></button>`;
   }).join('');
-  const g=xpGanado(); $('#xpTxt').textContent=`XP ${g} / 300`; $('#xpFill').style.width=(g/300*100)+'%';
+  const g=xpGanado(); $('#xpTxt').textContent=`XP ${g} / 500`; $('#xpFill').style.width=(g/500*100)+'%';
 }
 function renderPasos(){
   const i=S.sel, r=RETOS[i], pi=S.paso[i], hecho=S.done[i], cont=$('#pasos'); if(!cont) return;
@@ -814,7 +827,7 @@ async function completarReto(i){
   popupXP(XP[i]); confeti(24);
   habla(i<4?`¡Reto ${i+1} completado! 🎉 Ganaste <b>${XP[i]} XP</b>. ¡Sigue con el siguiente!`:'¡LO LOGRASTE! 🏆 Completaste todos los retos.',9000);
   const fin=todoListo();
-  await sumar(XP[i], fin);
+  await sumar(XP[i], fin, i);
   if(fin) setTimeout(victoria,1900);
   else setTimeout(()=>{ const f=$('.fin-reto'); if(f) f.scrollIntoView({behavior:'smooth',block:'center'}); },300);
 }
@@ -829,7 +842,7 @@ function victoria(){
   const o=$('#victoria');
   o.innerHTML=`<div class="px vic"><div class="escudo"><span>🛡️</span><b>BÁSICO</b></div>
     <h2>¡FELICIDADES!</h2><p>Completaste los 5 retos de Computación Básica. Ya sabes lo que es el hardware y el software, usar el teclado y el mouse, y guardar tus archivos.</p>
-    <div class="vic-xp">+300 XP en total</div><p>🏅 <b>Insignia Básico desbloqueada</b></p>
+    <div class="vic-xp">+500 XP en total</div><p>🏅 <b>Insignia Básico desbloqueada</b></p>
     <p class="peque">${UID?'Se guarda en tu perfil y en el ranking.':'Inicia sesión para que quede en tu perfil.'}</p>
     <div class="acc"><a class="btn verde" href="perfil.html">Ver mi perfil</a><a class="btn azul" href="ranking.html">Ver ranking</a><a class="btn" href="juegos.html">Más juegos</a><button class="btn rosa" data-act="cerrarV">Seguir repasando</button></div></div>`;
   o.classList.add('on'); confeti(60);

@@ -310,7 +310,7 @@ body{min-height:100dvh}
   <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
     <div class="insignia">🌐🏅</div>
     <h2 id="tFin">¡Completaste HTML!</h2>
-    <p>Ganaste la <b>Insignia HTML</b> y <b id="xpTotal">300</b> XP en total. Mira dónde quedaste en el ranking.</p>
+    <p>Ganaste la <b>Insignia HTML</b> y <b id="xpTotal">500</b> XP en total. Mira dónde quedaste en el ranking.</p>
     <div class="fila-btn">
       <a class="btn submit" href="ranking.html" style="text-decoration:none">Ver ranking</a>
       <a class="btn" href="juegos.html" style="text-decoration:none;color:var(--texto)">Otros juegos</a>
@@ -329,15 +329,18 @@ body{min-height:100dvh}
 <script>
 /* ============== XP A LA NUBE ============== */
 /* Suma atómica en ranking/{usuario} */
-function guardarXP(n){
+function guardarXP(n, juego, idx){
   if (typeof db === 'undefined' || !n) return;
   const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
   if (!u) return;
-  try {
-    db.collection('ranking').doc(u).set({
-      xp: firebase.firestore.FieldValue.increment(n)
-    }, { merge: true });
-  } catch(err){ console.error('guardarXP', err); }
+  const ref = db.collection('ranking').doc(u);
+  const marca = juego + '_' + idx;              // ej: html_0, html_1...
+  db.runTransaction(async tx => {
+    const s = await tx.get(ref);
+    const d = s.exists ? s.data() : {};
+    if ((d.pruebas || {})[marca]) return;       // esta prueba ya dio su XP: no se repite
+    tx.set(ref, { xp: (d.xp || 0) + n, pruebas: { [marca]: true } }, { merge: true });
+  }).catch(err => console.error('guardarXP', err));
 }
 
 /* ╔══════════════════════════════════════════════════════════════╗
@@ -364,7 +367,7 @@ const EJERCICIOS = [
 
   /* ---------- 1 · Título ---------- */
   {
-    titulo: 'Tu primer título', xp: 50,
+    titulo: 'Tu primer título', xp: 100,
     explicacion: `
       <p>HTML usa <b>etiquetas</b>: una de apertura y una de cierre. El texto va en medio.</p>
       <p>El título más grande de una página es <code>&lt;h1&gt;</code>. Ejemplo:</p>
@@ -380,7 +383,7 @@ const EJERCICIOS = [
 
   /* ---------- 2 · Párrafos y negritas ---------- */
   {
-    titulo: 'Párrafos y negritas', xp: 50,
+    titulo: 'Párrafos y negritas', xp: 100,
     explicacion: `
       <p>El texto normal va dentro de <code>&lt;p&gt;</code> (párrafo). Para resaltar una palabra usa <code>&lt;b&gt;</code> (negrita) dentro del párrafo.</p>
       <p>Ejemplo:</p>
@@ -398,7 +401,7 @@ const EJERCICIOS = [
 
   /* ---------- 3 · Enlaces e imágenes (usa IMG) ---------- */
   {
-    titulo: 'Enlaces e imágenes', xp: 50,
+    titulo: 'Enlaces e imágenes', xp: 100,
     explicacion: `
       <p>Un enlace usa <code>&lt;a&gt;</code> con el atributo <code>href</code> (a dónde va). Una imagen usa <code>&lt;img&gt;</code> con <code>src</code> (qué imagen) y <code>alt</code> (descripción). <code>&lt;img&gt;</code> no necesita cierre.</p>
       <p>Ejemplos:</p>
@@ -417,7 +420,7 @@ const EJERCICIOS = [
 
   /* ---------- 4 · Listas ---------- */
   {
-    titulo: 'Listas', xp: 50,
+    titulo: 'Listas', xp: 100,
     explicacion: `
       <p>Una lista con viñetas es <code>&lt;ul&gt;</code> y cada elemento va en un <code>&lt;li&gt;</code>. Si quieres numerarla, usa <code>&lt;ol&gt;</code>.</p>
       <p>Ejemplo:</p>
@@ -648,10 +651,9 @@ async function exito(){
   guardarCodigo();
 
   if (primeraVez) {
-    try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
     try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
     mostrarXP(e.xp);
-    guardarXP(e.xp);
+    guardarXP(e.xp, 'html', i);
   }
 
   cargar(i);

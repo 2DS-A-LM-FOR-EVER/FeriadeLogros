@@ -357,9 +357,9 @@ body{overflow-wrap:break-word}
 
   const RANGOS = [
     { n:'BRONCE',   min:0,    c:'#cd7f32' },
-    { n:'ORO',      min:300,  c:'#ffc24b' },
-    { n:'PLATINO',  min:700,  c:'#8fe8d8' },
-    { n:'DIAMANTE', min:1200, c:'#4fd8ff' }
+    { n:'PLATA',      min:500,  c:'#ffc24b' },
+    { n:'ORO',  min:1500,  c:'#8fe8d8' },
+    { n:'PLATINO', min:2500, c:'#4fd8ff' }
   ];
   const rangoDe = xp => RANGOS.reduce((a,r) => xp >= r.min ? r : a, RANGOS[0]);
   const yo = (localStorage.getItem('usuarioActual') || '').toLowerCase();
