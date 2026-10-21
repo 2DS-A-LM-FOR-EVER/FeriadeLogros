@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIXELWORLD – Coding Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/juegos.css">
+<link rel="icon" href="ho.png">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Mulish:wght@600;700;800&family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#050a24">
+<script>try{if(localStorage.getItem("tema")==="light")document.documentElement.setAttribute("data-theme","light")}catch(e){}</script>
+<style>
+  /* ═══════════ NAVBAR PIXELWORLD (compartido) ═══════════ */
+  header.gx-navbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:20px; padding:12px 24px;
+    background:linear-gradient(180deg, #050a24 0%, #071232 100%);
+    border-bottom:4px solid #0e1a4a;
+    box-shadow:0 4px 0 #000, 0 8px 24px rgba(0,0,0,.6);
+    font-family:'Pixelify Sans', monospace !important;
+    overflow:visible;
+  }
+  header.gx-navbar::after{
+    content:""; position:absolute; left:0; right:0; bottom:-4px; height:4px;
+    background:repeating-linear-gradient(90deg,
+      #fdc815 0 8px, #ff4f9a 8px 16px, #4fd8ff 16px 24px, #7cffb2 24px 32px);
+    opacity:.75; pointer-events:none;
+  }
+  header.gx-navbar .left{display:flex; align-items:center; gap:28px; min-width:0}
+  header.gx-navbar .right{display:flex; align-items:center; gap:14px; flex:none}
+
+  header.gx-navbar .logo{
+    display:flex; align-items:center; gap:10px; text-decoration:none; flex:none;
+  }
+  header.gx-navbar .logo .coin,
+  header.gx-navbar .logo img.coin{
+    width:38px !important; height:38px !important;
+    object-fit:contain; image-rendering:pixelated;
+    filter:drop-shadow(0 0 10px #fdc815);
+    animation:gxSpin 4s ease-in-out infinite;
+    background:none !important; border:0 !important; box-shadow:none !important;
+    padding:0 !important; display:block;
+  }
+  @keyframes gxSpin{
+    0%,100%{transform:rotate(-8deg) scale(1)}
+    50%   {transform:rotate(8deg) scale(1.08)}
+  }
+  header.gx-navbar .logo-t{
+    color:#fff; text-shadow:2px 2px 0 #000;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:clamp(16px, 2.2vw, 20px) !important;
+    font-weight:700 !important; letter-spacing:1.5px !important;
+  }
+
+  .gx-nav{
+    display:flex; gap:4px; padding:4px;
+    background:#0a1440; border:3px solid #000;
+    box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
+  }
+  .gx-nav a{
+    position:relative; padding:8px 16px;
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:14px; letter-spacing:1px;
+    color:#8fa0d6; text-decoration:none;
+    border:2px solid transparent; transition:all .12s ease;
+  }
+  .gx-nav a:hover{
+    color:#fdc815; text-shadow:0 0 10px #fdc815;
+    background:rgba(253,200,21,.06);
+  }
+  .gx-nav a.on{
+    background:linear-gradient(180deg, #fdc815 0%, #c9940a 100%);
+    color:#050a24; border:2px solid #000;
+    box-shadow:inset 0 -3px 0 #7a5a00, 0 0 14px rgba(253,200,21,.65);
+    text-shadow:none;
+  }
+  .gx-nav a.on::after{
+    content:""; position:absolute; left:8px; right:8px; bottom:-10px;
+    height:3px; background:#fdc815; box-shadow:0 0 8px #fdc815;
+  }
+
+  .gx-theme-btn{
+    width:42px; height:42px; display:grid; place-items:center;
+    background:#0a1440; border:3px solid #000;
+    box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
+    color:#4fd8ff; cursor:pointer; transition:all .12s ease; padding:0;
+  }
+  .gx-theme-btn:hover{
+    color:#fdc815; transform:translate(1px,1px);
+    box-shadow:inset 0 0 0 2px #1b2a6b, 2px 2px 0 #000;
+  }
+  .gx-theme-btn:active{
+    transform:translate(3px,3px);
+    box-shadow:inset 0 0 0 2px #1b2a6b, 0 0 0 #000;
+  }
+  .gx-theme-btn svg{
+    width:20px; height:20px; fill:none; stroke:currentColor;
+    stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;
+  }
+  .gx-theme-btn .i-sun{display:none}
+  [data-theme="light"] .gx-theme-btn .i-moon{display:none}
+  [data-theme="light"] .gx-theme-btn .i-sun{display:block}
+
+  .gx-me{
+    display:flex; align-items:center; gap:10px;
+    padding:5px 14px 5px 5px;
+    background:#0a1440; border:3px solid #000;
+    box-shadow:inset 0 0 0 2px #1b2a6b, 3px 3px 0 #000;
+    text-decoration:none; transition:all .12s ease;
+  }
+  .gx-me:hover{
+    box-shadow:inset 0 0 0 2px #fdc815, 3px 3px 0 #000;
+    transform:translate(1px,1px);
+  }
+  .gx-me-av{
+    width:32px; height:32px; background:#000;
+    border:2px solid #7cffb2;
+    display:grid; place-items:center; overflow:hidden;
+    image-rendering:pixelated; flex:none;
+  }
+  .gx-me-av canvas,
+  .gx-me-av img{width:100%; height:100%; object-fit:contain; image-rendering:pixelated}
+  .gx-me-name{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:14px; color:#eaf1ff; letter-spacing:.5px;
+    max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  .gx-login-btn{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:13px; letter-spacing:1.5px;
+    padding:10px 18px;
+    background:linear-gradient(180deg, #fdc815 0%, #c9940a 100%);
+    color:#050a24; text-decoration:none;
+    border:3px solid #000; text-transform:uppercase;
+    box-shadow:3px 3px 0 #000, inset 0 -3px 0 rgba(0,0,0,.25);
+    transition:all .12s ease; display:inline-block;
+  }
+  .gx-login-btn:hover{
+    filter:brightness(1.1); transform:translate(1px,1px);
+    box-shadow:2px 2px 0 #000, inset 0 -3px 0 rgba(0,0,0,.25);
+  }
+
+  .gx-logout{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:13px; letter-spacing:1.5px;
+    padding:10px 18px;
+    background:linear-gradient(180deg, #ff4f9a 0%, #a8235c 100%);
+    color:#fff; border:3px solid #000; cursor:pointer;
+    box-shadow:3px 3px 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
+    transition:all .12s ease; text-transform:uppercase;
+  }
+  .gx-logout:hover{
+    filter:brightness(1.12); transform:translate(1px,1px);
+    box-shadow:2px 2px 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
+  }
+  .gx-logout:active{
+    transform:translate(3px,3px);
+    box-shadow:0 0 0 #000, inset 0 -3px 0 rgba(0,0,0,.3);
+  }
+
+  @media (max-width:900px){
+    header.gx-navbar{padding:10px 16px; gap:12px}
+    header.gx-navbar .left{gap:16px}
+    .gx-nav a{padding:7px 12px; font-size:13px}
+    .gx-me-name{display:none}
+    .gx-me{padding:4px}
+  }
+  @media (max-width:620px){
+    header.gx-navbar .logo-t{display:none}
+    .gx-nav{padding:3px}
+    .gx-nav a{padding:6px 9px; font-size:11px}
+    .gx-theme-btn{width:38px; height:38px}
+    .gx-theme-btn svg{width:18px; height:18px}
+    .gx-logout, .gx-login-btn{padding:9px 12px; font-size:11px}
+  }
+  @media (max-width:420px){
+    .gx-nav a{padding:5px 7px; font-size:10px}
+    .gx-logout, .gx-login-btn{padding:8px 10px}
+    .gx-logout span, .gx-login-btn span{display:none}
+    .gx-logout::before{content:"✕"; font-size:16px}
+    .gx-login-btn::before{content:"→"; font-size:16px}
+  }
+  /* ═══════════ TIPOGRAFÍA PIXEL-ART GLOBAL ═══════════ */
+  html, body,
+  body *:not(svg):not(svg *){
+    font-family:'Pixelify Sans', monospace !important;
+  }
+  h1,h2,h3,h4,p,a,li,span,div,button,input,label{
+    font-family:'Pixelify Sans', monospace !important;
+    letter-spacing: .5px;
+  }
+
+  /* ═══════════ TÍTULO PIXELWORLD ═══════════ */
+  .hero .title{text-align:center;margin:0 auto;width:100%}
+  .hero .title img{
+    width:min(760px, 88vw) !important;
+    max-width:100% !important;
+    height:auto !important;
+    display:block;
+    margin:0 auto;
+    image-rendering:pixelated;
+  }
+  @media (max-width:768px){
+    .hero .title img{width:min(560px, 92vw) !important}
+  }
+
+  /* ═══════════ LOGO: ESTRELLA + PIXELWORLD ═══════════ */
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+  }
+  .logo img.coin,
+  .logo .coin{
+    width:42px !important;
+    height:42px !important;
+    object-fit:contain;
+    image-rendering:pixelated;
+    background:none !important;
+    border:0 !important;
+    border-radius:0 !important;
+    padding:0 !important;
+    box-shadow:none !important;
+    display:block;
+  }
+  .logo .logo-t{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:clamp(18px, 2.6vw, 24px) !important;
+    font-weight:700 !important;
+    letter-spacing:1.5px !important;
+    color:#ffffff;
+    text-transform:uppercase;
+    line-height:1;
+  }
+
+  /* ═══════════ HERO: agrandar textos ═══════════ */
+  .hero .kicker{
+    font-size:clamp(16px, 2vw, 22px) !important;
+    letter-spacing:2px !important;
+  }
+  .hero .sub{
+    font-size:clamp(16px, 1.8vw, 21px) !important;
+    line-height:1.5 !important;
+    max-width:640px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .hero .btn.lg{
+    font-size:clamp(18px, 2vw, 22px) !important;
+    padding:16px 42px !important;
+  }
+  .hero .rk-link{
+    font-size:clamp(15px, 1.6vw, 18px) !important;
+    letter-spacing:2px !important;
+  }
+
+  /* ═══════════ RANKING: tipografía más grande ═══════════ */
+  .rk-t{font-size:clamp(34px, 6vw, 56px) !important;letter-spacing:2px !important}
+  .rk-s{font-size:clamp(16px, 1.8vw, 20px) !important;letter-spacing:1px !important}
+  .rk-row{font-size:clamp(16px, 1.6vw, 20px) !important}
+  .rk-pos{font-size:clamp(22px, 2.4vw, 30px) !important}
+  .rk-name{font-size:clamp(18px, 2vw, 24px) !important;letter-spacing:1px !important}
+  .rk-xp{font-size:clamp(18px, 2vw, 22px) !important;letter-spacing:1px !important}
+  .rk-chip{font-size:clamp(11px, 1.2vw, 14px) !important;letter-spacing:1px !important}
+  .rk-msg{font-size:clamp(16px, 1.8vw, 20px) !important}
+
+  /* ═══════════ DRAWER (menú móvil) ═══════════ */
+  .drawer a, .drawer span, .drawer ul, .drawer li{
+    font-family:'Pixelify Sans', monospace !important;
+    font-size:18px !important;
+    letter-spacing:1px !important;
+  }
+</style>
+<style id="ajustes">
+/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,body *{cursor:auto!important}
+body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
+body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
+body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
+body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
+body button:disabled,body .btn:disabled{cursor:not-allowed!important}
+#espada-cursor{display:none!important}
+img,video,canvas,svg,iframe{max-width:100%}
+body{overflow-wrap:break-word}
+@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+</style>
+</head>
+<body>
+
+<div class="fondo-gif" aria-hidden="true"></div>
+
+<main class="hero">
+  <div class="stage" id="stage" aria-hidden="true"></div>
+  <div class="scrim"></div>
+  <p class="kicker">Comience su</p>
+  <h1 class="title"><img src="titulo.gif" alt="PIXELWORLD"></h1>
+  <p class="sub">La forma más divertida y accesible para principiantes de aprender a programar. ⋆˚</p>
+  <a class="btn lg" href="registro.html">Comience</a>
+  <a class="rk-link" href="#ranking">Ver ranking ▼</a>
+</main>
+
+<section class="rk-sec" id="ranking">
+  <h2 class="rk-t">TOP 10 <span>JUGADORES</span></h2>
+  <p class="rk-s">Los que más XP han ganado</p>
+  <ol class="rk-list" id="rkList"><li class="rk-msg">Cargando ranking…</li></ol>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="java/firebase-init.js"></script>
+<script src="java/script.js"></script>
+<script src="pixelword-nav.js?v=4"></script>
+
+<script>
+/* ═════════════ ANTI-NAV DUPLICADO ═════════════
+   pixelword-nav.js es el ÚNICO que debe crear la navbar (header.gx-navbar).
+   Si algún otro script/archivo inyecta una segunda barra, la borramos aquí. */
+(function(){
+  const OFICIAL = 'header.gx-navbar';
+
+  function limpiar(){
+    // 1) Si hay varias navbar oficiales, conservamos SOLO la primera (la de pixelword-nav.js)
+    const oficiales = document.querySelectorAll(OFICIAL);
+    for (let i = 1; i < oficiales.length; i++) oficiales[i].remove();
+
+    // 2) Barra(s) vieja(s) que no sean la oficial
+    document.querySelectorAll('#navbar, .navbar, .nav-bar, .topbar').forEach(n => {
+      if (!n.matches(OFICIAL)) n.remove();
+    });
+  }
+
+  limpiar();
+  document.addEventListener('DOMContentLoaded', limpiar);
+  window.addEventListener('load', limpiar);
+
+  // Por si algún script la inyecta con retraso
+  let n = 0;
+  const iv = setInterval(() => { limpiar(); if (++n > 20) clearInterval(iv); }, 150);
+})();
+</script>
+
+<script>
+/* ═════════════ RANKING TOP 10 EN VIVO ═════════════ */
+(function(){
+  const lista = document.getElementById('rkList');
+  if (!lista) return;
+  const msg = t => { lista.replaceChildren(Object.assign(document.createElement('li'), {className:'rk-msg', textContent:t})); };
+
+  if (typeof db === 'undefined' || !db) { msg('No se pudo conectar con Firebase. Revisa tu conexión.'); return; }
+
+  const RANGOS = [
+    { n:'BRONCE',   min:0,    c:'#cd7f32' },
+    { n:'ORO',      min:300,  c:'#ffc24b' },
+    { n:'PLATINO',  min:700,  c:'#8fe8d8' },
+    { n:'DIAMANTE', min:1200, c:'#4fd8ff' }
+  ];
+  const rangoDe = xp => RANGOS.reduce((a,r) => xp >= r.min ? r : a, RANGOS[0]);
+  const yo = (localStorage.getItem('usuarioActual') || '').toLowerCase();
+
+  function fila(d, i){
+    const r = rangoDe(d.xp || 0);
+    const li = document.createElement('li');
+    li.className = 'rk-row' + ((d.usuario||'').toLowerCase() === yo ? ' me' : '');
+    li.style.animationDelay = (i * 60) + 'ms';
+    const pos = document.createElement('div'); pos.className='rk-pos'; pos.textContent = i + 1;
+    const av  = document.createElement('img'); av.className='rk-av'; av.alt='';
+    av.src = d.avatar || 'boy.gif';
+    av.onerror = () => { av.onerror = null; av.src = 'boy.gif'; };
+    const nm  = document.createElement('div'); nm.className='rk-name'; nm.textContent = d.usuario || '???';
+    const ch  = document.createElement('span'); ch.className='rk-chip'; ch.textContent = r.n; ch.style.background = r.c;
+    const xp  = document.createElement('div'); xp.className='rk-xp'; xp.textContent = (d.xp||0) + ' XP';
+    li.append(pos, av, nm, ch, xp);
+    return li;
+  }
+
+  db.collection('ranking').orderBy('xp','desc').limit(10).onSnapshot(
+    snap => {
+      if (snap.empty) return msg('Aún no hay jugadores. ¡Sé el primero!');
+      lista.replaceChildren(...snap.docs.map((doc, i) => fila(doc.data(), i)));
+    },
+    err => {
+      console.error(err);
+      msg('No se pudo leer el ranking. Revisa las reglas de Firestore.');
+    }
+  );
+})();
+
+/* ═════════════ MODO FERIA (KIOSCO) ═════════════ */
+function salirYLimpiar() {
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
+}
+
+document.querySelectorAll('#logout, .exit-btn, #gxLogout').forEach(btn => {
+  btn.onclick = salirYLimpiar;
+});
+
+let timerInactividad;
+function resetearTimer() {
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log("Inactividad detectada. Reseteando PC...");
+    salirYLimpiar();
+  }, 90000);
+}
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+resetearTimer();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'F8') {
+    e.preventDefault();
+    salirYLimpiar();
+  }
+});
+</script>
+</body>
+</html>

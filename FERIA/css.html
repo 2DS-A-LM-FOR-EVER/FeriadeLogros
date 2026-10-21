@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSS · Coding Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Mulish:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noche:#050a24; --panel:#0b1236; --panel2:#070d2b; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
+    --amarillo:#fdc815; --amarillo-s:#c9940a; --cian:#4fd8ff; --rosa:#ff4f9a; --verde:#7cffb2;
+  }
+  :root[data-tema="claro"]{
+    --noche:#eef3ff; --panel:#ffffff; --panel2:#f3f6ff; --linea:#223a9a; --texto:#0a1240; --suave:#4a5a99;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%}
+  body{
+    background:var(--noche);color:var(--texto);font-family:'Mulish',sans-serif;line-height:1.55;
+    display:flex;flex-direction:column;
+  }
+  button,a{font-family:inherit}
+  :focus-visible{outline:3px solid var(--amarillo);outline-offset:2px}
+
+  /* Barra superior */
+  .top{display:flex;align-items:center;gap:14px;padding:10px 18px;background:var(--panel);border-bottom:4px solid var(--linea)}
+  .top a{color:var(--cian);text-decoration:none;font-family:'Pixelify Sans',monospace}
+  .top h1{font-family:'Pixelify Sans',monospace;font-size:1.4rem;color:var(--amarillo);text-shadow:2px 2px 0 #000;flex:1}
+  .pasos{display:flex;gap:6px}
+  .paso{width:22px;height:22px;border:3px solid var(--linea);background:var(--panel2)}
+  .paso.hecho{background:var(--verde);border-color:#000}
+  .paso.actual{border-color:var(--amarillo)}
+  .btn{
+    font-family:'Pixelify Sans',monospace;font-size:1rem;border:3px solid #000;padding:6px 16px;
+    box-shadow:4px 4px 0 #000;background:var(--panel);color:var(--texto);transition:transform .1s;cursor:pointer;
+  }
+  .btn:hover:not(:disabled){transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.run{background:var(--cian);color:#050a24}
+  .btn.submit{background:var(--amarillo);color:#050a24}
+  .btn.verde{background:var(--verde);color:#050a24}
+
+  /* Zona principal */
+  main{flex:1;display:grid;grid-template-columns:minmax(280px,5fr) 7fr;min-height:0}
+  .izq{padding:22px 24px;overflow:auto;border-right:4px solid var(--linea);background:var(--panel)}
+  .izq .num{font-family:'Pixelify Sans',monospace;color:var(--rosa);font-size:1rem}
+  .izq h2{font-family:'Pixelify Sans',monospace;font-size:1.8rem;margin:2px 0 12px;color:var(--amarillo)}
+  .izq p{margin-bottom:12px;max-width:62ch}
+  .izq code{font-family:'VT323',monospace;font-size:1.25rem;background:var(--panel2);border:2px solid var(--linea);padding:0 6px;color:var(--cian)}
+  .mision{border:3px dashed var(--verde);padding:12px 14px;margin:16px 0;background:var(--panel2)}
+  .mision b{font-family:'Pixelify Sans',monospace;color:var(--verde)}
+  .objetivo{width:100%;height:150px;border:3px solid var(--linea);background:#fff;display:block}
+
+  .der{display:grid;grid-template-rows:1fr auto 240px;min-height:0;background:var(--panel2)}
+  .editor{display:grid;grid-template-columns:44px 1fr;min-height:0;border-bottom:4px solid var(--linea)}
+  #lineas{
+    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;text-align:right;color:var(--suave);
+    padding:14px 8px 14px 0;background:var(--panel);overflow:hidden;white-space:pre;user-select:none;
+  }
+  #codigo{
+    font-family:'VT323',monospace;font-size:1.35rem;line-height:1.4;color:var(--texto);background:transparent;
+    border:0;resize:none;padding:14px;tab-size:4;white-space:pre;overflow:auto;outline:none;min-height:140px;
+  }
+  .acciones{display:flex;gap:12px;align-items:center;padding:10px 14px;background:var(--panel);border-bottom:4px solid var(--linea)}
+  .acciones .estado{margin-left:auto;font-size:.85rem;color:var(--suave)}
+  .salida{display:grid;grid-template-columns:1fr 1fr;min-height:0}
+  #vista{width:100%;height:100%;border:0;background:#fff;border-right:4px solid var(--linea)}
+  #terminal{
+    font-family:'VT323',monospace;font-size:1.3rem;line-height:1.25;background:#000;color:#d7ffe8;
+    padding:10px 14px;overflow:auto;white-space:pre-wrap;
+  }
+  #terminal .err{color:#ff8fa8} #terminal .ok{color:var(--verde)} #terminal .info{color:var(--cian)}
+
+  /* Barra inferior */
+  .bajo{display:flex;align-items:center;gap:12px;padding:10px 18px;background:var(--panel);border-top:4px solid var(--linea)}
+  .bajo .centro{flex:1;text-align:center;font-family:'Pixelify Sans',monospace;font-size:1.1rem}
+  .bajo .centro b{color:var(--amarillo)}
+
+  /* Personaje 67 con pistas */
+  #personaje{position:fixed;right:16px;bottom:70px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  #personaje button{background:none;border:0;padding:0;cursor:pointer}
+  #personaje img{
+    width:auto;height:96px;max-width:140px;object-fit:contain;image-rendering:pixelated;display:block;
+    filter:drop-shadow(3px 3px 0 #000);
+  }
+  #personaje .emoji{font-size:3rem}
+  #burbuja{
+    max-width:260px;background:#fff;color:#050a24;border:4px solid #000;box-shadow:4px 4px 0 var(--amarillo-s);
+    padding:10px 12px;font-size:.95rem;display:none
+  }
+  #burbuja.ver{display:block}
+
+  /* Ventanas */
+  .velo{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+  .velo.ver{display:flex}
+  .caja{background:var(--panel);border:5px solid var(--amarillo);box-shadow:8px 8px 0 #000;max-width:560px;width:100%;padding:24px;max-height:90vh;overflow:auto}
+  .caja h2{font-family:'Pixelify Sans',monospace;color:var(--amarillo);font-size:1.9rem;margin-bottom:10px}
+  .caja h3{font-family:'Pixelify Sans',monospace;color:var(--cian);font-size:1.15rem;margin:12px 0 4px}
+  .caja p{margin-bottom:12px}
+  .caja code{font-family:'VT323',monospace;font-size:1.25rem;background:var(--panel2);border:2px solid var(--linea);padding:0 6px;color:var(--cian)}
+  .caja ul{margin:0 0 14px 22px}
+  .caja .fila-btn{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+  .insignia{font-size:4rem;text-align:center}
+  .xp-pop{
+    position:fixed;left:50%;top:90px;transform:translateX(-50%);z-index:60;font-family:'Pixelify Sans',monospace;
+    font-size:2rem;color:var(--amarillo);text-shadow:3px 3px 0 #000;pointer-events:none;opacity:0
+  }
+  .xp-pop.ver{animation:sube 1.4s ease-out}
+  @keyframes sube{0%{opacity:0;top:110px}20%{opacity:1}100%{opacity:0;top:50px}}
+  @media (prefers-reduced-motion:reduce){.xp-pop.ver{animation:none;opacity:1}}
+
+  @media (max-width:820px){
+    body{height:auto}
+    main{grid-template-columns:1fr}
+    .izq{border-right:0;border-bottom:4px solid var(--linea)}
+    .der{grid-template-rows:260px auto 260px}
+    .top{flex-wrap:wrap}
+  }
+
+  </style>
+<style id="ajustes">
+/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,body *{cursor:auto!important}
+body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
+body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
+body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
+body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
+body button:disabled,body .btn:disabled{cursor:not-allowed!important}
+#espada-cursor{display:none!important}
+img,video,canvas,svg,iframe{max-width:100%}
+body{overflow-wrap:break-word}
+@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+/* Lecciones: pantalla completa en escritorio, apilado en tablet y móvil */
+body{min-height:100dvh}
+.top h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:820px){
+  html,body{height:auto}
+  .pasos{flex-wrap:wrap}
+  .btn{min-height:44px}
+  .izq{overflow:visible}
+  .editor{min-height:200px}
+}
+@media (max-width:480px){
+  .top{padding:8px 12px;gap:8px}
+  .top h1{font-size:1.1rem;flex:1 1 100%;order:3}
+  .izq{padding:16px 14px}
+  .izq h2{font-size:1.4rem}
+  .der{grid-template-rows:240px auto 220px}
+  .paso{width:18px;height:18px}
+}
+@media (max-height:500px) and (orientation:landscape){
+  html,body{height:auto}
+  main{grid-template-columns:1fr}
+  .izq{border-right:0;border-bottom:4px solid var(--linea)}
+  .der{grid-template-rows:240px auto 200px}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a href="juegos.html">← Juegos</a>
+  <h1>🎨 CSS</h1>
+  <div class="pasos" id="pasos" aria-label="Progreso"></div>
+  <button class="btn" id="btnIntro">¿Qué es CSS?</button>
+</div>
+
+<main>
+  <section class="izq" id="izq" aria-live="polite"></section>
+  <section class="der">
+    <div class="editor">
+      <div id="lineas" aria-hidden="true"></div>
+      <textarea id="codigo" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor de código CSS"></textarea>
+    </div>
+    <div class="acciones">
+      <button class="btn run" id="btnRun">▶ Ejecutar</button>
+      <button class="btn submit" id="btnSubmit">✔ Enviar</button>
+      <button class="btn" id="btnReset" title="Volver al código inicial">↺ Reiniciar</button>
+      <span class="estado" id="estado">CSS listo ✔</span>
+    </div>
+    <div class="salida">
+      <iframe id="vista" sandbox="allow-same-origin" title="Vista previa de tu CSS"></iframe>
+      <div id="terminal" role="log" aria-label="Terminal"></div>
+    </div>
+  </section>
+</main>
+
+<div class="bajo">
+  <button class="btn" id="btnBack">← Atrás</button>
+  <div class="centro" id="centro"></div>
+  <button class="btn verde" id="btnNext">Siguiente →</button>
+</div>
+
+<!-- Personaje 67: las pistas son GRATIS (si tu GIF es otro, cambia solo el src) -->
+<div id="personaje">
+  <div id="burbuja" role="status"></div>
+  <button id="btnPista" aria-label="Pedir una pista (gratis)">
+    <img id="imgPj" src="67.gif" alt="Personaje que da pistas"
+         onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'emoji',textContent:'🧙'}))">
+  </button>
+</div>
+
+<!-- Intro del lenguaje -->
+<div class="velo" id="velIntro">
+  <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tIntro">
+    <h2 id="tIntro">¿Qué es CSS? 🎨</h2>
+    <p><b>CSS</b> significa <i>Cascading Style Sheets</i> (hojas de estilo en cascada). Es el lenguaje que le dice al navegador <b>cómo se ve</b> una página web.</p>
+    <h3>¿Cuándo se inventó?</h3>
+    <p>Lo propuso <b>Håkon Wium Lie</b> en <b>1994</b>, mientras trabajaba con Tim Berners-Lee en el CERN. En <b>diciembre de 1996</b> el W3C publicó CSS1 como estándar. Después llegaron CSS2 (1998) y CSS3, que se divide en módulos y sigue creciendo hasta hoy.</p>
+    <h3>¿Para qué sirve?</h3>
+    <ul>
+      <li>Cambiar colores, fuentes y tamaños.</li>
+      <li>Controlar espacios, bordes y fondos.</li>
+      <li>Acomodar elementos (Flexbox, Grid).</li>
+      <li>Adaptar la página a celulares y pantallas grandes (responsive).</li>
+      <li>Crear animaciones y transiciones.</li>
+    </ul>
+    <h3>La idea clave</h3>
+    <p>HTML es el <b>esqueleto</b> (qué contiene la página) y CSS es la <b>ropa</b> (cómo se ve). Separarlos permite cambiar todo el diseño sin tocar el contenido.</p>
+    <p>Una regla se escribe así: <code>selector { propiedad: valor; }</code></p>
+    <p>Aquí vas a resolver <b>4 ejercicios</b> y una <b>prueba final</b>. Si te atoras, toca al personaje: las pistas no cuestan nada.</p>
+    <div class="fila-btn"><button class="btn submit" id="btnEmpezar">¡Empezar!</button></div>
+  </div>
+</div>
+
+<!-- Victoria -->
+<div class="velo" id="velFin">
+  <div class="caja" role="dialog" aria-modal="true" aria-labelledby="tFin">
+    <div class="insignia">🎨🏅</div>
+    <h2 id="tFin">¡Completaste CSS!</h2>
+    <p>Ganaste la <b>Insignia CSS</b> y <b id="xpTotal">800</b> XP en total. Mira dónde quedaste en el ranking.</p>
+    <div class="fila-btn">
+      <a class="btn submit" href="ranking.html" style="text-decoration:none">Ver ranking</a>
+      <a class="btn" href="juegos.html" style="text-decoration:none;color:var(--texto)">Otros juegos</a>
+    </div>
+  </div>
+</div>
+
+<div class="xp-pop" id="xpPop"></div>
+
+<!-- Firebase compat + init ANTES del script que usa db/sumarXP -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="java/firebase-init.js"></script>
+<script>
+/* XP a la nube: suma atómica en ranking/{usuario} (solo si Firebase y usuario existen) */
+function guardarXP(n){
+  if (typeof db === 'undefined' || typeof firebase === 'undefined' || !n) return;
+  const u = (localStorage.getItem('usuarioActual') || '').toLowerCase();
+  if (!u) return;
+  db.collection('ranking').doc(u).set({
+    xp: firebase.firestore.FieldValue.increment(n)
+  }, { merge: true });
+}
+
+/* Estilo computado de un elemento dentro de la vista previa */
+const gs = (D, sel) => { const el = D.querySelector(sel); return el ? D.defaultView.getComputedStyle(el) : null; };
+
+/* ============== EJERCICIOS ============== */
+/* html: contenido de la página · base: CSS que ya viene puesto · solucion: lo que se ve en "Así debe verse"
+   checks: cada una revisa un estilo real ya calculado por el navegador */
+const EJERCICIOS = [
+  { titulo:'Pintar el texto', xp:150,
+    explicacion:`<p>CSS cambia cómo se ve el HTML. Una regla elige un elemento (el <b>selector</b>) y le da estilos dentro de llaves.</p>
+      <p>Ejemplo: <code>p { color: blue; }</code> pinta de azul todos los párrafos.</p>`,
+    mision:'Haz que el título <b>h1</b> tenga el color <b>red</b> (rojo).',
+    html:'<h1>Hola, CSS</h1><p>Yo me quedo igual.</p>',
+    base:'',
+    inicial:'/* Escribe tu CSS aquí */\n',
+    solucion:'h1 { color: red; }',
+    checks:[ { d:'el h1 debe tener color: red;', f:D => { const s = gs(D,'h1'); return s && s.color === 'rgb(255, 0, 0)'; } } ],
+    pista:'Escribe h1 { color: red; } con las llaves y el punto y coma al final.' },
+
+  { titulo:'Fondo y tamaño', xp:150,
+    explicacion:`<p>Con <code>background-color</code> cambias el fondo de un elemento y con <code>font-size</code> el tamaño de su letra.</p>
+      <p>Para elegir un elemento por su clase se usa un punto: <code>.caja { ... }</code></p>`,
+    mision:'A la clase <b>.caja</b> ponle fondo <b>blue</b> y letra de <b>24px</b>.',
+    html:'<div class="caja">Soy una caja</div>',
+    base:'.caja{color:white;padding:10px}',
+    inicial:'/* Elige .caja y dale background-color y font-size */\n',
+    solucion:'.caja { background-color: blue; font-size: 24px; }',
+    checks:[
+      { d:'.caja debe tener background-color: blue;', f:D => { const s = gs(D,'.caja'); return s && s.backgroundColor === 'rgb(0, 0, 255)'; } },
+      { d:'.caja debe tener font-size: 24px;',         f:D => { const s = gs(D,'.caja'); return s && s.fontSize === '24px'; } }
+    ],
+    pista:'.caja { background-color: blue; font-size: 24px; } Cada propiedad termina con punto y coma.' },
+
+  { titulo:'Espacios y bordes', xp:150,
+    explicacion:`<p><code>padding</code> es el espacio por dentro de una caja y <code>border</code> es su borde. Con <code>border-radius</code> las esquinas se redondean.</p>
+      <p>Ejemplo: <code>border: 2px solid black;</code> (grosor, estilo y color).</p>`,
+    mision:'A <b>.tarjeta</b> ponle <b>padding: 20px</b>, un borde <b>3px solid</b> (del color que quieras) y <b>border-radius: 10px</b>.',
+    html:'<div class="tarjeta">Soy una tarjeta</div>',
+    base:'.tarjeta{background:#e6ecff;color:#0a1240}',
+    inicial:'/* Dale espacio, borde y esquinas redondas a .tarjeta */\n',
+    solucion:'.tarjeta { padding: 20px; border: 3px solid black; border-radius: 10px; }',
+    checks:[
+      { d:'padding: 20px;',        f:D => { const s = gs(D,'.tarjeta'); return s && s.paddingTop === '20px' && s.paddingLeft === '20px'; } },
+      { d:'border: 3px solid …;',  f:D => { const s = gs(D,'.tarjeta'); return s && s.borderTopWidth === '3px' && s.borderTopStyle === 'solid'; } },
+      { d:'border-radius: 10px;',  f:D => { const s = gs(D,'.tarjeta'); return s && s.borderTopLeftRadius === '10px'; } }
+    ],
+    pista:'Dentro de .tarjeta { } escribe padding: 20px; border: 3px solid black; border-radius: 10px;' },
+
+  { titulo:'Acomodar con Flexbox', xp:150,
+    explicacion:`<p><b>Flexbox</b> acomoda elementos en fila. Se activa en el contenedor (el papá) con <code>display: flex;</code></p>
+      <p>Luego <code>justify-content</code> decide cómo se reparten: <code>center</code> los junta en el centro, <code>space-between</code> los separa.</p>`,
+    mision:'Haz que <b>.fila</b> use <b>display: flex</b> y que sus cuadros queden en el <b>center</b> con <b>justify-content</b>.',
+    html:'<div class="fila"><div class="item">1</div><div class="item">2</div><div class="item">3</div></div>',
+    base:'.item{background:#fdc815;color:#050a24;padding:8px 14px;margin:4px;font-weight:bold}',
+    inicial:'/* Convierte .fila en un contenedor flex */\n',
+    solucion:'.fila { display: flex; justify-content: center; }',
+    checks:[
+      { d:'.fila debe tener display: flex;',            f:D => { const s = gs(D,'.fila'); return s && s.display === 'flex'; } },
+      { d:'.fila debe tener justify-content: center;',  f:D => { const s = gs(D,'.fila'); return s && s.justifyContent === 'center'; } }
+    ],
+    pista:'.fila { display: flex; justify-content: center; } Sin display: flex, justify-content no hace nada.' },
+
+  { titulo:'Prueba final', xp:200, final:true,
+    explicacion:`<p>Llegó la hora de juntar todo: colores, espacios, bordes y Flexbox.</p>
+      <p>Para separar elementos dentro de un contenedor flex usa <code>gap</code>, por ejemplo <code>gap: 10px;</code></p>`,
+    mision:`Diseña un menú:<br>
+      • <b>.menu</b>: <code>display: flex</code> y <code>gap: 10px</code>.<br>
+      • <b>.boton</b>: fondo <b>green</b>, letra <b>white</b>, <code>padding: 12px</code> y <code>border-radius: 8px</code>.`,
+    html:'<div class="menu"><a class="boton">Inicio</a><a class="boton">Juegos</a><a class="boton">Ranking</a></div>',
+    base:'.boton{font-weight:bold}',
+    inicial:'/* 1. Estilos para .menu */\n\n/* 2. Estilos para .boton */\n',
+    solucion:'.menu { display: flex; gap: 10px; }\n.boton { background-color: green; color: white; padding: 12px; border-radius: 8px; }',
+    checks:[
+      { d:'.menu: display: flex;',            f:D => { const s = gs(D,'.menu'); return s && s.display === 'flex'; } },
+      { d:'.menu: gap: 10px;',                f:D => { const s = gs(D,'.menu'); return s && s.columnGap === '10px'; } },
+      { d:'.boton: background-color: green;', f:D => { const s = gs(D,'.boton'); return s && s.backgroundColor === 'rgb(0, 128, 0)'; } },
+      { d:'.boton: color: white;',            f:D => { const s = gs(D,'.boton'); return s && s.color === 'rgb(255, 255, 255)'; } },
+      { d:'.boton: padding: 12px;',           f:D => { const s = gs(D,'.boton'); return s && s.paddingTop === '12px' && s.paddingLeft === '12px'; } },
+      { d:'.boton: border-radius: 8px;',      f:D => { const s = gs(D,'.boton'); return s && s.borderTopLeftRadius === '8px'; } }
+    ],
+    pista:[
+      'Pista 1/3: Empieza por .menu { display: flex; gap: 10px; } Eso separa los tres botones.',
+      'Pista 2/3: Ahora .boton { background-color: green; color: white; } para pintarlos.',
+      'Pista 3/3: Última ayuda: agrega padding: 12px; y border-radius: 8px; dentro de .boton. ¡De acá en adelante es todo tuyo!'
+    ] }];
+
+/* ============== ESTADO ============== */
+const usuario = (localStorage.getItem('usuarioActual') || '').trim() || 'invitado';
+const uid = usuario.toLowerCase();
+const CLAVE = 'ca_css_v1_' + uid;
+try { const t = localStorage.getItem('tema'); if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro'; } catch(e){}
+
+let est = { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
+try { Object.assign(est, JSON.parse(localStorage.getItem(CLAVE) || '{}')); } catch(e){}
+if (!est.pistasUsadas || typeof est.pistasUsadas !== 'object') est.pistasUsadas = {};
+
+const $ = id => document.getElementById(id);
+const xpGanado = () => EJERCICIOS.reduce((s, e, i) => s + (est.hechos[i] ? e.xp : 0), 0);
+const XP_MAX = EJERCICIOS.reduce((s, e) => s + e.xp, 0);
+
+function guardar(){
+  try { localStorage.setItem(CLAVE, JSON.stringify(est)); } catch(e){}
+}
+
+/* ============== VISTA PREVIA ============== */
+function documento(e, css){
+  const limpio = String(css).replace(/<\/style/gi, '');
+  return '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+    '<style>body{margin:0;padding:14px;font-family:sans-serif;background:#fff;color:#111}</style>' +
+    '<style>' + e.base + '</style>' +
+    '<style id="usuario">' + limpio + '</style></head><body>' + e.html + '</body></html>';
+}
+/* Pinta el HTML + CSS en un iframe y devuelve su documento ya cargado */
+function renderizar(iframe, e, css){
+  return new Promise(res => {
+    iframe.onload = () => res(iframe.contentDocument);
+    iframe.srcdoc = documento(e, css);
+  });
+}
+
+/* ============== INTERFAZ ============== */
+function escribir(t, clase){
+  const term = $('terminal');
+  const s = document.createElement('span');
+  if (clase) s.className = clase;
+  s.textContent = t + '\n';
+  term.append(s);
+  term.scrollTop = term.scrollHeight;
+}
+function limpiarTerminal(){ $('terminal').textContent = ''; }
+
+function numerarLineas(){
+  const n = $('codigo').value.split('\n').length;
+  $('lineas').textContent = Array.from({length:n}, (_, i) => i + 1).join('\n');
+}
+
+function pintarPasos(){
+  $('pasos').innerHTML = '';
+  EJERCICIOS.forEach((e, i) => {
+    const d = document.createElement('div');
+    d.className = 'paso' + (est.hechos[i] ? ' hecho' : '') + (i === est.actual ? ' actual' : '');
+    d.title = e.final ? 'Prueba final' : 'Ejercicio ' + (i + 1);
+    $('pasos').append(d);
+  });
+}
+
+function cargar(i){
+  est.actual = i;
+  const e = EJERCICIOS[i];
+  $('izq').innerHTML = `
+    <div class="num">${e.final ? 'PRUEBA FINAL' : 'Ejercicio ' + (i + 1) + ' de ' + (EJERCICIOS.length - 1)}</div>
+    <h2>${e.titulo}</h2>
+    ${e.explicacion}
+    <div class="mision"><b>Misión:</b> ${e.mision}</div>
+    <p style="margin-bottom:6px">Así debe verse tu página:</p>
+    <iframe class="objetivo" id="objetivo" sandbox="allow-same-origin" title="Resultado esperado"></iframe>`;
+  renderizar($('objetivo'), e, e.solucion);
+  $('codigo').value = est.codigo[i] ?? e.inicial;
+  numerarLineas();
+  limpiarTerminal();
+  renderizar($('vista'), e, $('codigo').value);
+  if (est.hechos[i]) escribir('✔ Ya completaste este ejercicio.', 'ok');
+  else escribir('Escribe tu CSS y presiona Ejecutar para verlo en la vista previa.', 'info');
+  $('burbuja').classList.remove('ver');
+  $('centro').innerHTML = `Ejercicio <b>${i + 1}/${EJERCICIOS.length}</b> · XP <b>${xpGanado()}/${XP_MAX}</b>`;
+  $('btnBack').disabled = i === 0;
+  $('btnNext').disabled = !(est.hechos[i] && i < EJERCICIOS.length - 1);
+  pintarPasos();
+  guardar();
+}
+
+function guardarCodigo(){ est.codigo[est.actual] = $('codigo').value; guardar(); }
+
+/* ============== VALIDAR Y PREMIAR ============== */
+/* Popup de XP: se muestra y SE VA solo (timeout de seguridad) */
+let popT;
+function mostrarXP(n){
+  const pop = $('xpPop');
+  pop.textContent = '+' + n + ' XP';
+  pop.classList.remove('ver');
+  void pop.offsetWidth;
+  pop.classList.add('ver');
+  clearTimeout(popT);
+  popT = setTimeout(() => pop.classList.remove('ver'), 1600);
+}
+
+/* Revisa si el CSS escrito tiene al menos una regla válida */
+function sinReglas(D, css){
+  const hay = css.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+  const hoja = D.getElementById('usuario') && D.getElementById('usuario').sheet;
+  return hay && hoja && hoja.cssRules.length === 0;
+}
+
+async function ejecutarVista(){
+  const e = EJERCICIOS[est.actual];
+  const css = $('codigo').value;
+  limpiarTerminal();
+  const D = await renderizar($('vista'), e, css);
+  if (sinReglas(D, css)) { escribir('Error: no pude leer ninguna regla. Revisa las llaves { } y los punto y coma.', 'err'); return null; }
+  return D;
+}
+
+async function enviar(){
+  const e = EJERCICIOS[est.actual];
+  const D = await ejecutarVista();
+  if (!D) return;
+  const faltan = e.checks.filter(c => { try { return !c.f(D); } catch(err){ return true; } });
+  if (faltan.length) {
+    escribir('✘ Todavía no. Te falta:', 'err');
+    faltan.forEach(c => escribir('   • ' + c.d, 'err'));
+    return;
+  }
+  exito();
+}
+
+async function exito(){
+  const i = est.actual, e = EJERCICIOS[i];
+  const primeraVez = !est.hechos[i];
+  est.hechos[i] = true;
+  guardarCodigo();
+  if (primeraVez) {
+    try { if (typeof sumarXP === 'function') await sumarXP(e.xp); } catch(err){ console.error('sumarXP', err); }
+    try { if (window.CA && CA.addXP) CA.addXP(e.xp); } catch(err){}
+    mostrarXP(e.xp);
+    guardarXP(e.xp);
+  }
+  cargar(i);
+  escribir('✔ ¡Correcto!', 'ok');
+  if (est.hechos.every(Boolean)) terminar();
+}
+async function terminar(){
+  $('xpTotal').textContent = xpGanado();
+  $('velFin').classList.add('ver');
+  try {
+    if (typeof db !== 'undefined' && typeof firebase !== 'undefined')
+      await db.collection('ranking').doc(uid).set(
+        { insignias: firebase.firestore.FieldValue.arrayUnion('css') }, { merge: true });
+  } catch(err){ console.error('insignia', err); }
+}
+
+/* ============== EVENTOS ============== */
+$('codigo').addEventListener('input', () => { numerarLineas(); guardarCodigo(); });
+$('codigo').addEventListener('scroll', () => { $('lineas').scrollTop = $('codigo').scrollTop; });
+$('codigo').addEventListener('keydown', ev => {
+  if (ev.key === 'Tab') {
+    ev.preventDefault();
+    const t = ev.target, a = t.selectionStart;
+    t.value = t.value.slice(0, a) + '    ' + t.value.slice(t.selectionEnd);
+    t.selectionStart = t.selectionEnd = a + 4;
+    numerarLineas(); guardarCodigo();
+  }
+});
+
+$('btnRun').onclick = async () => {
+  const D = await ejecutarVista();
+  if (D) escribir('✔ CSS aplicado. Mira la vista previa y compárala con el objetivo.', 'info');
+};
+
+$('btnSubmit').onclick = enviar;
+
+$('btnReset').onclick = () => {
+  if (confirm('¿Volver al código inicial de este ejercicio?')) {
+    $('codigo').value = EJERCICIOS[est.actual].inicial; numerarLineas(); guardarCodigo(); limpiarTerminal();
+    renderizar($('vista'), EJERCICIOS[est.actual], $('codigo').value);
+  }
+};
+$('btnBack').onclick = () => { if (est.actual > 0) cargar(est.actual - 1); };
+$('btnNext').onclick = () => { if (est.actual < EJERCICIOS.length - 1) cargar(est.actual + 1); };
+
+$('btnPista').onclick = () => {
+  const e = EJERCICIOS[est.actual];
+  const b = $('burbuja');
+  // Prueba final: pistas progresivas con límite
+  if (Array.isArray(e.pista)) {
+    const usadas = est.pistasUsadas[est.actual] || 0;
+    if (usadas >= e.pista.length) {
+      b.textContent = '🧙 Ya gastaste tus ' + e.pista.length + ' pistas. ¡Ahora demuestra lo que aprendiste solo!';
+      b.classList.add('ver');
+      return;
+    }
+    est.pistasUsadas[est.actual] = usadas + 1; guardar();
+    b.textContent = '💡 ' + e.pista[usadas] + '  [' + (usadas + 1) + '/' + e.pista.length + ']';
+    b.classList.add('ver');
+    return;
+  }
+  // Ejercicios normales: pista gratis ilimitada
+  b.textContent = '💡 ' + e.pista;
+  b.classList.toggle('ver');
+};
+
+$('btnIntro').onclick = () => $('velIntro').classList.add('ver');
+$('btnEmpezar').onclick = () => { $('velIntro').classList.remove('ver'); est.intro = true; guardar(); };
+
+/* ============== ARRANQUE ============== */
+const primero = est.hechos.findIndex(h => !h);
+cargar(Math.min(est.actual || (primero === -1 ? 0 : primero), EJERCICIOS.length - 1));
+if (!est.intro) $('velIntro').classList.add('ver');
+</script>
+<script>
+/* =========================================
+   MODO FERIA (KIOSCO) - Supervivencia
+   ========================================= */
+// 🔴 IMPORTANTE:
+// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
+const MODO_KIOSKO_ACTIVO = false;
+
+function salirYLimpiar() {
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
+}
+
+/* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
+});
+
+/* Temporizador de inactividad (solo si el modo kiosko está activo) */
+let timerInactividad;
+function resetearTimer() {
+  if (!MODO_KIOSKO_ACTIVO) return;
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    salirYLimpiar();
+  }, 90000); // 90 segundos
+}
+
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
+
+/* F8: salir y limpiar (con confirmación) */
+document.addEventListener('keydown', e => {
+  if (e.key === 'F8') {
+    e.preventDefault();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
+    }
+  }
+});
+</script>
+</body>
+</html>
