@@ -627,7 +627,7 @@ function enviar(){
   mostrarVista(codigo);
 
   /* Se ignoran los comentarios al validar */
-  const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
+  const limpio = codigo.replace(/<!-{2}[\s\S]*?-{2}>/g, '');
   if (!limpio.trim()) return escribir('✘ Aún no escribes nada. Revisa la misión.', 'err');
 
   const err = revisarEtiquetas(limpio);
@@ -692,7 +692,7 @@ $('btnRun').onclick = () => {
   limpiarTerminal();
   const codigo = $('codigo').value;
   mostrarVista(codigo);
-  const limpio = codigo.replace(/<!--[\s\S]*?-->/g, '');
+  const limpio = codigo.replace(/<!-{2}[\s\S]*?-{2}>/g, '');
   const err = revisarEtiquetas(limpio);
   if (err)                 escribir('Aviso: ' + err, 'err');
   else if (!limpio.trim()) escribir('(la página está vacía: escribe etiquetas HTML)', 'info');
