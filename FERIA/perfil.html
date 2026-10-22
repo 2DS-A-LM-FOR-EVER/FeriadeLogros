@@ -10,19 +10,31 @@
 <link rel="icon" href="ho.png">
 <style>
 :root{
-  --bg:#071016; --panel:#0d1c26; --panel2:#112734; --line:#1e3d4f;
-  --text:#d8f3e8; --muted:#7fa396;
-  --lime:#7cffb2; --pink:#ff4f9a; --amber:#ffc24b; --cyan:#4fd8ff; --violet:#a77bff;
-  --frame:#7cffb2;
-  --rk:#cd7f32; --rk-l:#f2bb86; --rk-d:#6b3a10;
-  --px:'Press Start 2P',monospace; --body:'VT323',monospace;
+  /* NUEVA PALETA BASADA EN TUS IMÁGENES */
+  --bg:#0c0414;
+  --panel:#1a0b2e;
+  --panel2:#2d1b4e; 
+  --line:#4b2c6b;
+  --text:#ffffff;
+  --muted:#a78bfa;
+  --lime:#7cffb2; 
+  --pink:#ff4f9a; 
+  --amber:#ffcc00;
+  --cyan:#4fd8ff; 
+  --violet:#a77bff;
+  --frame:#ffcc00;
+  --rk:#ffcc00; 
+  --rk-l:#fff3b0; 
+  --rk-d:#a06a00;
+  --px:'Press Start 2P',monospace; 
+  --body:'VT323',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
 body{
   background:
-    radial-gradient(circle at 20% -10%, #0f3a3a55, transparent 45%),
-    radial-gradient(circle at 100% 20%, #3a0f3a44, transparent 40%),
+    radial-gradient(circle at 20% -10%, #3a0f3a55, transparent 45%),
+    radial-gradient(circle at 100% 20%, #0f3a3a44, transparent 40%),
     var(--bg);
   color:var(--text);font-family:var(--body);font-size:22px;line-height:1.15;min-height:100vh;
 }
@@ -31,43 +43,89 @@ canvas,img.pix{image-rendering:pixelated}
 
 /* LAYOUT */
 main{max-width:1120px;margin:0 auto;padding:44px 22px 70px;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:34px;align-items:start}
-@media(min-height:780px){main>section{position:sticky;top:96px}}
+/* sticky solo en pantallas muy altas (si la columna es más alta que la ventana, se corta) */
+@media(min-height:1000px){main>section{position:sticky;top:96px}}
 @media(max-width:900px){main{grid-template-columns:1fr}main>section{position:static}}
 h2.t{font-family:var(--px);font-size:12px;color:var(--amber);letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-h2.t::before{content:"";width:10px;height:10px;background:var(--pink);box-shadow:4px 4px 0 #000}
+h2.t::before{content:"";width:10px;height:10px;background:var(--violet);box-shadow:4px 4px 0 #000}
 h2.t span{margin-left:auto;color:var(--rk)}
 .box{background:var(--panel);border:4px solid var(--line);padding:20px;position:relative;box-shadow:6px 6px 0 #000}
 
-/* CABINA */
-.cab{background:#14232c;border:4px solid #000;padding:18px 18px 16px;border-radius:14px 14px 4px 4px;box-shadow:0 0 0 4px var(--line),10px 10px 0 #000}
-.marquee{font-family:var(--px);font-size:10px;text-align:center;padding:10px;margin:-6px -6px 14px;background:#000;color:var(--frame);letter-spacing:2px;border-bottom:4px solid var(--frame);text-shadow:0 0 10px var(--frame)}
-.screen{position:relative;aspect-ratio:16/10;overflow:hidden;border:6px solid #000;outline:4px solid var(--frame);border-radius:14px;background:#000;box-shadow:0 0 38px color-mix(in srgb,var(--frame) 45%,transparent)}
-.screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+/* ═══════════ CABINA PRINCIPAL ═══════════
+   Si la pantalla no calza con el hueco de la imagen, cambia estos números
+   (o abre la página con ?ajustar al final de la URL para moverlos con barras). */
+.cab-new{
+  --scr-top:23.5%;  --scr-left:17%;  --scr-w:66%;  --scr-h:36%;   /* pantalla */
+  --btn-bottom:25%; --btn-right:15%; --btn-size:20%;              /* botón rojo */
+
+  position:relative;
+  display:grid;                 /* las dos imágenes se apilan en la misma celda */
+  width:100%;
+  max-width:400px;
+  margin:0 auto;
+  container-type:inline-size;   /* permite que el HUD escale con el ancho de la cabina */
+  filter:drop-shadow(10px 10px 0 #000);
+  border-radius:12px;
+}
+.cab-new .cab-img{
+  grid-area:1/1;align-self:start;
+  width:100%;height:auto;
+  visibility:hidden;pointer-events:none;border-radius:12px;
+}
+.cab-new .cab-img.active{visibility:visible}
+/* respaldo solo si la imagen no carga */
+.cab-new.sin-img{min-height:480px;background:var(--panel2);border:4px dashed var(--line)}
+
+/* PANTALLA (encima del hueco negro de la imagen) */
+.cab-new .screen{
+  position:absolute;
+  top:var(--scr-top);left:var(--scr-left);
+  width:var(--scr-w);height:var(--scr-h);
+  background:#000;border-radius:4px;overflow:hidden;z-index:5;
+}
+/* marco del color elegido en el editor */
+.cab-new .screen::before{
+  content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
+  box-shadow:inset 0 0 0 max(2px,.7cqw) var(--frame);
+}
+
+/* Líneas de escaneo */
+.screen::after{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;z-index:6;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);
-  box-shadow:inset 0 0 70px rgba(0,0,0,.65)}
-.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;color:#fff;text-shadow:2px 2px 0 #000;line-height:1.5}
-.hud.tl{top:12px;left:14px;color:var(--frame)}
-.hud.tr{top:12px;right:14px;text-align:right}
-.hud.bl{bottom:12px;left:14px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hud.br{bottom:12px;right:14px;animation:blink 1s steps(2) infinite;color:var(--amber)}
+  box-shadow:inset 0 0 70px rgba(0,0,0,.65)
+}
+
+/* Botón rojo (invisible pero clickeable) */
+.arcade-btn-red{
+  position:absolute;
+  bottom:var(--btn-bottom);right:var(--btn-right);
+  width:var(--btn-size);aspect-ratio:1;
+  border-radius:50%;background:transparent;border:none;z-index:10;
+}
+.arcade-btn-red:hover{background:rgba(255,255,255,.1)}
+.arcade-btn-red:active{transform:translateY(2px)}
+.arcade-btn-red:focus-visible{outline:3px dashed var(--amber);outline-offset:3px}
+
+/* modo ?ajustar: muestra dónde está la pantalla (rojo) y el botón (verde) */
+.cab-new.debug .screen{outline:2px solid #f00}
+.cab-new.debug .arcade-btn-red{outline:2px solid #0f0;background:rgba(124,255,178,.3)}
+
+/* HUD (Nivel, Score, etc) — el tamaño de letra escala con la cabina */
+.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;font-size:clamp(5px,2.1cqw,9px);color:#fff;text-shadow:1px 1px 0 #000;line-height:1.5}
+.hud.tl{top:3%;left:4%;color:var(--frame)}
+.hud.tr{top:3%;right:4%;text-align:right}
+.hud.bl{bottom:3%;left:4%;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hud.br{bottom:3%;right:4%;animation:blink 1s steps(2) infinite;color:var(--amber)}
 @keyframes blink{50%{opacity:0}}
-.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);width:34%;aspect-ratio:1;display:grid;place-items:end center}
+
+/* Muñequito: su tamaño depende de la altura de la pantalla (así nunca se sale) */
+.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);height:46%;aspect-ratio:1;display:grid;place-items:end center}
 .hero-av canvas,.hero-av img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(0,0,0,.45))}
 .pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
   box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
 .pedestal::before{content:"";position:absolute;inset:0 12% auto;height:100%;background:rgba(255,255,255,.35);clip-path:inset(0 0 60% 0)}
-
-.panel{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;background:#0a141b;border:3px solid #000;border-radius:8px}
-.stick{width:56px;height:56px;position:relative;flex:none;transform:scale(.8);margin:-6px}
-.stick::before{content:"";position:absolute;left:50%;bottom:6px;width:8px;height:30px;background:#9aa;transform:translateX(-50%) rotate(-12deg);transform-origin:bottom}
-.stick::after{content:"";position:absolute;left:8px;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--pink);box-shadow:inset -5px -5px 0 #0004,0 4px 0 #000}
-.btns{display:flex;gap:8px}
-.dot{width:20px;height:20px;border-radius:50%;box-shadow:inset -4px -4px 0 #0005,0 4px 0 #000}
-.arcade-btn{margin-left:auto;display:flex;align-items:center;gap:10px;background:none;border:none;padding:0;font-family:var(--px);font-size:10px;color:var(--text)}
-.arcade-btn i{width:48px;height:48px;border-radius:50%;background:var(--pink);box-shadow:inset -8px -8px 0 #0004,inset 6px 6px 0 #fff3,0 7px 0 #7a1d48,0 11px 0 #000;transition:transform .08s,box-shadow .08s;display:block}
-.arcade-btn:hover i{filter:brightness(1.15)}
-.arcade-btn:active i{transform:translateY(6px);box-shadow:inset -8px -8px 0 #0004,inset 6px 6px 0 #fff3,0 1px 0 #7a1d48,0 5px 0 #000}
-.arcade-btn:focus-visible{outline:3px dashed var(--amber);outline-offset:6px}
 
 /* TARJETA DE IDENTIDAD */
 .idc{margin-top:26px;display:grid;gap:12px}
@@ -156,37 +214,74 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .st-ocean::after{top:62%;background:repeating-linear-gradient(90deg,#1b6fb5 0 24px,#10497f 24px 48px);animation-direction:reverse;animation-duration:4.5s}
 @keyframes wave{to{transform:translateX(-32px)}}
 
-/* EDITOR */
-dialog{margin:auto;background:var(--panel);color:var(--text);border:4px solid var(--frame);box-shadow:10px 10px 0 #000,0 0 0 9999px rgba(2,6,9,.82);width:min(920px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:0;overflow:hidden}
-dialog::backdrop{background:transparent}
-.dlg{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);grid-template-rows:minmax(0,1fr);height:min(780px,calc(100vh - 32px))}
-@media(max-width:760px){.dlg{grid-template-columns:1fr;grid-template-rows:none;height:auto;max-height:calc(100vh - 32px);overflow:auto}.dlg-l,.dlg-r{overflow:visible!important}}
-.dlg-l{padding:20px;background:#0a141b;border-right:4px solid var(--line);overflow:auto;min-height:0}
-.dlg-r{padding:20px;overflow:auto;min-height:0}
-.dlg h3{font-family:var(--px);font-size:11px;color:var(--amber);margin:20px 0 12px;letter-spacing:1px}
-.dlg h3:first-child{margin-top:0}
-.screen.sm{outline-width:3px;border-width:4px}
-.field{display:grid;gap:6px;margin-bottom:12px}
-.field label{color:var(--muted);font-size:19px}
-.field input,.field textarea{background:#050b10;border:3px solid var(--line);color:var(--text);font:inherit;padding:8px 10px;width:100%;resize:none}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--frame)}
-.grid{display:grid;gap:10px}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g5{grid-template-columns:repeat(5,1fr)}
-.pick{background:var(--panel2);border:3px solid var(--line);padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:18px}
-.pick:hover{border-color:var(--muted)}
-.pick[aria-pressed=true]{border-color:var(--frame);box-shadow:0 0 0 3px #000,0 0 0 6px var(--frame)}
-.pick canvas,.pick img{width:64px;height:64px;object-fit:contain}
-.thumb{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#000}
-.swatch{aspect-ratio:1;border:3px solid #000;box-shadow:inset -6px -6px 0 #0004}
-.swatch[aria-pressed=true]{outline:3px solid #fff;outline-offset:2px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.btn{background:var(--panel2);border:3px solid var(--line);padding:8px 14px;font-size:20px}
-.btn:hover{border-color:var(--lime)}
-.btn.primary{background:var(--lime);color:#00170c;border-color:#000;box-shadow:4px 4px 0 #000;font-family:var(--px);font-size:11px;padding:12px 16px}
-.btn.primary:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
-.note{color:var(--muted);font-size:18px;margin-top:6px}
-.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px;position:sticky;bottom:-20px;background:var(--panel);padding:12px 0 4px}
+/* EDITOR (DIALOG) */
+dialog {
+  margin: auto;
+  background: var(--panel);
+  color: var(--text);
+  border: 4px solid var(--frame);
+  box-shadow: 10px 10px 0 #000, 0 0 0 9999px rgba(2,6,9,.85);
+  width: min(920px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  padding: 0;
+  overflow: hidden;
+  z-index: 9999;
+}
+dialog::backdrop { background: transparent; }
+
+.dlg {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.3fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: min(780px, calc(100vh - 32px));
+  width: 100%;
+}
+@media(max-width:760px) {
+  .dlg { grid-template-columns: 1fr; grid-template-rows: none; height: auto; max-height: calc(100vh - 32px); overflow: auto; }
+  .dlg-l, .dlg-r { overflow: visible !important; }
+}
+
+.dlg-l { padding: 20px; background: #0a141b; border-right: 4px solid var(--line); overflow: auto; min-height: 0; display: flex; flex-direction: column; gap: 20px; }
+.dlg-r { padding: 20px; overflow: auto; min-height: 0; background: var(--panel); }
+.dlg h3 { font-family: var(--px); font-size: 11px; color: var(--amber); margin: 20px 0 12px; letter-spacing: 1px; }
+.dlg h3:first-child { margin-top: 0; }
+
+/* PANTALLA DE VISTA PREVIA */
+.screen.sm { 
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+  aspect-ratio: 16/10;
+  border: 4px solid #000;
+  outline: 3px solid var(--frame);
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 20px color-mix(in srgb,var(--frame) 45%,transparent);
+}
+
+.field { display: grid; gap: 6px; margin-bottom: 12px; }
+.field label { color: var(--muted); font-size: 19px; }
+.field input, .field textarea { background: #050b10; border: 3px solid var(--line); color: var(--text); font: inherit; padding: 8px 10px; width: 100%; resize: none; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--frame); }
+
+.grid { display: grid; gap: 10px; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g5 { grid-template-columns: repeat(5, 1fr); }
+.pick { background: var(--panel2); border: 3px solid var(--line); padding: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; font-size: 18px; }
+.pick:hover { border-color: var(--muted); }
+.pick[aria-pressed=true] { border-color: var(--frame); box-shadow: 0 0 0 3px #000, 0 0 0 6px var(--frame); }
+.pick canvas, .pick img { width: 64px; height: 64px; object-fit: contain; }
+.thumb { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; background: #000; }
+.swatch { aspect-ratio: 1; border: 3px solid #000; box-shadow: inset -6px -6px 0 #0004; }
+.swatch[aria-pressed=true] { outline: 3px solid #fff; outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { background: var(--panel2); border: 3px solid var(--line); padding: 8px 14px; font-size: 20px; }
+.btn:hover { border-color: var(--lime); }
+.btn.primary { background: var(--lime); color: #00170c; border-color: #000; box-shadow: 4px 4px 0 #000; font-family: var(--px); font-size: 11px; padding: 12px 16px; }
+.btn.primary:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 #000; }
+.note { color: var(--muted); font-size: 18px; margin-top: 6px; }
+.actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 22px; position: sticky; bottom: -20px; background: var(--panel); padding: 12px 0 4px; }
 
 /* TOAST */
 .toast{position:fixed;top:auto;right:auto;left:50%;bottom:28px;margin:0;width:auto;height:auto;overflow:visible;transform:translateX(-50%) translateY(120px);background:#000;border:3px solid var(--lime);padding:10px 18px;font-family:var(--px);font-size:10px;line-height:1.5;color:var(--lime);transition:transform .25s steps(5);z-index:99;max-width:calc(100vw - 24px)}
@@ -218,8 +313,14 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
 
 <main>
   <section>
-    <div class="cab">
-      <div class="marquee">★ JUGADOR 1 ★</div>
+    <!-- CABINA CON IMÁGENES Y PANTALLA INTERACTIVA -->
+    <div class="cab-new" id="cabFrame">
+      <!-- Imagen normal de la cabina (PERFIL1 y PERFIL2 deben tener el MISMO tamaño en píxeles) -->
+      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade" onerror="this.style.display='none';document.getElementById('cabFrame').classList.add('sin-img')">
+      <!-- Imagen presionada (cambia al abrir el editor) -->
+      <img id="imgPressed" src="PERFIL2.png" class="cab-img" alt="Interfaz Editando" onerror="this.style.display='none'">
+
+      <!-- La pantalla interactiva posicionada exactamente sobre el hueco -->
       <div class="screen" id="heroScreen">
         <div class="hud tl">NIVEL <span id="hudLvl">01</span></div>
         <div class="hud tr">HI-SCORE<br><span id="hudScore">000000</span></div>
@@ -228,12 +329,11 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
         <div class="pedestal"></div>
         <div class="hero-av" id="heroAv"></div>
       </div>
-      <div class="panel">
-        <div class="stick"></div>
-        <div class="btns"><span class="dot" style="background:var(--amber)"></span><span class="dot" style="background:var(--cyan)"></span><span class="dot" style="background:var(--lime)"></span></div>
-        <button class="arcade-btn" id="openEd"><span>EDITAR<br><br>PERFIL</span><i></i></button>
-      </div>
+
+      <!-- El botón invisible sobre el botón rojo de la imagen -->
+      <button class="arcade-btn-red" id="openEd" type="button" aria-label="Editar Perfil"></button>
     </div>
+    
     <div class="box idc">
       <div class="nm" id="pName"></div>
       <div class="tag" id="pTag"></div>
@@ -270,11 +370,11 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
   </div>
 </main>
 
-<!-- EDITOR -->
+<!-- EDITOR (La interfaz que se abre al dar clic al botón rojo) -->
 <dialog id="ed">
   <div class="dlg">
     <div class="dlg-l">
-      <h3>Vista previa</h3>
+      <h3 style="margin-top:0">Vista previa</h3>
       <div class="screen sm" id="prevScreen">
         <div class="pedestal"></div>
         <div class="hero-av" id="prevAv"></div>
@@ -317,6 +417,7 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
+<script src="java/progreso-cloud.js"></script>
 <script>
 /* ---------- SPRITES ---------- */
 const BODY=[
@@ -423,25 +524,29 @@ if (typeof db !== 'undefined') {
   }).catch(err => console.log("Error leyendo perfil:", err));
 }
 
-const persist = async () => {
+/* Guarda en este equipo (devuelve true/false al instante) y sincroniza con la nube sin bloquear */
+const persist = () => {
   try {
     localStorage.setItem(KEY, JSON.stringify(S));
-    if (typeof db !== 'undefined') {
-      await db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
-        name: S.name,
-        bio: S.bio,
-        char: S.char,
-        stage: S.stage,
-        frame: S.frame,
-        gif: S.gif || null,
-        edited: S.edited || false
-      }, { merge: true });
-    }
-    return true;
   } catch (e) {
-    console.error("Error guardando en nube:", e);
+    console.error("Error guardando en el navegador:", e);
     return false;
   }
+  if (typeof db !== 'undefined') {
+    db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
+      name: S.name,
+      bio: S.bio,
+      char: S.char,
+      stage: S.stage,
+      frame: S.frame,
+      gif: S.gif || null,
+      edited: S.edited || false
+    }, { merge: true }).catch(err => {
+      console.error("Error guardando en nube:", err);
+      toast('Guardado en este equipo, pero no se pudo sincronizar');
+    });
+  }
+  return true;
 };
 const $=id=>document.getElementById(id);
 function toast(m){
@@ -472,7 +577,6 @@ const RANKS=[
 const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
 
-/* ★ INSIGNIAS: mapa único reutilizable (incluye 'basico') */
 const INSIGNIA_META = {
   basico: { emoji:'🖥️', label:'Computación Básica' },
   python: { emoji:'🐍', label:'Python' },
@@ -498,14 +602,12 @@ function renderProgress(){
   $('xpBar').setAttribute('aria-valuenow',cur);
   $('stXp').textContent=xp;$('stLvl').textContent=lv;
 
-  /* Emblema grande */
   $('emb').innerHTML = '<img src="'+EMBLEMAS[ri]+'" alt="'+R.n+'">';
   $('rkName').textContent='RANGO '+R.n.toUpperCase();
   $('rkFill').style.width=(N?Math.round((xp-R.min)/(N.min-R.min)*100):100)+'%';
   $('rkSub').textContent=N?'Faltan '+(N.min-xp)+' XP para '+N.n:'¡Rango máximo alcanzado!';
   $('pTag').textContent='RANGO '+R.n.toUpperCase();
 
-  /* Tiers chiquitos */
   $('tiers').replaceChildren(...RANKS.map((r,k)=>{
     const d=document.createElement('div');
     d.className='tier '+(k<ri?'done':k===ri?'now':'lock');
@@ -514,7 +616,6 @@ function renderProgress(){
     return d;
   }));
 
-  /* ★ INSIGNIAS (con 'basico' incluida) */
   const insCont = document.getElementById('insigniasContainer');
   if(insCont){
     const lista = Array.isArray(S.insignias) ? S.insignias : [];
@@ -573,6 +674,15 @@ function render(){
   renderProgress();
 }
 
+/* ---------- IMAGEN DE LA CABINA (normal / presionada) ---------- */
+const imgN=$('imgNormal'), imgP=$('imgPressed');
+function setPressed(on){
+  // solo cambia a PERFIL2 si realmente cargó; si no, la cabina no desaparece
+  const usar = on && imgP.complete && imgP.naturalWidth > 0;
+  imgN.classList.toggle('active', !usar);
+  imgP.classList.toggle('active', usar);
+}
+
 /* ---------- EDITOR ---------- */
 const ed=$('ed');let D;
 function buildPickers(){
@@ -595,7 +705,9 @@ function sync(){
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
 
+// Botón rojo: cambia a PERFIL2 y abre el editor
 $('openEd').onclick=()=>{
+  setPressed(true);
   D={...S,user:'@'+usuarioCanonico};
   $('iName').value=D.name;
   $('iUser').value=D.user;
@@ -605,6 +717,9 @@ $('openEd').onclick=()=>{
   ed.showModal();
   sync();
 };
+
+// Al cerrar el editor, vuelve a PERFIL1
+ed.addEventListener('close', () => setPressed(false));
 
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
@@ -634,40 +749,93 @@ ed.addEventListener('click',e=>{if(e.target===ed)ed.close()});
 
 render();
 
-/* ---------- MODO FERIA (KIOSCO) ---------- */
-function salirYLimpiar() {
+/* ---------- AJUSTAR CABINA: abre la página con ?ajustar al final de la URL ---------- */
+if (/[?&]ajustar/.test(location.search)) {
+  const cab = $('cabFrame');
+  cab.classList.add('debug');
+  const V = [
+    ['--scr-top','Pantalla: arriba',0,70,23.5],
+    ['--scr-left','Pantalla: izquierda',0,60,17],
+    ['--scr-w','Pantalla: ancho',20,100,66],
+    ['--scr-h','Pantalla: alto',10,70,36],
+    ['--btn-bottom','Botón: abajo',0,60,25],
+    ['--btn-right','Botón: derecha',0,60,15],
+    ['--btn-size','Botón: tamaño',5,40,20]
+  ];
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;right:8px;top:8px;z-index:100000;width:240px;background:#000;border:3px solid #ffcc00;padding:10px;font:16px monospace;color:#fff';
+  const out = document.createElement('pre');
+  out.style.cssText = 'margin-top:8px;font-size:14px;color:#7cffb2;white-space:pre-wrap';
+  const val = {};
+  const show = () => { out.textContent = V.map(v => v[0] + ':' + val[v[0]] + '%;').join('\n'); };
+  V.forEach(([name,label,min,max,def]) => {
+    val[name] = def;
+    const l = document.createElement('label');
+    l.style.display = 'block';
+    const r = document.createElement('input');
+    r.type = 'range'; r.min = min; r.max = max; r.step = 0.5; r.value = def; r.style.width = '100%';
+    r.oninput = () => {
+      val[name] = +r.value;
+      cab.style.setProperty(name, r.value + '%');
+      l.firstChild.textContent = label + ': ' + r.value + '%';
+      show();
+    };
+    l.append(label + ': ' + def + '%', r);
+    panel.appendChild(l);
+  });
+  panel.appendChild(out);
+  show();
+  document.body.appendChild(panel);
+}
+
+const MODO_KIOSKO_ACTIVO = false;
+
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') ||
-        k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_')) {
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }
 
+// Delegación de eventos: atrapa el click en el botón de salir de la navbar
 document.addEventListener('click', e => {
-  if (e.target.closest('#logout, .exit-btn, #gxLogout')) salirYLimpiar();
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
 });
 
+// Temporizador de inactividad
 let timerInactividad;
 function resetearTimer() {
+  if (!MODO_KIOSKO_ACTIVO) return; // Si es false, esto no hace NADA.
   clearTimeout(timerInactividad);
   timerInactividad = setTimeout(() => {
-    console.log("Inactividad detectada. Reseteando PC...");
+    console.log('Inactividad detectada. Reseteando PC...');
     salirYLimpiar();
-  }, 90000);
+  }, 90000); // 90 segundos
 }
+
 ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
   document.addEventListener(evt, resetearTimer, { passive: true });
 });
-resetearTimer();
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
 
+// F8: salir y limpiar (con confirmación)
 document.addEventListener('keydown', e => {
   if (e.key === 'F8') {
     e.preventDefault();
-    salirYLimpiar();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
+    }
   }
 });
 </script>

@@ -315,6 +315,7 @@ body{overflow-wrap:break-word}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
+<script src="java/progreso-cloud.js"></script>
 <script src="java/script.js"></script>
 <script src="pixelword-nav.js?v=4"></script>
 
@@ -393,14 +394,17 @@ body{overflow-wrap:break-word}
 })();
 
 /* ═════════════ MODO FERIA (KIOSCO) ═════════════ */
-function salirYLimpiar() {
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') ||
-        k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_')) {
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }

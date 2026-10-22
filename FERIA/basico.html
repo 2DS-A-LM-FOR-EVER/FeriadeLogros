@@ -713,9 +713,7 @@ async function sincronizar(){
   try{
     await flush();
     const s=await d.collection('ranking').doc(UID).get(), dat=s.exists?s.data():{};
-    if(!S.pend.xp && S.done.some(Boolean) && (dat.xp||0)<xpGanado()){      // cuenta nueva con progreso viejo
-      S=nuevo(); guardar(); renderTodo(); toast('Cuenta nueva detectada: empezamos desde cero 🌱'); return;
-    }
+    // (se eliminó el reinicio automático: borraba el progreso real al volver a entrar)
     const ins=Array.isArray(dat.insignias)?dat.insignias:[];
     if(todoListo() && !ins.includes(INSIGNIA_ID)){ S.pend.ins=true; guardar(); await flush(); }
     else if(s.exists) nube('ok');
@@ -886,16 +884,17 @@ $('#btnPista').addEventListener('click',darPista);
 // TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
 const MODO_KIOSKO_ACTIVO = true;
 
-function salirYLimpiar() {
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_basico_v1_') ||       // ← ARREGLADO: Ahora sí borra el progreso de este juego
-        k.startsWith('ca_python_v1_') ||
-        k.startsWith('ca_html_v1_') ||
-        k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_')) {
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }

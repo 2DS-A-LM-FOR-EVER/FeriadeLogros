@@ -748,16 +748,16 @@ const arranque = Number.isInteger(est.actual) ? est.actual : (primero === -1 ? 0
 cargar(arranque);
 if (!est.intro) $('velIntro').classList.add('ver');
 
-/* CHECK DE SINCRONIZACIÓN: si en Firebase no tengo la insignia, reinicio mi progreso local */
+/* SINCRONIZACIÓN (no destructiva): solo otorga la insignia si la nube confirma las 5 pruebas */
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(uid).get().then(doc => {
     const data = doc.exists ? doc.data() : {};
-    const tieneInsignia = data.insignias && data.insignias.includes('html');
-    if (est.hechos.every(Boolean) && !tieneInsignia) {
-      console.warn('🔄 Desincronización detectada. Reiniciando progreso local de HTML.');
-      est = estadoNuevo();
-      guardar();
-      cargar(0);
+    const pr = data.pruebas || {};
+    const nubeCompleta = [0,1,2,3,4].every(i => pr['html_' + i] === true);
+    const tiene = Array.isArray(data.insignias) && data.insignias.includes('html');
+    if (nubeCompleta && !tiene) {
+      db.collection('ranking').doc(uid).set(
+        { insignias: firebase.firestore.FieldValue.arrayUnion('html') }, { merge: true });
     }
   }).catch(err => console.warn('No se pudo verificar la insignia:', err));
 }
@@ -772,16 +772,17 @@ if (typeof db !== 'undefined') {
 // TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
 const MODO_KIOSKO_ACTIVO = true;
 
-function salirYLimpiar() {
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') ||
-        k.startsWith('ca_html_v1_') ||
-        k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_') ||
-        k.startsWith('ca_basico_v1_')) { // Agregado por si acaso
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }

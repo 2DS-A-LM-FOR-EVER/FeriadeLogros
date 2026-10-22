@@ -84,32 +84,24 @@
       }
 
       const d2 = (await ref.get()).data() || {};
-      await store.collection('ranking').doc(usuario).set(
-        { usuario: usuario, xp: d2.xp || 0, avatar: d2.avatar || 'boy.gif' },
-        { merge: true }
-      );
-      if (nuevo) {
-        await store.collection('ranking').doc(usuario).set({ insignias: [] }, { merge: true });
+      const rRef  = store.collection('ranking').doc(usuario);
+      const rSnap = await rRef.get();
+      if (!rSnap.exists) {
+        // Solo si el ranking NO existía se crea con XP inicial
+        await rRef.set({ usuario: usuario, xp: d2.xp || 0, avatar: d2.avatar || 'boy.gif', insignias: [] }, { merge: true });
+      } else {
+        // Si ya existe: NO se toca la XP (antes se pisaba con 0 en cada login)
+        await rRef.set({ usuario: usuario, avatar: d2.avatar || 'boy.gif' }, { merge: true });
       }
 
       localStorage.setItem('usuarioActual', usuario);
       mostrar(nuevo ? '¡Cuenta creada! Sincronizando progreso...' : '¡Bienvenido! Sincronizando progreso...', 'ok');
 
-      // ★ NUEVO: Bajar progreso de la nube antes de redirigir
-      if (typeof db !== 'undefined' && db) {
-        db.collection('ranking').doc(usuario).get().then(doc => {
-          if (doc.exists && doc.data().progreso) {
-            Object.entries(doc.data().progreso).forEach(([k, v]) => {
-              if (localStorage.getItem(k) === null) localStorage.setItem(k, v);
-            });
-          }
-          setTimeout(() => { window.location.href = REDIRECT; }, 900);
-        }).catch(() => {
-          setTimeout(() => { window.location.href = REDIRECT; }, 900);
-        });
-      } else {
-        setTimeout(() => { window.location.href = REDIRECT; }, 900);
+      // Restaura progreso desde la nube (pruebas + respaldo) y repara la XP antes de entrar
+      if (typeof restaurarProgresoCompleto === 'function') {
+        await Promise.race([restaurarProgresoCompleto(usuario), new Promise(r => setTimeout(r, 6000))]);
       }
+      setTimeout(() => { window.location.href = REDIRECT; }, 600);
 
     } catch (err) {
       console.error('[registro]', err);
