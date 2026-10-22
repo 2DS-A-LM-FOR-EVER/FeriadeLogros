@@ -109,7 +109,7 @@ body{overflow-wrap:break-word}
   <section class="gx-hero">
     <p class="gx-kicker">Selecciona tu nivel</p>
     <h1 class="gx-title">APRENDAMOS SOBRE <span>DESARROLLO DE SOFTWARE</span></h1>
-    <p class="gx-sub">Empieza por lo básico, sigue con HTML, CSS, Python y Java. 5 retos por nivel. ⋆˚✧</p>
+    <p class="gx-sub">Empieza por lo básico, sigue con HTML, CSS, Python y JavaScript. 5 retos por nivel. ⋆˚✧</p>
     <div class="gx-stats">
       <div><b id="stGames">0</b><span>Juegos</span></div>
       <div><b id="stPlayed">0</b><span>Jugados</span></div>
@@ -179,13 +179,17 @@ body{overflow-wrap:break-word}
    ========================================= */
 const MODO_KIOSKO_ACTIVO = false; // TRUE el día de la feria
 
-function salirYLimpiar() {
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') || k.startsWith('ca_html_v1_') || 
-        k.startsWith('ca_juegos_v1_') || k.startsWith('ca_arcade_profile_v1_')) {
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }

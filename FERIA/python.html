@@ -554,20 +554,18 @@ $('btnEmpezar').onclick = () => { $('velIntro').classList.remove('ver'); est.int
 const primero = est.hechos.findIndex(h => !h);
 cargar(Math.min(est.actual || (primero === -1 ? 0 : primero), EJERCICIOS.length - 1));
 if (!est.intro) $('velIntro').classList.add('ver');
-// 🔥 CHECK DE SINCRONIZACIÓN: Si en Firebase no tengo la insignia, reinicio mi progreso local
+/* SINCRONIZACIÓN (no destructiva): solo otorga la insignia si la nube confirma las 5 pruebas */
 if (typeof db !== 'undefined') {
   db.collection('ranking').doc(uid).get().then(doc => {
     const data = doc.exists ? doc.data() : {};
-    const tieneInsignia = data.insignias && data.insignias.includes('python');
-    
-    // Si localmente dice que terminé todo, pero en Firebase NO tengo la insignia...
-    if (est.hechos.every(Boolean) && !tieneInsignia) {
-      console.warn("🔄 Desincronización detectada. Reiniciando progreso local de Python.");
-      est = { hechos: EJERCICIOS.map(() => false), codigo: {}, actual: 0, intro: false, pistasUsadas: {} };
-      guardar();
-      cargar(0);
+    const pr = data.pruebas || {};
+    const nubeCompleta = [0,1,2,3,4].every(i => pr['python_' + i] === true);
+    const tiene = Array.isArray(data.insignias) && data.insignias.includes('python');
+    if (nubeCompleta && !tiene) {
+      db.collection('ranking').doc(uid).set(
+        { insignias: firebase.firestore.FieldValue.arrayUnion('python') }, { merge: true });
     }
-  });
+  }).catch(err => console.warn('No se pudo verificar la insignia:', err));
 }
 iniciarPython();
 </script>
@@ -579,16 +577,17 @@ iniciarPython();
 // TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
 const MODO_KIOSKO_ACTIVO = false;
 
-function salirYLimpiar() {
+async function salirYLimpiar() {
+  // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
+  try {
+    if (typeof guardarProgresoNube === 'function') {
+      await Promise.race([guardarProgresoNube(), new Promise(r => setTimeout(r, 3000))]);
+    }
+  } catch (e) {}
+  // 2) Ahora sí limpia este equipo
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') ||
-        k.startsWith('ca_html_v1_') ||
-        k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_') ||
-        k.startsWith('ca_basico_v1_')) { // Agregado por si acaso
-      localStorage.removeItem(k);
-    }
+    if (k.startsWith('ca_')) localStorage.removeItem(k);
   });
   location.href = 'registro.html';
 }
