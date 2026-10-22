@@ -96,6 +96,43 @@
     .fila{grid-template-columns:36px 1fr auto;padding:10px}
   }
 </style>
+<style id="navbar-simple">
+/* Barra superior PIXELWORD (solo logo y nombre, sin enlaces) — igual a la de FERIA 2 */
+header.gx-navbar{
+  position:sticky; top:0; z-index:9999;
+  display:flex; align-items:center; justify-content:flex-start;
+  padding:8px 14px; margin-bottom:8px;
+  background:#050a24;
+  border-bottom:4px solid #000;
+  color:#fff; box-sizing:border-box;
+  user-select:none; -webkit-user-select:none;
+}
+header.gx-navbar,header.gx-navbar *{font-family:'Pixelify Sans',monospace !important; box-sizing:border-box}
+/* Línea de colores animada que fluye */
+header.gx-navbar::after{
+  content:''; position:absolute; left:0; right:0; bottom:-8px; height:4px; pointer-events:none;
+  background:linear-gradient(90deg,#ff4f9a,#fdc815,#7cffb2,#4fd8ff,#ff4f9a);
+  background-size:200% 100%;
+  animation:pwLinea 4s linear infinite;
+}
+@keyframes pwLinea{to{background-position:200% 0}}
+/* Logo que gira */
+header.gx-navbar .logo{
+  display:flex; align-items:center; gap:8px;
+  font-weight:700; font-size:24px;
+  color:#fdc815; text-shadow:3px 3px 0 #000;
+}
+header.gx-navbar .logo img{
+  width:34px; height:34px; image-rendering:pixelated;
+  animation:pwSpin 6s steps(8) infinite;
+}
+@keyframes pwSpin{to{transform:rotate(360deg)}}
+header.gx-navbar .logo-t{font-size:inherit; color:inherit; letter-spacing:0}
+@media (prefers-reduced-motion:reduce){
+  header.gx-navbar::after,header.gx-navbar .logo img{animation:none}
+}
+@media (max-width:620px){header.gx-navbar .logo{font-size:clamp(18px,5vw,24px)}}
+</style>
 <style id="fix-puntero">
 /* Restaura el puntero normal aunque un CSS/JS externo lo oculte */
 html, body, body * { cursor: auto !important; }
@@ -108,6 +145,13 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 </style>
 </head>
 <body>
+
+<header class="gx-navbar">
+  <div class="logo">
+    <img src="ho.png" alt="" onerror="this.style.display='none'">
+    <span class="logo-t">PIXELWORD</span>
+  </div>
+</header>
 
 <canvas id="fondo" aria-hidden="true"></canvas>
 
@@ -130,13 +174,13 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 <script src="java/firebase-init.js"></script>
 <script>
   const RANGOS = [
-    {id:'platino', nombre:'Platino', min:2500, emoji:'🔷', color:'#8fe8d8'},
-    {id:'oro',     nombre:'Oro',     min:1500, emoji:'🥇', color:'#ffc24b'},
-    {id:'plata',   nombre:'Plata',   min:500,  emoji:'🥈', color:'#c4cbdc'},
-    {id:'bronce',  nombre:'Bronce',  min:0,    emoji:'🥉', color:'#cd7f32'}
+    {id:'platino', nombre:'Platino', min:2500, emoji:'', color:'#8fe8d8'},
+    {id:'oro',     nombre:'Oro',     min:1500, emoji:'', color:'#ffc24b'},
+    {id:'plata',   nombre:'Plata',   min:500,  emoji:'', color:'#c4cbdc'},
+    {id:'bronce',  nombre:'Bronce',  min:0,    emoji:'', color:'#cd7f32'}
   ];
   const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
-  const MEDALLAS = ['🥇','🥈',''];
+  const MEDALLAS = ['🥇','🥈','🥉'];
   const COLORES_PODIO = ['#fdc815','#c9d6ff','#cd7f32'];
 
   let TODOS = [];
