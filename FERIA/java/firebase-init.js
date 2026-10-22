@@ -11,30 +11,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ✅ CORREGIDO: Solo crea el documento de ranking si NO existe.
-// Si ya existe, NO toca el XP (preserva el que ganaste jugando).
+/* Crea ranking/{usuario} SOLO si no existe.
+   NUNCA toca xp / pruebas / insignias / progreso de un doc existente
+   (antes esto reseteaba el XP a 0 en cada inicio de sesión). */
 async function sincronizarRanking(usuario){
-  const s = await db.collection('usuarios').doc(usuario).get();
-  if(!s.exists) return;
-  const d = s.data();
-  
-  // Verificar si ya existe en ranking
-  const rankingDoc = await db.collection('ranking').doc(usuario).get();
-  
-  if (rankingDoc.exists) {
-    // Ya existe: solo actualiza usuario/avatar, NO toca xp
-    await db.collection('ranking').doc(usuario)
-      .set({ usuario, avatar: d.avatar || 'boy.gif' }, { merge: true });
-  } else {
-    // Primera vez: crea el documento con xp de usuarios (si existe)
-    await db.collection('ranking').doc(usuario)
-      .set({ 
-        usuario, 
-        xp: d.xp || 0, 
-        avatar: d.avatar || 'boy.gif',
-        insignias: []
-      }, { merge: true });
-  }
+  const uid = String(usuario || '').trim().toLowerCase();
+  if (!uid || typeof db === 'undefined') return;
+  const ref = db.collection('ranking').doc(uid);
+  const doc = await ref.get();
+  if (doc.exists) return; // ← ya existe: NO se toca nada
+  const s = await db.collection('usuarios').doc(uid).get();
+  const d = s.exists ? s.data() : {};
+  await ref.set({
+    usuario: uid,
+    avatar: d.avatar || 'boy.gif',
+    xp: 0,
+    insignias: [],
+    pruebas: {},
+    progreso: {}
+  }, { merge: true });
 }
 
 // Suma XP en ranking/{uid}
