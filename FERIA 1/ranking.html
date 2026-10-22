@@ -6,39 +6,49 @@
 <title>Salón de la Fama · Coding Adventure</title>
 <link rel="icon" type="image/png" href="ho.png">
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/navbar.css">
+<script>try{const t=localStorage.getItem('tema');if(t==='claro'||t==='light')document.documentElement.dataset.tema='claro'}catch(e){}</script>
 <style>
   :root{
-    --noche:#050a24; --panel:#0b1236; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
+    --noche:#050a24; --noche2:#071232; --panel:#0b1236; --linea:#1b2a6b; --texto:#eaf1ff; --suave:#8fa0d6;
     --amarillo:#fdc815; --amarillo-s:#c9940a; --cian:#4fd8ff; --rosa:#ff4f9a; --verde:#7cffb2;
     --bronce:#cd7f32; --oro:#fdc815; --platino:#c9d6ff; --diamante:#4fd8ff;
   }
   :root[data-tema="claro"]{
-    --noche:#eef3ff; --panel:#ffffff; --linea:#223a9a; --texto:#0a1240; --suave:#4a5a99;
+    --noche:#eef3ff; --noche2:#dfe8ff; --panel:#ffffff; --linea:#223a9a; --texto:#0a1240; --suave:#4a5a99;
   }
   *{box-sizing:border-box;margin:0}
   html{height:100%}
   body{
-    min-height:100%; background:var(--noche); color:var(--texto);
+    min-height:100%; color:var(--texto);
     font-family:'Mulish',sans-serif; line-height:1.5; padding:0 0 60px;
-    background-image:
-      radial-gradient(2px 2px at 12% 20%,#fff8 50%,transparent 51%),
-      radial-gradient(2px 2px at 78% 12%,#fff6 50%,transparent 51%),
-      radial-gradient(2px 2px at 40% 70%,#fff5 50%,transparent 51%),
-      radial-gradient(2px 2px at 90% 60%,#fff7 50%,transparent 51%);
+    background:linear-gradient(180deg, var(--noche) 0%, var(--noche2) 55%, var(--noche) 100%);
+    background-attachment:fixed;
   }
   :focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
-  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 0}
+
+  /* ═══════════ FONDO ANIMADO (canvas pixel) ═══════════ */
+  #fondo{
+    position:fixed; inset:0; width:100%; height:100%;
+    z-index:-1; pointer-events:none; image-rendering:pixelated;
+  }
+
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 0;position:relative}
 
   .wrap header{text-align:center;margin:10px 0 26px}
   h1{
     font-family:'Pixelify Sans',monospace;font-size:clamp(2rem,6vw,3.4rem);color:var(--amarillo);
     text-shadow:4px 4px 0 var(--amarillo-s),8px 8px 0 #000;letter-spacing:1px;
+    animation:brillo 3s ease-in-out infinite;
+  }
+  @keyframes brillo{
+    50%{text-shadow:4px 4px 0 var(--amarillo-s),8px 8px 0 #000,0 0 26px rgba(253,200,21,.55)}
   }
   .en-vivo{margin-top:16px;color:var(--suave);font-size:.9rem}
   .punto{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--rosa);margin-right:8px;animation:lat 1.5s infinite}
   @keyframes lat{50%{opacity:.25}}
-  @media (prefers-reduced-motion:reduce){.punto{animation:none}}
+  @media (prefers-reduced-motion:reduce){
+    .punto,h1{animation:none}
+  }
 
   /* Pestañas por rango */
   .tabs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:26px}
@@ -75,167 +85,32 @@
   .fila .nombre{overflow-wrap:anywhere}
   .fila .xp{font-family:'Pixelify Sans',monospace;color:var(--amarillo)}
   .rango-tag{font-size:.78rem;padding:1px 8px;border:2px solid var(--c);color:var(--c);margin-left:8px;white-space:nowrap}
-  .badges{margin-left:6px;letter-spacing:2px;font-size:.9em}
   .vacio-msg{padding:26px;text-align:center;color:var(--suave)}
 
   .tu-pos{margin-top:18px;text-align:center;font-family:'Pixelify Sans',monospace;color:var(--verde);font-size:1.1rem;min-height:1.6em}
-
-  /* ═══════════ PREMIOS / INSIGNIAS ═══════════ */
-  .premios{margin-top:48px}
-  .premios h2{
-    font-family:'Pixelify Sans',monospace;color:var(--cian);font-size:1.8rem;
-    text-align:center;margin-bottom:6px;
-  }
-  .premios > p{text-align:center;color:var(--suave);margin-bottom:14px}
-
-  .ins-progreso{
-    text-align:center;
-    font-family:'Pixelify Sans',monospace;
-    color:var(--amarillo);
-    font-size:clamp(.9rem, 1.7vw, 1.05rem);
-    margin-bottom:22px;
-    letter-spacing:.5px;
-    text-shadow:0 2px 0 #000;
-  }
-  :root[data-tema="claro"] .ins-progreso{text-shadow:none;color:#8a6500}
-  .ins-progreso b{color:#fff}
-  :root[data-tema="claro"] .ins-progreso b{color:#050a24}
-
-  /* Grid 5 → 3 → 2 columnas */
-  .insignias{
-    display:grid;
-    grid-template-columns:repeat(5, minmax(0, 1fr));
-    gap:14px;
-  }
-  @media (max-width:800px){ .insignias{grid-template-columns:repeat(3, minmax(0, 1fr))} }
-  @media (max-width:460px){ .insignias{grid-template-columns:repeat(2, minmax(0, 1fr))} }
-
-  .ins{
-    background:var(--panel);
-    border:4px solid var(--linea);
-    box-shadow:5px 5px 0 #000;
-    padding:16px 10px;
-    text-align:center;
-    position:relative;
-    transition:transform .15s, border-color .15s, box-shadow .15s;
-  }
-  .ins .ico{
-    font-size:2.2rem;
-    line-height:1;
-    display:block;
-    filter:grayscale(1) brightness(.5);
-    transition:filter .2s, transform .2s;
-  }
-  .ins h3{
-    font-family:'Pixelify Sans',monospace;
-    font-size:clamp(.9rem, 1.6vw, 1.05rem);
-    margin:8px 0 4px;
-    line-height:1.25;
-    overflow-wrap:break-word;
-  }
-  .ins p{
-    font-size:.82rem;
-    line-height:1.35;
-    color:var(--suave);
-    overflow-wrap:break-word;
-  }
-
-  /* Estado: CONSEGUIDA */
-  .ins.got{
-    border-color:var(--amarillo);
-    box-shadow:5px 5px 0 #000, 0 0 22px rgba(253,200,21,.45);
-  }
-  .ins.got .ico{filter:none; transform:scale(1.05)}
-  .ins.got h3{color:var(--amarillo)}
-  .ins.got::after{
-    content:"✓";
-    position:absolute;
-    top:-12px; right:-12px;
-    width:30px; height:30px;
-    display:grid; place-items:center;
-    background:var(--verde);
-    color:#050a24;
-    border:3px solid #000;
-    border-radius:50%;
-    font-family:'Pixelify Sans',monospace;
-    font-weight:700; font-size:15px;
-    box-shadow:2px 2px 0 #000;
-    animation:pop .4s steps(4) both;
-  }
-  @keyframes pop{ from{transform:scale(0) rotate(-90deg)} to{transform:scale(1) rotate(0)} }
-
-  /* Trofeo Maestro (banner separado, siempre full-width) */
-  .final{
-    margin-top:16px;
-    background:linear-gradient(135deg, var(--panel), #2a1f00);
-    border:4px solid var(--amarillo);
-    box-shadow:6px 6px 0 #000;
-    padding:20px;
-    text-align:center;
-    position:relative;
-  }
-  :root[data-tema="claro"] .final{background:#fff6d1}
-  .final .ico{
-    font-size:2.6rem; line-height:1; display:block;
-    filter:grayscale(1) brightness(.5);
-    transition:filter .2s;
-  }
-  .final h3{
-    font-family:'Pixelify Sans',monospace;
-    color:var(--amarillo);
-    font-size:1.35rem;
-    margin:8px 0 4px;
-  }
-  :root[data-tema="claro"] .final h3{color:#8a6500}
-  .final p{font-size:.92rem;color:var(--suave)}
-  .final.got{
-    box-shadow:6px 6px 0 #000, 0 0 40px rgba(253,200,21,.7);
-  }
-  .final.got .ico{filter:none; transform:scale(1.1)}
-  .final.got::after{
-    content:"✓";
-    position:absolute;
-    top:-14px; right:-14px;
-    width:34px; height:34px;
-    display:grid; place-items:center;
-    background:var(--verde);
-    color:#050a24;
-    border:3px solid #000;
-    border-radius:50%;
-    font-family:'Pixelify Sans',monospace;
-    font-weight:700; font-size:17px;
-    box-shadow:2px 2px 0 #000;
-    animation:pop .4s steps(4) both;
-  }
 
   @media (max-width:560px){
     .wrap{padding:18px 10px 0}
     .podio{grid-template-columns:1fr}
     .puesto.p1{order:-1}
     .fila{grid-template-columns:36px 1fr auto;padding:10px}
-    .ins{padding:12px 8px}
   }
-
 </style>
-<style id="ajustes">
-/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-html,body,body *{cursor:auto!important}
-body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
-body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
-body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
-body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
-body button:disabled,body .btn:disabled{cursor:not-allowed!important}
-#espada-cursor{display:none!important}
-img,video,canvas,svg,iframe{max-width:100%}
-body{overflow-wrap:break-word}
-@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
-/* Barra de navegacion: solo logo + PIXELWORD (enlace a index.html) */
-#pixelword-nav .pw-lk,#pixelword-nav .pw-tema,#pixelword-nav .pw-chip,#pixelword-nav .pw-salir,#pixelword-nav .pw-burger{display:none !important}
-#pwOverlay,#pwDrawer{display:none !important}
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
 </style>
 </head>
 <body>
+
+<canvas id="fondo" aria-hidden="true"></canvas>
+
 <div class="wrap">
   <header>
     <h1>Salón de la Fama</h1>
@@ -247,46 +122,6 @@ body{overflow-wrap:break-word}
   <div class="podio" id="podio"></div>
   <div class="lista" id="lista"></div>
   <p class="tu-pos" id="tuPos"></p>
-
-  <section class="premios">
-    <h2>Premios por completar</h2>
-    <p>Cada área completa te da una insignia. Completar las cinco te da el trofeo final.</p>
-    <p class="ins-progreso" id="insProgreso">Progreso: 0 / 5 insignias</p>
-
-    <div class="insignias" id="insGrid">
-      <div class="ins" data-ins="basico">
-        <span class="ico">🖥️</span>
-        <h3>Insignia Básico</h3>
-        <p>Completa los 5 retos de Computación Básica.</p>
-      </div>
-      <div class="ins" data-ins="python">
-        <span class="ico">🐍</span>
-        <h3>Insignia Python</h3>
-        <p>Resuelve los 4 ejercicios y la prueba final.</p>
-      </div>
-      <div class="ins" data-ins="html">
-        <span class="ico">🌐</span>
-        <h3>Insignia HTML</h3>
-        <p>Construye tu primera página web.</p>
-      </div>
-      <div class="ins" data-ins="css">
-        <span class="ico">🎨</span>
-        <h3>Insignia CSS</h3>
-        <p>Dale color y estilo a tu página.</p>
-      </div>
-      <div class="ins" data-ins="js">
-        <span class="ico">☕</span>
-        <h3>Insignia JavaScript</h3>
-        <p>Resuelve los retos de JavaScript.</p>
-      </div>
-    </div>
-
-    <div class="final" data-ins="maestro">
-      <span class="ico">🏆</span>
-      <h3>Trofeo Maestro del Código</h3>
-      <p>Para quien completa las 5 áreas y llega a Platino.</p>
-    </div>
-  </section>
 </div>
 
 <!-- Firebase compat PRIMERO, luego firebase-init, y RECIÉN DESPUÉS la lógica que usa db -->
@@ -294,41 +129,15 @@ body{overflow-wrap:break-word}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
 <script>
-  // Tema claro/oscuro compartido
-  try{ const t = localStorage.getItem('tema'); if (t === 'claro' || t === 'light') document.documentElement.dataset.tema = 'claro'; }catch(e){}
-
   const RANGOS = [
-    {id:'diamante', nombre:'Platino', min:2500, emoji:'', color:'#4fd8ff'},
-    {id:'platino',  nombre:'Oro',  min:1500,  emoji:'', color:'#c9d6ff'},
-    {id:'oro',      nombre:'Plata',      min:500, emoji:'', color:'#fdc815'},
-    {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'', color:'#cd7f32'}
+    {id:'diamante', nombre:'Diamante', min:1200, emoji:'💎', color:'#4fd8ff'},
+    {id:'platino',  nombre:'Platino',  min:700,  emoji:'🔷', color:'#c9d6ff'},
+    {id:'oro',      nombre:'Oro',      min:300,  emoji:'🥇', color:'#fdc815'},
+    {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'🥉', color:'#cd7f32'}
   ];
   const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
-  const MEDALLAS = ['🥇','🥈','🥉'];
+  const MEDALLAS = ['🥇','🥈',''];
   const COLORES_PODIO = ['#fdc815','#c9d6ff','#cd7f32'];
-
-  /* ═══════ INSIGNIAS ═══════ */
-  const INSIGNIAS_BASE = ['basico', 'python', 'html', 'css', 'js'];
-  const EMO_INSIGNIA = {
-    basico: '🖥️',
-    python: '🐍',
-    html:   '🌐',
-    css:    '🎨',
-    js:     '☕'
-  };
-  const EMO_FALLBACK = '🏅';
-
-  // Normaliza distintos nombres a la clave canónica
-  function normalizarInsignia(raw){
-    const k = String(raw||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    if (!k) return null;
-    if (k.includes('basico') || k.includes('basica')) return 'basico';
-    if (k.includes('python')) return 'python';
-    if (k.includes('html'))   return 'html';
-    if (k.includes('css'))    return 'css';
-    if (k.includes('javascript') || k.includes('java') || /\bjs\b/.test(k)) return 'js';
-    return null;
-  }
 
   let TODOS = [];
   let filtro = 'todos';
@@ -345,32 +154,6 @@ body{overflow-wrap:break-word}
     const img = el('img', {src: j.avatar || 'boy.gif', alt: ''});
     img.onerror = () => { img.onerror = null; img.src = 'boy.gif'; };
     return img;
-  }
-  function badgesSpan(j){
-    const lista = Array.isArray(j.insignias) ? j.insignias : [];
-    if (!lista.length) return '';
-    const txt = lista.map(k => EMO_INSIGNIA[normalizarInsignia(k)] || EMO_FALLBACK).join('');
-    return el('span', {className:'badges', title:'Insignias'}, txt);
-  }
-
-  /* Marca las tarjetas de premios según las insignias del usuario */
-  function marcarInsignias(insignias){
-    const set = new Set((insignias || []).map(normalizarInsignia).filter(Boolean));
-    const maestro = INSIGNIAS_BASE.every(id => set.has(id));
-
-    document.querySelectorAll('[data-ins]').forEach(el => {
-      const id = el.dataset.ins;
-      const got = id === 'maestro' ? maestro : set.has(id);
-      el.classList.toggle('got', got);
-    });
-
-    const prog = document.getElementById('insProgreso');
-    if (prog) {
-      const n = INSIGNIAS_BASE.filter(id => set.has(id)).length;
-      prog.innerHTML = yo
-        ? `Progreso: <b>${n} / ${INSIGNIAS_BASE.length}</b> insignias` + (maestro ? ' · 🏆 ¡Maestro del Código!' : '')
-        : 'Inicia sesión para ver tu progreso';
-    }
   }
 
   function pintarTabs(){
@@ -404,7 +187,7 @@ body{overflow-wrap:break-word}
         caja.append(
           el('div',{className:'medalla'},MEDALLAS[i]),
           avatar(j),
-          el('div',{className:'nombre'}, j.usuario, badgesSpan(j)),
+          el('div',{className:'nombre'}, j.usuario),
           el('div',{className:'xp'}, j.xp+' XP')
         );
       } else {
@@ -431,7 +214,7 @@ body{overflow-wrap:break-word}
         tag.style.setProperty('--c', r.color);
         const fila = el('div',{className:'fila'+(j.id===yo?' yo':'')},
           el('span',{className:'pos'}, '#'+(k+4)),
-          el('span',{className:'quien'}, avatar(j), el('span',{className:'nombre'}, j.usuario, tag, badgesSpan(j))),
+          el('span',{className:'quien'}, avatar(j), el('span',{className:'nombre'}, j.usuario, tag)),
           el('span',{className:'xp'}, j.xp+' XP'));
         cont.append(fila);
       });
@@ -447,7 +230,6 @@ body{overflow-wrap:break-word}
   if (typeof db === 'undefined' || !db) {
     document.getElementById('lista').append(el('div',{className:'vacio-msg'},
       'No se pudo conectar con Firebase. Revisa tu conexión y vuelve a intentar.'));
-    marcarInsignias([]);
   } else {
     db.collection('ranking').orderBy('xp','desc').limit(200).onSnapshot(snap => {
       TODOS = snap.docs.map(d => {
@@ -456,8 +238,7 @@ body{overflow-wrap:break-word}
           id: d.id,
           usuario: x.usuario || d.id,
           xp: Number(x.xp) || 0,
-          avatar: x.avatar,
-          insignias: Array.isArray(x.insignias) ? x.insignias : []
+          avatar: x.avatar
         };
       });
       render();
@@ -467,43 +248,117 @@ body{overflow-wrap:break-word}
       document.getElementById('lista').append(el('div',{className:'vacio-msg'},
         'No se pudo cargar el ranking. Revisa tu conexión y las reglas de Firestore.'));
     });
-
-    /* ★ Suscripción al documento del propio usuario: marca insignias en vivo */
-    if (yo) {
-      db.collection('ranking').doc(yo).onSnapshot(
-        doc => marcarInsignias(doc.exists ? (doc.data().insignias || []) : []),
-        err => { console.warn('[ranking] insignias del usuario:', err); marcarInsignias([]); }
-      );
-    } else {
-      marcarInsignias([]);
-    }
   }
   render();
 </script>
-<script>
-</script>
 
-<!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
-<script src="pixelword-nav.js"></script>
 <script>
+/* ═══════════ FONDO ANIMADO: estrellas + chispas XP + grid synthwave ═══════════
+   Renderiza a media resolución y escala con image-rendering:pixelated
+   para que se vea pixel-art de verdad y no cueste rendimiento. */
 (function(){
-  // deja SOLO una navbar oficial
-  const limpiar = () => {
-    const o = document.querySelectorAll('header.gx-navbar');
-    for (let i = 1; i < o.length; i++) o[i].remove();
-  };
-  limpiar();
-  window.addEventListener('load', limpiar);
+  const cv = document.getElementById('fondo');
+  if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const ESCALA = 2;
+  const REDUCIDO = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // sincroniza el botón de tema de la navbar (data-theme) con este CSS (data-tema)
-  const root = document.documentElement;
-  const sync = () => {
-    if (root.getAttribute('data-theme') === 'light') root.dataset.tema = 'claro';
-    else delete root.dataset.tema;
+  const PALETAS = {
+    oscuro:{ estrella:'#ffffff', chispas:['#fdc815','#4fd8ff','#ff4f9a','#7cffb2'], grid:'255,79,154', gridV:'79,216,255' },
+    claro: { estrella:'#4a5a99', chispas:['#c9940a','#22a7d8','#d8337f','#2fbf71'], grid:'34,58,154',  gridV:'34,58,154' }
   };
-  new MutationObserver(sync).observe(root, {attributes:true, attributeFilter:['data-theme']});
-  try{ if (localStorage.getItem('tema') === 'light') root.setAttribute('data-theme','light'); }catch(e){}
-  sync();
+  const paleta = () => PALETAS[document.documentElement.dataset.tema === 'claro' ? 'claro' : 'oscuro'];
+
+  let W = 0, H = 0, estrellas = [], chispas = [];
+
+  function nuevaChispa(desdeAbajo){
+    return {
+      x: Math.random()*W,
+      y: desdeAbajo ? H + 6 : Math.random()*H,
+      s: 2 + Math.floor(Math.random()*3),
+      v: 6 + Math.random()*14,
+      d: (Math.random()-.5)*4,
+      c: Math.floor(Math.random()*4),
+      a: .25 + Math.random()*.4
+    };
+  }
+  // Nota: nuevaChispa(true) = reaparece abajo; al sembrar uso posiciones aleatorias
+  function sembrar(){
+    estrellas = Array.from({length: Math.floor(W*H/2600)}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      s: Math.random() < .85 ? 1 : 2,
+      f: .5 + Math.random()*2,
+      p: Math.random()*Math.PI*2
+    }));
+    chispas = Array.from({length: Math.max(8, Math.floor(W/22))}, () => {
+      const c = nuevaChispa(false);
+      c.y = Math.random()*H;
+      return c;
+    });
+  }
+  function medir(){
+    W = cv.width  = Math.max(1, Math.floor(innerWidth / ESCALA));
+    H = cv.height = Math.max(1, Math.floor(innerHeight / ESCALA));
+    sembrar();
+  }
+
+  function grid(t, P){
+    const hor = H * .72;
+    ctx.lineWidth = 1;
+    // líneas verticales convergiendo al punto de fuga
+    for(let i = -9; i <= 9; i++){
+      ctx.strokeStyle = `rgba(${P.gridV},.10)`;
+      ctx.beginPath();
+      ctx.moveTo(W/2 + i*3, hor);
+      ctx.lineTo(W/2 + i*(W/14), H);
+      ctx.stroke();
+    }
+    // líneas horizontales con perspectiva que avanzan hacia ti
+    for(let k = 0; k < 9; k++){
+      const z = ((k/9) + t*.06) % 1;
+      const y = hor + (H-hor)*z*z;
+      ctx.strokeStyle = `rgba(${P.grid},${.05 + z*.18})`;
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+    // horizonte brillante
+    ctx.strokeStyle = `rgba(${P.grid},.35)`;
+    ctx.beginPath(); ctx.moveTo(0,hor); ctx.lineTo(W,hor); ctx.stroke();
+  }
+
+  let last = 0;
+  function frame(ts){
+    const t  = ts/1000;
+    const dt = Math.min(.05, (ts - last)/1000) || 0;
+    last = ts;
+    const P = paleta();
+
+    ctx.clearRect(0,0,W,H);
+    grid(t, P);
+
+    // estrellas que parpadean
+    for(const e of estrellas){
+      ctx.globalAlpha = .25 + .75*Math.abs(Math.sin(t*e.f + e.p));
+      ctx.fillStyle = P.estrella;
+      ctx.fillRect(e.x|0, e.y|0, e.s, e.s);
+    }
+    // chispas de XP subiendo
+    for(let i = 0; i < chispas.length; i++){
+      const c = chispas[i];
+      c.y -= c.v*dt;
+      c.x += c.d*dt;
+      if(c.y < -8) chispas[i] = nuevaChispa(true);
+      ctx.globalAlpha = c.a;
+      ctx.fillStyle = P.chispas[c.c];
+      ctx.fillRect(c.x|0, c.y|0, c.s, c.s);
+    }
+    ctx.globalAlpha = 1;
+
+    if(!REDUCIDO) requestAnimationFrame(frame);
+  }
+
+  addEventListener('resize', medir);
+  medir();
+  if(REDUCIDO) frame(0); else requestAnimationFrame(frame);
 })();
 </script>
 </body>

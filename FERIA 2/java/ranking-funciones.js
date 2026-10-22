@@ -41,4 +41,4 @@
     },
     err => { console.error(err); mensaje('No se pudo cargar el ranking.'); }
   );
-})();
+})( );
