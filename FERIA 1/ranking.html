@@ -130,10 +130,10 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 <script src="java/firebase-init.js"></script>
 <script>
   const RANGOS = [
-    {id:'diamante', nombre:'Diamante', min:1200, emoji:'💎', color:'#4fd8ff'},
-    {id:'platino',  nombre:'Platino',  min:700,  emoji:'🔷', color:'#c9d6ff'},
-    {id:'oro',      nombre:'Oro',      min:300,  emoji:'🥇', color:'#fdc815'},
-    {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'🥉', color:'#cd7f32'}
+    {id:'diamante', nombre:'Platino', min:2500, emoji:'', color:'#4fd8ff'},
+    {id:'platino',  nombre:'Oro',  min:1500,  emoji:'', color:'#c9d6ff'},
+    {id:'oro',      nombre:'Plata',      min:500,  emoji:'', color:'#fdc815'},
+    {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'', color:'#cd7f32'}
   ];
   const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
   const MEDALLAS = ['🥇','🥈',''];
