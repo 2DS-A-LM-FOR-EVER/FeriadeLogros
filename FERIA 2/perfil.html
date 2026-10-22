@@ -11,18 +11,18 @@
 <style>
 :root{
   /* NUEVA PALETA BASADA EN TUS IMÁGENES */
-  --bg:#0c0414; /* Fondo general oscuro */
-  --panel:#1a0b2e; /* Paneles laterales */
+  --bg:#0c0414;
+  --panel:#1a0b2e;
   --panel2:#2d1b4e; 
   --line:#4b2c6b;
   --text:#ffffff;
   --muted:#a78bfa;
   --lime:#7cffb2; 
   --pink:#ff4f9a; 
-  --amber:#ffcc00; /* Amarillo arcade */
+  --amber:#ffcc00;
   --cyan:#4fd8ff; 
   --violet:#a77bff;
-  --frame:#ffcc00; /* Marco amarillo */
+  --frame:#ffcc00;
   --rk:#ffcc00; 
   --rk-l:#fff3b0; 
   --rk-d:#a06a00;
@@ -50,7 +50,7 @@ h2.t::before{content:"";width:10px;height:10px;background:var(--violet);box-shad
 h2.t span{margin-left:auto;color:var(--rk)}
 .box{background:var(--panel);border:4px solid var(--line);padding:20px;position:relative;box-shadow:6px 6px 0 #000}
 
-/* NUEVA CABINA CORREGIDA */
+/* NUEVA CABINA PRINCIPAL */
 .cab-new {
   position: relative;
   width: 100%;
@@ -58,6 +58,12 @@ h2.t span{margin-left:auto;color:var(--rk)}
   margin: 0 auto;
   filter: drop-shadow(10px 10px 0 #000);
   cursor: pointer;
+  
+  /* Respaldo visual si las imágenes no cargan */
+  min-height: 480px; 
+  background: var(--panel2);
+  border-radius: 12px;
+  border: 4px dashed var(--line);
 }
 
 .cab-new .cab-img {
@@ -65,16 +71,16 @@ h2.t span{margin-left:auto;color:var(--rk)}
   width: 100%;
   height: auto;
   pointer-events: none;
+  border-radius: 12px;
 }
 
 .cab-new .cab-img.active {
   display: block;
 }
 
-/* Posicionamos la pantalla justo donde va en la imagen */
+/* PANTALLA DE LA CABINA (Posicionada sobre el hueco negro) */
 .cab-new .screen {
   position: absolute;
-  /* Ajusta estos valores si el muñeco no queda perfecto en el hueco */
   top: 23.5%; 
   left: 17%;
   width: 66%;
@@ -82,28 +88,22 @@ h2.t span{margin-left:auto;color:var(--rk)}
   background: #000;
   border-radius: 4px;
   overflow: hidden;
-  border: none;
-  outline: none;
-  box-shadow: none;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  aspect-ratio: auto; 
   z-index: 5;
 }
 
-.screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+/* Efecto de líneas de escaneo (Scanlines) */
+.screen::after {
+  content:"";
+  position:absolute;inset:0;pointer-events:none;z-index:6;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);
-  box-shadow:inset 0 0 70px rgba(0,0,0,.65)}
-.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;color:#fff;text-shadow:2px 2px 0 #000;line-height:1.5}
-.hud.tl{top:12px;left:14px;color:var(--frame)}
-.hud.tr{top:12px;right:14px;text-align:right}
-.hud.bl{bottom:12px;left:14px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hud.br{bottom:12px;right:14px;animation:blink 1s steps(2) infinite;color:var(--amber)}
-@keyframes blink{50%{opacity:0}}
-.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);width:34%;aspect-ratio:1;display:grid;place-items:end center}
-.hero-av canvas,.hero-av img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(0,0,0,.45))}
-.pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
-  box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
-.pedestal::before{content:"";position:absolute;inset:0 12% auto;height:100%;background:rgba(255,255,255,.35);clip-path:inset(0 0 60% 0)}
+  box-shadow:inset 0 0 70px rgba(0,0,0,.65)
+}
 
-/* El botón rojo será invisible pero clickeable, posicionado sobre la imagen */
+/* El botón rojo será invisible pero clickeable */
 .arcade-btn-red {
   position: absolute;
   bottom: 25%; 
@@ -116,12 +116,21 @@ h2.t span{margin-left:auto;color:var(--rk)}
   cursor: pointer;
   z-index: 10;
 }
-.arcade-btn-red:hover {
-  background: rgba(255,255,255,0.1);
-}
-.arcade-btn-red:active {
-  transform: translateY(2px);
-}
+.arcade-btn-red:hover { background: rgba(255,255,255,0.1); }
+.arcade-btn-red:active { transform: translateY(2px); }
+
+/* HUD (Nivel, Score, etc) */
+.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;color:#fff;text-shadow:2px 2px 0 #000;line-height:1.5}
+.hud.tl{top:12px;left:14px;color:var(--frame)}
+.hud.tr{top:12px;right:14px;text-align:right}
+.hud.bl{bottom:12px;left:14px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hud.br{bottom:12px;right:14px;animation:blink 1s steps(2) infinite;color:var(--amber)}
+@keyframes blink{50%{opacity:0}}
+.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);width:34%;aspect-ratio:1;display:grid;place-items:end center}
+.hero-av canvas,.hero-av img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(0,0,0,.45))}
+.pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
+  box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
+.pedestal::before{content:"";position:absolute;inset:0 12% auto;height:100%;background:rgba(255,255,255,.35);clip-path:inset(0 0 60% 0)}
 
 /* TARJETA DE IDENTIDAD */
 .idc{margin-top:26px;display:grid;gap:12px}
@@ -210,37 +219,76 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .st-ocean::after{top:62%;background:repeating-linear-gradient(90deg,#1b6fb5 0 24px,#10497f 24px 48px);animation-direction:reverse;animation-duration:4.5s}
 @keyframes wave{to{transform:translateX(-32px)}}
 
-/* EDITOR */
-dialog{margin:auto;background:var(--panel);color:var(--text);border:4px solid var(--frame);box-shadow:10px 10px 0 #000,0 0 0 9999px rgba(2,6,9,.82);width:min(920px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:0;overflow:hidden}
-dialog::backdrop{background:transparent}
-.dlg{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);grid-template-rows:minmax(0,1fr);height:min(780px,calc(100vh - 32px))}
-@media(max-width:760px){.dlg{grid-template-columns:1fr;grid-template-rows:none;height:auto;max-height:calc(100vh - 32px);overflow:auto}.dlg-l,.dlg-r{overflow:visible!important}}
-.dlg-l{padding:20px;background:#0a141b;border-right:4px solid var(--line);overflow:auto;min-height:0}
-.dlg-r{padding:20px;overflow:auto;min-height:0}
-.dlg h3{font-family:var(--px);font-size:11px;color:var(--amber);margin:20px 0 12px;letter-spacing:1px}
-.dlg h3:first-child{margin-top:0}
-.screen.sm{outline-width:3px;border-width:4px}
-.field{display:grid;gap:6px;margin-bottom:12px}
-.field label{color:var(--muted);font-size:19px}
-.field input,.field textarea{background:#050b10;border:3px solid var(--line);color:var(--text);font:inherit;padding:8px 10px;width:100%;resize:none}
-.field input:focus,.field textarea:focus{outline:none;border-color:var(--frame)}
-.grid{display:grid;gap:10px}
-.g3{grid-template-columns:repeat(3,1fr)}
-.g5{grid-template-columns:repeat(5,1fr)}
-.pick{background:var(--panel2);border:3px solid var(--line);padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;font-size:18px}
-.pick:hover{border-color:var(--muted)}
-.pick[aria-pressed=true]{border-color:var(--frame);box-shadow:0 0 0 3px #000,0 0 0 6px var(--frame)}
-.pick canvas,.pick img{width:64px;height:64px;object-fit:contain}
-.thumb{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#000}
-.swatch{aspect-ratio:1;border:3px solid #000;box-shadow:inset -6px -6px 0 #0004}
-.swatch[aria-pressed=true]{outline:3px solid #fff;outline-offset:2px}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.btn{background:var(--panel2);border:3px solid var(--line);padding:8px 14px;font-size:20px}
-.btn:hover{border-color:var(--lime)}
-.btn.primary{background:var(--lime);color:#00170c;border-color:#000;box-shadow:4px 4px 0 #000;font-family:var(--px);font-size:11px;padding:12px 16px}
-.btn.primary:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
-.note{color:var(--muted);font-size:18px;margin-top:6px}
-.actions{display:flex;justify-content:flex-end;gap:12px;margin-top:22px;position:sticky;bottom:-20px;background:var(--panel);padding:12px 0 4px}
+/* EDITOR (DIALOG) */
+dialog {
+  margin: auto;
+  background: var(--panel);
+  color: var(--text);
+  border: 4px solid var(--frame);
+  box-shadow: 10px 10px 0 #000, 0 0 0 9999px rgba(2,6,9,.85);
+  width: min(920px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  padding: 0;
+  overflow: hidden;
+  z-index: 9999;
+}
+dialog::backdrop { background: transparent; }
+
+.dlg {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.3fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: min(780px, calc(100vh - 32px));
+  width: 100%;
+}
+@media(max-width:760px) {
+  .dlg { grid-template-columns: 1fr; grid-template-rows: none; height: auto; max-height: calc(100vh - 32px); overflow: auto; }
+  .dlg-l, .dlg-r { overflow: visible !important; }
+}
+
+.dlg-l { padding: 20px; background: #0a141b; border-right: 4px solid var(--line); overflow: auto; min-height: 0; display: flex; flex-direction: column; gap: 20px; }
+.dlg-r { padding: 20px; overflow: auto; min-height: 0; background: var(--panel); }
+.dlg h3 { font-family: var(--px); font-size: 11px; color: var(--amber); margin: 20px 0 12px; letter-spacing: 1px; }
+.dlg h3:first-child { margin-top: 0; }
+
+/* PANTALLA DE VISTA PREVIA (Arreglado el ancho para que no se aplaste) */
+.screen.sm { 
+  position: relative;
+  width: 100%; /* ESTO ARREGLA EL COLAPSO DE LA IMAGEN 1 */
+  flex-shrink: 0;
+  aspect-ratio: 16/10;
+  outline-width: 3px; 
+  border-width: 4px; 
+  border: 4px solid #000;
+  outline: 3px solid var(--frame);
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 20px color-mix(in srgb,var(--frame) 45%,transparent);
+}
+
+.field { display: grid; gap: 6px; margin-bottom: 12px; }
+.field label { color: var(--muted); font-size: 19px; }
+.field input, .field textarea { background: #050b10; border: 3px solid var(--line); color: var(--text); font: inherit; padding: 8px 10px; width: 100%; resize: none; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--frame); }
+
+.grid { display: grid; gap: 10px; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g5 { grid-template-columns: repeat(5, 1fr); }
+.pick { background: var(--panel2); border: 3px solid var(--line); padding: 6px; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; font-size: 18px; }
+.pick:hover { border-color: var(--muted); }
+.pick[aria-pressed=true] { border-color: var(--frame); box-shadow: 0 0 0 3px #000, 0 0 0 6px var(--frame); }
+.pick canvas, .pick img { width: 64px; height: 64px; object-fit: contain; }
+.thumb { position: relative; width: 100%; aspect-ratio: 16/10; overflow: hidden; background: #000; }
+.swatch { aspect-ratio: 1; border: 3px solid #000; box-shadow: inset -6px -6px 0 #0004; }
+.swatch[aria-pressed=true] { outline: 3px solid #fff; outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { background: var(--panel2); border: 3px solid var(--line); padding: 8px 14px; font-size: 20px; }
+.btn:hover { border-color: var(--lime); }
+.btn.primary { background: var(--lime); color: #00170c; border-color: #000; box-shadow: 4px 4px 0 #000; font-family: var(--px); font-size: 11px; padding: 12px 16px; }
+.btn.primary:active { transform: translate(3px,3px); box-shadow: 1px 1px 0 #000; }
+.note { color: var(--muted); font-size: 18px; margin-top: 6px; }
+.actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 22px; position: sticky; bottom: -20px; background: var(--panel); padding: 12px 0 4px; }
 
 /* TOAST */
 .toast{position:fixed;top:auto;right:auto;left:50%;bottom:28px;margin:0;width:auto;height:auto;overflow:visible;transform:translateX(-50%) translateY(120px);background:#000;border:3px solid var(--lime);padding:10px 18px;font-family:var(--px);font-size:10px;line-height:1.5;color:var(--lime);transition:transform .25s steps(5);z-index:99;max-width:calc(100vw - 24px)}
@@ -275,9 +323,9 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
     <!-- CABINA CON IMÁGENES Y PANTALLA INTERACTIVA -->
     <div class="cab-new" id="cabFrame">
       <!-- Imagen normal de la cabina -->
-      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade">
+      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade" onerror="this.style.display='none'">
       <!-- Imagen presionada (cambia al abrir el editor) -->
-      <img id="imgPressed" src="PERFIL2.png" class="cab-img" alt="Interfaz Editando">
+      <img id="imgPressed" src="PERFIL2.png" class="cab-img" alt="Interfaz Editando" onerror="this.style.display='none'">
 
       <!-- La pantalla interactiva posicionada exactamente sobre el hueco -->
       <div class="screen" id="heroScreen">
@@ -333,8 +381,9 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
 <dialog id="ed">
   <div class="dlg">
     <div class="dlg-l">
-      <h3>Vista previa</h3>
-      <div class="screen sm" id="prevScreen" style="border: 4px solid #000; outline: 3px solid var(--frame);">
+      <h3 style="margin-top:0">Vista previa</h3>
+      <!-- Pantalla de vista previa con ancho 100% para que no colapse -->
+      <div class="screen sm" id="prevScreen">
         <div class="pedestal"></div>
         <div class="hero-av" id="prevAv"></div>
       </div>
@@ -652,7 +701,6 @@ function sync(){
 
 // LÓGICA DEL BOTÓN: Cambia a PERFIL2 y abre la interfaz
 $('openEd').onclick=()=>{
-  // Cambiar imagen a "presionado"
   document.getElementById('imgNormal').classList.remove('active');
   document.getElementById('imgPressed').classList.add('active');
 
