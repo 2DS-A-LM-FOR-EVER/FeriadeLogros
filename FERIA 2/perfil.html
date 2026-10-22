@@ -50,77 +50,44 @@ h2.t::before{content:"";width:10px;height:10px;background:var(--violet);box-shad
 h2.t span{margin-left:auto;color:var(--rk)}
 .box{background:var(--panel);border:4px solid var(--line);padding:20px;position:relative;box-shadow:6px 6px 0 #000}
 
-/* NUEVA CABINA BASADA EN IMÁGENES */
+/* NUEVA CABINA CORREGIDA */
 .cab-new {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
   filter: drop-shadow(10px 10px 0 #000);
+  cursor: pointer;
 }
 
-.cab-top {
+.cab-new .cab-img {
+  display: none;
   width: 100%;
-  aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
-  background-image: url('PERFIL1.png'); /* <-- CORREGIDO A MAYÚSCULAS */
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  position: relative;
+  height: auto;
+  pointer-events: none;
 }
 
-/* Posicionamos la pantalla justo donde va en la imagen de arriba */
-.cab-top .screen {
+.cab-new .cab-img.active {
+  display: block;
+}
+
+/* Posicionamos la pantalla justo donde va en la imagen */
+.cab-new .screen {
   position: absolute;
-  top: 21%; /* Ajusta estos valores si la pantalla no encaja perfecto */
-  left: 10%;
-  width: 80%;
-  height: 56%;
-  border: none;
-  outline: none;
-  box-shadow: none;
+  /* Ajusta estos valores si el muñeco no queda perfecto en el hueco */
+  top: 23.5%; 
+  left: 17%;
+  width: 66%;
+  height: 36%;
   background: #000;
   border-radius: 4px;
   overflow: hidden;
-}
-
-.cab-bottom {
-  width: 100%;
-  aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
-  background-image: url('PERFIL2.png'); /* <-- CORREGIDO A MAYÚSCULAS */
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  position: relative;
-  margin-top: -5%; /* Para que se junten bien las piezas */
-}
-
-/* El botón rojo será invisible pero clickeable, posicionado sobre la imagen */
-.arcade-btn-red {
-  position: absolute;
-  bottom: 25%; /* Posición del botón rojo en tu imagen */
-  right: 15%;
-  width: 20%;
-  height: 20%;
-  border-radius: 50%;
-  background: transparent;
   border: none;
-  cursor: pointer;
-  z-index: 10;
+  outline: none;
+  box-shadow: none;
+  z-index: 5;
 }
 
-.arcade-btn-red:hover {
-  background: rgba(255,255,255,0.1); /* Brillo sutil al pasar el mouse */
-}
-.arcade-btn-red:active {
-  transform: translateY(2px); /* Efecto de presionado */
-}
-
-.screen {
-  position: relative;
-  overflow:hidden;
-  background:#000;
-}
 .screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);
   box-shadow:inset 0 0 70px rgba(0,0,0,.65)}
@@ -135,6 +102,26 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
   box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
 .pedestal::before{content:"";position:absolute;inset:0 12% auto;height:100%;background:rgba(255,255,255,.35);clip-path:inset(0 0 60% 0)}
+
+/* El botón rojo será invisible pero clickeable, posicionado sobre la imagen */
+.arcade-btn-red {
+  position: absolute;
+  bottom: 25%; 
+  right: 15%;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+.arcade-btn-red:hover {
+  background: rgba(255,255,255,0.1);
+}
+.arcade-btn-red:active {
+  transform: translateY(2px);
+}
 
 /* TARJETA DE IDENTIDAD */
 .idc{margin-top:26px;display:grid;gap:12px}
@@ -285,25 +272,25 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
 
 <main>
   <section>
-    <!-- NUEVA CABINA CON IMÁGENES -->
-    <div class="cab-new">
-      <!-- Parte de arriba (Marquesina y Pantalla) -->
-      <div class="cab-top">
-        <div class="screen" id="heroScreen">
-          <div class="hud tl">NIVEL <span id="hudLvl">01</span></div>
-          <div class="hud tr">HI-SCORE<br><span id="hudScore">000000</span></div>
-          <div class="hud bl" id="hudUser">@jugador</div>
-          <div class="hud br">PRESS START</div>
-          <div class="pedestal"></div>
-          <div class="hero-av" id="heroAv"></div>
-        </div>
+    <!-- CABINA CON IMÁGENES Y PANTALLA INTERACTIVA -->
+    <div class="cab-new" id="cabFrame">
+      <!-- Imagen normal de la cabina -->
+      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade">
+      <!-- Imagen presionada (cambia al abrir el editor) -->
+      <img id="imgPressed" src="PERFIL2.png" class="cab-img" alt="Interfaz Editando">
+
+      <!-- La pantalla interactiva posicionada exactamente sobre el hueco -->
+      <div class="screen" id="heroScreen">
+        <div class="hud tl">NIVEL <span id="hudLvl">01</span></div>
+        <div class="hud tr">HI-SCORE<br><span id="hudScore">000000</span></div>
+        <div class="hud bl" id="hudUser">@jugador</div>
+        <div class="hud br">PRESS START</div>
+        <div class="pedestal"></div>
+        <div class="hero-av" id="heroAv"></div>
       </div>
-      
-      <!-- Parte de abajo (Panel de control) -->
-      <div class="cab-bottom">
-        <!-- Botón invisible que cubre el botón rojo de la imagen -->
-        <button class="arcade-btn-red" id="openEd" aria-label="Editar Perfil"></button>
-      </div>
+
+      <!-- El botón invisible sobre el botón rojo de la imagen -->
+      <button class="arcade-btn-red" id="openEd" aria-label="Editar Perfil"></button>
     </div>
     
     <div class="box idc">
@@ -544,7 +531,6 @@ const RANKS=[
 const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
 
-/* ★ INSIGNIAS: mapa único reutilizable (incluye 'basico') */
 const INSIGNIA_META = {
   basico: { emoji:'🖥️', label:'Computación Básica' },
   python: { emoji:'🐍', label:'Python' },
@@ -570,14 +556,12 @@ function renderProgress(){
   $('xpBar').setAttribute('aria-valuenow',cur);
   $('stXp').textContent=xp;$('stLvl').textContent=lv;
 
-  /* Emblema grande */
   $('emb').innerHTML = '<img src="'+EMBLEMAS[ri]+'" alt="'+R.n+'">';
   $('rkName').textContent='RANGO '+R.n.toUpperCase();
   $('rkFill').style.width=(N?Math.round((xp-R.min)/(N.min-R.min)*100):100)+'%';
   $('rkSub').textContent=N?'Faltan '+(N.min-xp)+' XP para '+N.n:'¡Rango máximo alcanzado!';
   $('pTag').textContent='RANGO '+R.n.toUpperCase();
 
-  /* Tiers chiquitos */
   $('tiers').replaceChildren(...RANKS.map((r,k)=>{
     const d=document.createElement('div');
     d.className='tier '+(k<ri?'done':k===ri?'now':'lock');
@@ -586,7 +570,6 @@ function renderProgress(){
     return d;
   }));
 
-  /* ★ INSIGNIAS (con 'basico' incluida) */
   const insCont = document.getElementById('insigniasContainer');
   if(insCont){
     const lista = Array.isArray(S.insignias) ? S.insignias : [];
@@ -667,8 +650,12 @@ function sync(){
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
 
-// ESTA ES LA LÓGICA QUE HACE QUE AL DAR CLIC AL BOTÓN ROJO SE ABRA LA OTRA INTERFAZ
+// LÓGICA DEL BOTÓN: Cambia a PERFIL2 y abre la interfaz
 $('openEd').onclick=()=>{
+  // Cambiar imagen a "presionado"
+  document.getElementById('imgNormal').classList.remove('active');
+  document.getElementById('imgPressed').classList.add('active');
+
   D={...S,user:'@'+usuarioCanonico};
   $('iName').value=D.name;
   $('iUser').value=D.user;
@@ -678,6 +665,12 @@ $('openEd').onclick=()=>{
   ed.showModal();
   sync();
 };
+
+// Al cerrar el editor, vuelve a PERFIL1
+ed.addEventListener('close', () => {
+  document.getElementById('imgPressed').classList.remove('active');
+  document.getElementById('imgNormal').classList.add('active');
+});
 
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
@@ -716,7 +709,7 @@ function salirYLimpiar() {
         k.startsWith('ca_html_v1_') ||
         k.startsWith('ca_juegos_v1_') ||
         k.startsWith('ca_arcade_profile_v1_') ||
-        k.startsWith('ca_basico_v1_')) { // Agregado por si acaso
+        k.startsWith('ca_basico_v1_')) { 
       localStorage.removeItem(k);
     }
   });
