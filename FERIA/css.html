@@ -261,6 +261,8 @@ function guardarXP(n, juego, idx){
 }
 
 /* Estilo computado de un elemento dentro de la vista previa */
+/* Valor ESCRITO por el alumno (no el calculado): no cambia con el zoom ni el escalado de Windows */
+const gd = (D, sel, prop) => { const h = D.getElementById('usuario') && D.getElementById('usuario').sheet; if (!h) return ''; let v = ''; for (const r of h.cssRules) { if (r.selectorText && r.selectorText.trim() === sel) { const x = r.style.getPropertyValue(prop); if (x) v = x; } } return v; };
 const gs = (D, sel) => { const el = D.querySelector(sel); return el ? D.defaultView.getComputedStyle(el) : null; };
 
 /* ============== EJERCICIOS ============== */
@@ -302,7 +304,7 @@ const EJERCICIOS = [
     solucion:'.tarjeta { padding: 20px; border: 3px solid black; border-radius: 10px; }',
     checks:[
       { d:'padding: 20px;',        f:D => { const s = gs(D,'.tarjeta'); return s && s.paddingTop === '20px' && s.paddingLeft === '20px'; } },
-      { d:'border: 3px solid …;',  f:D => { const s = gs(D,'.tarjeta'); return s && s.borderTopWidth === '3px' && s.borderTopStyle === 'solid'; } },
+      { d:'border: 3px solid …;',  f:D => { const s = gs(D,'.tarjeta'); return s && (Math.abs(parseFloat(s.borderTopWidth) - 3) <= 1 || gd(D,'.tarjeta','border-top-width') === '3px') && s.borderTopStyle === 'solid'; } },
       { d:'border-radius: 10px;',  f:D => { const s = gs(D,'.tarjeta'); return s && s.borderTopLeftRadius === '10px'; } }
     ],
     pista:'Dentro de .tarjeta { } escribe padding: 20px; border: 3px solid black; border-radius: 10px;' },
