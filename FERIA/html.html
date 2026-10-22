@@ -350,7 +350,7 @@ function guardarXP(n, juego, idx){
    ║  El archivo debe estar en el repo, junto a este html.        ║
    ║  Todo lo demás (misión, pistas, validación) se ajusta solo.  ║
    ╚══════════════════════════════════════════════════════════════╝ */
-const IMG = "html.jpg";   // <-- CAMBIAR_IMAGEN
+const IMG = "67.jpg";   // <-- CAMBIAR_IMAGEN
 /* ═════════════════════ fin de CAMBIAR_IMAGEN ═════════════════════ */
 
 /* Regex que exige que el <img> use justo el archivo IMG (acepta ruta antes, ej. ./67.jpg) */
@@ -770,7 +770,7 @@ if (typeof db !== 'undefined') {
    ========================================= */
 // 🔴 IMPORTANTE: FALSE mientras programas/pruebas. 
 // TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
-const MODO_KIOSKO_ACTIVO = true;  
+const MODO_KIOSKO_ACTIVO = true;
 
 async function salirYLimpiar() {
   // 1) Sube el progreso a la nube ANTES de borrar nada (máx. 3 s de espera)
