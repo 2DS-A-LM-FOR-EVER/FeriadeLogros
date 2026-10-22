@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BÁSICO · PIXELWORD</title>
+<link rel="icon" href="ho.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--nav:#050a24;--bg:#050a24;--panel:#0b1340;--panel2:#142070;--txt:#f3f6ff;--muted:#b4c0f0;
+--yellow:#fdc815;--yellow-d:#c9940a;--cyan:#4fd8ff;--pink:#ff4f9a;--green:#7cffb2;--silver:#a8b8c8;--soft:#ffe48a}
+body.light{--bg:#e9efff;--panel:#ffffff;--panel2:#e3e9ff;--txt:#0a1030;--muted:#3b4785;--soft:#8a5a00}
+*{box-sizing:border-box}
+html,body{margin:0}
+*{font-family:'Pixelify Sans',monospace !important}
+body{background:var(--bg);color:var(--txt);font-size:19px;line-height:1.5;min-height:100vh;overflow-x:hidden;padding-bottom:210px}
+a{color:inherit}
+h1,h2,h3,h4{margin:0;line-height:1.15}
+:focus-visible{outline:4px dashed var(--yellow);outline-offset:3px}
+
+/* ---------- fondo ---------- */
+.fondo{position:fixed;inset:0;z-index:-3;background:var(--bg) url('Fondo.gif') center/cover no-repeat}
+.fondo::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(5,10,36,.72),rgba(5,10,36,.88))}
+body.light .fondo::after{background:rgba(233,239,255,.9)}
+@media (max-width:768px) and (orientation:portrait){.fondo{background-size:contain;background-position:top center}}
+.estrellas{position:fixed;inset:0;z-index:-2;pointer-events:none;
+background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 120px 90px,#fdc815,transparent),radial-gradient(1px 1px at 210px 160px,#4fd8ff,transparent),radial-gradient(2px 2px at 300px 40px,#fff,transparent),radial-gradient(2px 2px at 260px 120px,#ff4f9a,transparent);
+background-size:340px 200px;animation:tw 3s steps(2) infinite}
+body.light .estrellas,body.light .met{display:none}
+.met{position:fixed;top:-80px;width:3px;height:70px;background:linear-gradient(#fff,transparent);transform:rotate(35deg);z-index:-2;animation:caer 7s linear infinite;pointer-events:none}
+.met:nth-of-type(1){left:15%}.met:nth-of-type(2){left:55%;animation-delay:2.5s;animation-duration:9s}.met:nth-of-type(3){left:85%;animation-delay:5s}
+@keyframes caer{0%{transform:translate(0,0) rotate(35deg);opacity:0}10%{opacity:1}100%{transform:translate(-420px,820px) rotate(35deg);opacity:0}}
+@keyframes tw{50%{opacity:.55}}
+
+/* ---------- barra ---------- */
+.nav{position:sticky;top:0;z-index:50;background:var(--nav);border-bottom:4px solid #000;display:flex;align-items:center;gap:10px;padding:8px 14px;flex-wrap:wrap;color:#fff}
+.nav::after{content:'';position:absolute;left:0;right:0;bottom:-8px;height:4px;background:linear-gradient(90deg,var(--pink),var(--yellow),var(--green),var(--cyan),var(--pink));background-size:200% 100%;animation:linea 4s linear infinite}
+@keyframes linea{to{background-position:200% 0}}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:24px;text-decoration:none;color:var(--yellow);text-shadow:3px 3px 0 #000;margin-right:auto}
+.logo img{width:34px;height:34px;image-rendering:pixelated;animation:gxSpin 6s steps(8) infinite}
+@keyframes gxSpin{to{transform:rotate(360deg)}}
+.lk{background:#0e1a5c;color:#fff;border:3px solid #000;box-shadow:3px 3px 0 #000;padding:3px 12px;text-decoration:none;font-size:17px}
+.lk:hover{background:var(--yellow);color:#000}
+.lk.on{background:linear-gradient(#ffe066,var(--yellow));color:#000}
+.tema{width:38px;height:38px;border:3px solid #000;background:#0e1a5c;color:#fff;box-shadow:3px 3px 0 #000;font-size:18px;padding:0}
+.chip{border:3px solid var(--green);color:var(--green);padding:2px 10px;font-size:16px;background:#031c14}
+.salir{background:linear-gradient(#ff7ab5,var(--pink));color:#fff;border:3px solid #000;box-shadow:3px 3px 0 #000;padding:3px 12px;font-size:17px;text-decoration:none}
+.salir:active{transform:translate(3px,3px);box-shadow:none}
+
+/* ---------- estructura ---------- */
+.wrap{max-width:960px;margin:0 auto;padding:22px 14px}
+.px{background:var(--panel);border:4px solid #000;box-shadow:6px 6px 0 #000;padding:18px}
+.hero{text-align:center;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,6vw,52px);color:var(--yellow);text-shadow:4px 4px 0 #000,0 0 18px rgba(253,200,21,.35);letter-spacing:1px}
+body.light .hero h1{color:#b07800;text-shadow:3px 3px 0 #fff}
+.hero p{margin:8px auto 0;max-width:640px;color:var(--muted);font-size:20px}
+.calma{margin:14px auto 0;max-width:640px;border:3px dashed var(--green);color:var(--green);padding:8px 12px;background:rgba(124,255,178,.07);font-size:18px}
+body.light .calma{color:#0b6b3a;border-color:#0b6b3a}
+#aviso{display:none;margin-bottom:14px;background:#3a2a00;border:4px solid var(--yellow);color:#ffe9a0;padding:10px 14px;box-shadow:4px 4px 0 #000}
+#aviso.on{display:block}
+#aviso a{color:var(--yellow);font-weight:700}
+
+/* barra de XP y mapa */
+.xpbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.xpt{font-weight:700;font-size:20px;color:var(--yellow);text-shadow:2px 2px 0 #000;white-space:nowrap}
+body.light .xpt{color:#8a5a00;text-shadow:none}
+.barra{flex:1;min-width:140px;height:24px;border:4px solid #000;background:#000;position:relative}
+.barra i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,var(--green) 0 14px,#3fd98a 14px 18px);transition:width .7s steps(12)}
+.nube{font-size:15px;color:var(--muted)}
+.mapa{display:flex;align-items:stretch;gap:0;margin-bottom:20px;overflow-x:auto;padding:4px 4px 10px}
+.nodo{flex:1 0 118px;border:4px solid #000;box-shadow:4px 4px 0 #000;background:var(--panel2);color:var(--txt);padding:8px 6px;text-align:center;font-size:15px;line-height:1.2;position:relative;margin-right:22px}
+.nodo:last-child{margin-right:0}
+.nodo:not(:last-child)::after{content:'';position:absolute;right:-26px;top:50%;width:22px;height:6px;background:#000}
+.nodo .ic{font-size:30px;display:block}
+.nodo b{display:block;font-size:14px;color:var(--muted)}
+.nodo.act{background:linear-gradient(#ffe066,var(--yellow));color:#000}
+.nodo.act b{color:#3a2a00}
+.nodo.hecho{background:#0d5a37;color:#fff}
+.nodo.hecho b{color:#bfffdc}
+.nodo.hecho .ic::after{content:' ✔';font-size:18px;color:var(--green)}
+.nodo.lock{opacity:.55;filter:grayscale(.8)}
+button.nodo{font-size:15px}
+.insignia-chip{display:inline-block;margin-top:6px;background:#2a1c00;color:var(--yellow);border:3px solid var(--yellow);padding:2px 10px;font-size:16px}
+
+/* ---------- reto ---------- */
+.reto-head{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tag{border:3px solid #000;background:var(--cyan);color:#000;padding:0 10px;font-size:16px;box-shadow:2px 2px 0 #000}
+.tag.xp{background:var(--yellow)}
+.tag.fin{background:var(--pink);color:#fff}
+.reto h2{font-size:clamp(26px,5vw,38px);margin-bottom:2px}
+.sub{margin:0 0 14px;color:var(--muted)}
+.reto h3{font-size:22px;margin:0 0 10px;color:var(--cyan)}
+body.light .reto h3{color:#0a5a8a}
+.bloque{border:4px solid #000;background:var(--panel2);padding:14px;margin-top:16px}
+.bloque p{margin:0 0 10px}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.caja{border:4px solid #000;padding:12px;box-shadow:4px 4px 0 #000;color:#000}
+.caja.hw{background:#ffd9a0}.caja.sw{background:#bfeaff}
+.caja h4{font-size:24px}
+.caja .gr{font-size:40px}
+.caja p{margin:6px 0;color:#111}
+.ej{font-size:17px}
+.truco{background:#fff3b0;color:#000;border:4px dashed #000;padding:10px 12px;margin:12px 0;font-size:20px}
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0}
+.flip{border:4px solid #000;background:#fff;color:#111;box-shadow:3px 3px 0 #000;padding:10px 6px;font-size:18px;min-height:78px;text-align:center}
+.flip .f2{display:none}
+.flip.on .f1{display:none}
+.flip.on .f2{display:block}
+.flip.on.h{background:#ffd9a0}.flip.on.s{background:#bfeaff}
+.flip:active{transform:translate(2px,2px)}
+.peque{font-size:16px;color:var(--muted)}
+kbd,.cap{display:inline-block;background:#fff;color:#111;border:3px solid #000;border-bottom-width:6px;padding:0 8px;margin:0 2px;font-size:.92em;min-width:30px;text-align:center}
+
+/* teclado visual */
+.kbwrap{overflow-x:auto;padding-bottom:6px}
+.kb{min-width:560px;background:#1a1f3a;border:4px solid #000;padding:6px}
+.kr{display:flex;gap:4px;margin-bottom:4px}
+.k{flex:1 1 0;min-width:0;background:#e6e9ff;color:#111;border:3px solid #000;border-bottom-width:5px;text-align:center;font-size:14px;padding:3px 0;white-space:nowrap;overflow:hidden}
+.k.w{flex:1.9}.k.sp{flex:7}
+.k.p{background:var(--pink);color:#fff}.k.c{background:var(--cyan)}.k.g{background:var(--green)}.k.y{background:var(--yellow)}
+.leyenda{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-size:16px}
+.leyenda span::before{content:'';display:inline-block;width:14px;height:14px;border:2px solid #000;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.combos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.combo{border:4px solid #000;background:var(--panel);padding:10px;text-align:center;box-shadow:4px 4px 0 #000}
+.combo .res{font-size:44px;line-height:1;color:var(--yellow);margin:6px 0}
+body.light .combo .res{color:#b07800}
+.combo small{display:block;color:var(--muted);font-size:15px;line-height:1.25}
+
+/* ratón dibujado */
+.cuatro{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:10px 0}
+.clic{border:4px solid #000;background:var(--panel);padding:10px;text-align:center;box-shadow:4px 4px 0 #000}
+.clic h4{margin:8px 0 4px;font-size:21px}
+.clic p{margin:0;font-size:16px;color:var(--muted)}
+.rat{width:50px;height:76px;border:4px solid #000;border-radius:25px 25px 28px 28px;background:#dfe6ff;position:relative;overflow:hidden;margin:0 auto}
+.rat .b{position:absolute;top:0;height:34px;width:50%;border-bottom:4px solid #000}
+.rat .l{left:0;border-right:2px solid #000}.rat .r{right:0;border-left:2px solid #000}
+.rat .on{background:var(--yellow)}
+.rat.dbl .on{animation:pam 1.2s steps(1) infinite}
+@keyframes pam{0%,30%,60%{background:var(--yellow)}15%,45%,75%,100%{background:#dfe6ff}}
+.rat.drag{animation:mover 2s ease-in-out infinite}
+@keyframes mover{50%{transform:translateX(18px)}}
+
+/* práctica: teclado */
+.tester{background:#000;border:4px solid var(--yellow);color:#fff;text-align:center;padding:14px;outline:none;min-height:190px}
+.tester:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(124,255,178,.35)}
+.t-hint{color:var(--yellow);font-size:18px}
+.t-big{font-size:clamp(46px,12vw,86px);line-height:1.1;color:var(--green);margin:8px 0;min-height:1.1em;word-break:break-word}
+.t-name{min-height:28px;color:var(--soft);font-size:19px}
+.t-mods{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.t-mods span{border:3px solid #444;color:#777;padding:0 10px;font-size:15px}
+.t-mods span.on{border-color:var(--green);color:#000;background:var(--green)}
+
+/* práctica: mouse */
+.lab{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.tarea{border:4px solid #000;background:var(--panel);padding:10px;text-align:center;min-height:180px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+.tarea.ok{border-color:var(--green)}
+.tarea.ok::after{content:'✔';position:absolute;top:2px;right:8px;color:var(--green);font-size:28px}
+.tarea .tt{font-size:18px;color:var(--cyan)}
+body.light .tarea .tt{color:#0a5a8a}
+.tarea .ms{font-size:16px;color:var(--muted);min-height:44px}
+.carp{font-size:44px;padding:4px 10px;border:3px solid transparent;user-select:none;line-height:1.1}
+.carp.sel{background:#2a56c9;border-color:#9fc0ff}
+.carp small{display:block;font-size:15px}
+.zona-der{border:4px dashed var(--pink);padding:18px 8px;width:100%;font-size:18px;user-select:none}
+.drag-row{display:flex;align-items:center;gap:10px;font-size:46px;user-select:none}
+#mDrop{border:4px dashed var(--cyan);padding:2px 10px;min-width:78px;text-align:center}
+#mDrop.over{background:rgba(79,216,255,.25)}
+#mFile{padding:2px 6px;border:3px solid transparent}
+.ctx{position:fixed;z-index:80;background:#f3f3f3;color:#111;border:3px solid #000;box-shadow:5px 5px 0 #000;min-width:170px;font-size:17px}
+.ctx div{padding:4px 14px}
+.ctx div:hover{background:#2a56c9;color:#fff}
+.ctx hr{margin:2px 0;border:0;border-top:2px solid #bbb}
+
+/* práctica: explorador */
+.expl{border:4px solid #000;background:#f4f4f4;color:#111;box-shadow:4px 4px 0 #000}
+.expl-bar{background:#1d4ed8;color:#fff;padding:4px 10px;font-size:17px}
+.expl-body{display:grid;grid-template-columns:200px 1fr;min-height:210px}
+.expl-side{background:#e7eaf3;border-right:3px solid #000;padding:6px;display:flex;flex-direction:column;gap:4px}
+.expl-side button{text-align:left;border:3px solid transparent;background:transparent;color:#111;font-size:17px;padding:3px 6px}
+.expl-side button:hover{background:#cfd8ff}
+.expl-side button.on{background:#2a56c9;color:#fff;border-color:#000}
+.expl-main{padding:14px;font-size:18px}
+.expl-main .ic{font-size:46px}
+.escr{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.mesa{border:4px solid #000;padding:8px;min-height:110px;font-size:26px;line-height:1.1;text-align:center}
+.mesa.mal{background:#5a1b2e}.mesa.bien{background:#0d5a37}
+.mesa.mal span{display:inline-block;margin:1px}
+.mesa p{font-size:16px;margin:6px 0 0}
+
+/* flujo final */
+.flujo{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:10px 0}
+.fl{flex:1 1 130px;border:4px solid #000;background:var(--panel);padding:8px;text-align:center;font-size:16px;line-height:1.25;box-shadow:3px 3px 0 #000}
+.fl .ic{font-size:34px;display:block}
+.exts{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.exts span{border:3px solid #000;background:#fff;color:#111;padding:2px 8px;font-size:16px}
+.exts b{color:#b00060}
+.nombre-demo{font-size:clamp(26px,6vw,40px);text-align:center;margin:8px 0;color:var(--yellow);text-shadow:3px 3px 0 #000}
+.nombre-demo .ex{color:var(--pink)}
+body.light .nombre-demo{color:#8a5a00;text-shadow:none}
+
+/* pasos */
+.pasos ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+.paso{display:flex;gap:12px;border:4px solid #000;background:var(--panel2);padding:12px}
+.paso .pn{flex:0 0 40px;height:40px;border:4px solid #000;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-size:22px}
+.paso.ok{background:#0d3f2b;color:#fff}
+.paso.ok .pn{background:var(--green)}
+.paso.act{border-color:var(--yellow);background:var(--panel);box-shadow:5px 5px 0 #000}
+.paso.act .pn{background:var(--yellow)}
+.paso.lock{opacity:.6}
+.pc{flex:1;min-width:0}
+.pq{font-size:20px}
+.cand{color:var(--muted);font-size:16px;margin-top:4px}
+.resp{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.inp{flex:1 1 220px;font-size:22px;padding:10px 12px;border:4px solid #000;background:#fff;color:#111;box-shadow:inset 3px 3px 0 #cdd3f5;min-width:0}
+.btn{background:linear-gradient(#ffe066,var(--yellow));color:#000;border:4px solid #000;box-shadow:4px 4px 0 #000;padding:8px 16px;font-size:20px;font-weight:700;text-decoration:none;display:inline-block}
+.btn:hover{background:#fff1a8}
+.btn:active{transform:translate(4px,4px);box-shadow:none}
+.btn.sm{font-size:16px;padding:4px 10px;margin-top:10px}
+.btn.azul{background:linear-gradient(#8fe8ff,var(--cyan))}
+.btn.rosa{background:linear-gradient(#ff7ab5,var(--pink));color:#fff}
+.btn.verde{background:linear-gradient(#b8ffd7,var(--green))}
+.fb{margin-top:10px;font-size:19px;min-height:26px}
+.fb.ok{color:var(--green)}
+.fb.no{color:var(--soft)}
+body.light .fb.ok{color:#0b6b3a}
+.wst{margin-top:8px;color:var(--soft)}
+.fin-reto{margin-top:16px;border:4px solid var(--green);background:#0d3f2b;color:#fff;padding:14px;text-align:center;box-shadow:5px 5px 0 #000}
+.fin-reto h3{color:var(--green) !important;font-size:26px !important}
+.fin-reto .btn{margin-top:10px}
+
+/* ayudante */
+#ayudante{position:fixed;right:12px;bottom:10px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:6px;max-width:calc(100vw - 24px)}
+#bubble{max-width:min(330px,80vw);background:#fff;color:#111;border:4px solid #000;box-shadow:5px 5px 0 #000;padding:10px 12px;font-size:17px;line-height:1.3;position:relative}
+#bubble.off{display:none}
+#bubble::after{content:'';position:absolute;right:34px;bottom:-16px;border:8px solid transparent;border-top:12px solid #000}
+#bubble .x{position:absolute;top:-14px;left:-14px;width:28px;height:28px;border:3px solid #000;background:var(--pink);color:#fff;font-size:14px;padding:0}
+#pj{width:96px;height:96px;object-fit:contain;image-rendering:pixelated;animation:flota 2.4s ease-in-out infinite;display:block}
+.pj-emoji{font-size:68px;line-height:1;animation:flota 2.4s ease-in-out infinite}
+#ayudante .pjbtn{background:none;border:0;padding:0;display:block}
+#ayudante.wig #pj,#ayudante.wig .pj-emoji{animation:wig .5s ease-in-out 4}
+@keyframes flota{50%{transform:translateY(-8px)}}
+@keyframes wig{25%{transform:rotate(-12deg) translateY(-10px)}75%{transform:rotate(12deg) translateY(-10px)}}
+
+/* popup xp, toast, overlay */
+.popxp{position:fixed;left:50%;top:38%;z-index:120;transform:translateX(-50%);font-size:clamp(44px,12vw,92px);color:var(--yellow);text-shadow:5px 5px 0 #000;pointer-events:none;animation:subir 2s ease-out forwards}
+@keyframes subir{0%{opacity:0;transform:translate(-50%,40px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-90px) scale(1)}}
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:110;background:var(--yellow);color:#000;border:4px solid #000;box-shadow:4px 4px 0 #000;padding:8px 16px;font-size:19px;display:none;max-width:90vw;text-align:center}
+#toast.on{display:block}
+.overlay{position:fixed;inset:0;z-index:100;background:rgba(2,5,20,.9);display:none;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.overlay.on{display:flex}
+.vic{max-width:520px;width:100%;text-align:center;background:var(--panel);color:var(--txt)}
+.vic h2{font-size:36px;color:var(--yellow);text-shadow:3px 3px 0 #000;margin:8px 0}
+.escudo{width:150px;height:150px;margin:0 auto;border:5px solid #000;background:linear-gradient(135deg,#ffe066,var(--yellow-d));display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:6px 6px 0 #000,0 0 28px rgba(253,200,21,.6);color:#000;animation:brilla 1.6s steps(2) infinite}
+.escudo span{font-size:60px;line-height:1}
+.escudo b{font-size:24px}
+@keyframes brilla{50%{filter:brightness(1.2)}}
+.vic-xp{font-size:30px;color:var(--green);margin:6px 0}
+.vic .acc{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.conf{position:fixed;top:-20px;width:12px;height:12px;z-index:130;pointer-events:none;animation:cae linear forwards}
+@keyframes cae{to{transform:translateY(110vh) rotate(540deg)}}
+footer{text-align:center;color:var(--muted);padding:20px;font-size:16px}
+
+
+@media (max-width:620px){
+ body{font-size:17px;padding-bottom:230px}
+ .dos,.escr{grid-template-columns:1fr}
+ .expl-body{grid-template-columns:1fr}
+ .expl-side{border-right:0;border-bottom:3px solid #000;flex-direction:row;flex-wrap:wrap}
+ .paso{padding:8px;gap:8px}.paso .pn{flex-basis:32px;height:32px;font-size:18px}
+ #pj{width:72px;height:72px}.pj-emoji{font-size:52px}
+ .nav{gap:6px;padding:6px 8px}.logo{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important}}
+</style>
+<style id="fix-puntero">
+/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
+html, body, body * { cursor: auto !important; }
+body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
+body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
+body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
+body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
+body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
+#espada-cursor { display: none !important; }
+</style>
+</head>
+<body>
+<div class="fondo"></div><div class="estrellas"></div>
+<span class="met"></span><span class="met"></span><span class="met"></span>
+
+<header class="nav">
+  <a class="logo" href="index.html"><img src="ho.png" alt="">PIXELWORD</a>
+  <a class="lk" href="index.html">Inicio</a>
+  <a class="lk on" href="juegos.html">Juegos</a>
+  <a class="lk" href="ranking.html">Ranking</a>
+  <a class="lk" href="perfil.html">Perfil</a>
+  <button class="tema" id="btnTema" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema">🌙</button>
+  <span class="chip" id="chipUser">Invitado</span>
+  <a class="salir" href="#" id="btnSalir">SALIR</a>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>COMPUTACIÓN BÁSICA</h1>
+    <p>Aquí empiezas desde cero. No necesitas saber nada: te lo explicamos con ejemplos de todos los días.</p>
+    <div class="calma">💛 Sin prisa y sin castigos. Si te trabas, haz clic en el personaje de abajo a la derecha y te da una pista.</div>
+  </section>
+
+  <div id="aviso"></div>
+
+  <div class="xpbar">
+    <div class="xpt" id="xpTxt">XP 0 / 300</div>
+    <div class="barra"><i id="xpFill"></i></div>
+    <div class="nube" id="nube"></div>
+  </div>
+  <nav class="mapa" id="mapa" aria-label="Mapa de retos"></nav>
+
+  <section id="reto"></section>
+</main>
+
+<footer>© PIXELWORD</footer>
+
+<div id="ayudante">
+  <div id="bubble" class="off" role="status" aria-live="polite"></div>
+  <button class="pjbtn" id="pjBtn" aria-label="Pedir una pista al ayudante" title="Haz clic para una pista">
+    <img id="pj" src="67.gif" alt="" onerror="var d=document.createElement('div');d.className='pj-emoji';d.id='pj';d.textContent='🧙';this.replaceWith(d)">
+  </button>
+  <button class="btn sm azul" id="btnPista" style="margin-top:0">💡 Pista</button>
+</div>
+
+<div id="toast"></div>
+<div class="overlay" id="victoria"></div>
+<div class="ctx" id="ctx" hidden>
+  <div>Copiar</div><div>Pegar</div><hr><div>Nuevo</div><div>Cambiar nombre</div><hr><div>Propiedades</div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="java/firebase-init.js"></script>
+<script>
+/* =====================================================================
+   BÁSICO · PIXELWORD
+   Ajustes rápidos
+   ===================================================================== */
+const KIOSCO_SEG = 90;          // segundos sin tocar nada para reiniciar la PC (modo feria)
+const AVISO_SEG  = 70;          // aviso amable antes del reinicio
+const INSIGNIA_ID = 'basico';   // valor que se guarda en ranking/{usuario}.insignias
+const XP = [50, 50, 50, 50, 100];   // total = 300
+
+const $ = s => document.querySelector(s);
+const HW = /^(?!.*sof)(?=.*har)/i;      // "hardware" (tolera faltas de ortografía)
+const SW = /^(?!.*har)(?=.*sof)/i;      // "software"
+
+/* ---------------------------------------------------------------------
+   CONTENIDO DE LOS 5 RETOS
+   --------------------------------------------------------------------- */
+const TECLAS = [
+ ['°','1','2','3','4','5','6','7','8','9','0',"'",'¿','Borrar'],
+ ['Tab','Q','W','E','R','T','Y','U','I','O','P','´','+'],
+ ['Bloq Mayús','A','S','D','F','G','H','J','K','L','Ñ','{','Enter'],
+ ['Shift','<','Z','X','C','V','B','N','M',',','.','-','Shift'],
+ ['Ctrl','⊞','Alt','Espacio','Alt Gr','Ctrl']
+];
+function tecladoVisual(){
+  const hl = {'Q':'p','Alt Gr':'p','2':'c','Ñ':'g','Shift':'y','Bloq Mayús':'y'};
+  return '<div class="kbwrap"><div class="kb">' + TECLAS.map(f =>
+    '<div class="kr">' + f.map(k => `<span class="k ${hl[k]||''} ${k==='Espacio'?'sp':(k.length>2?'w':'')}">${k}</span>`).join('') + '</div>'
+  ).join('') + '</div></div>' +
+  '<div class="leyenda"><span style="--c:var(--pink)">Alt Gr + Q = @</span><span style="--c:var(--cyan)">Shift + 2 = &quot;</span><span style="--c:var(--green)">Ñ</span><span style="--c:var(--yellow)">Mayúsculas</span></div>';
+}
+const flip = (ic, nom, resp, tipo) => `<button class="flip ${tipo}" data-act="flip"><span class="f1">${ic}<br>${nom}</span><span class="f2">${resp}</span></button>`;
+
+const RETOS = [
+/* ------------------------------ RETO 1 ------------------------------ */
+{ titulo:'Hardware vs Software', sub:'Lo que se toca y lo que se ve', icono:'🖥️', corto:'Hardware y software',
+  intro:'¡Hola! Soy tu guía 🧙. Aquí nadie se equivoca: si te trabas, haz clic en mí y te doy una pista. ¡Vamos con el primer reto!',
+  leccion: () => `
+   <p>Una computadora tiene <b>dos mundos</b>. Aprender a separarlos es lo más importante de todo el curso.</p>
+   <div class="dos">
+     <div class="caja hw"><div class="gr">✋</div><h4>HARDWARE</h4>
+       <p>Es todo lo que <b>puedes tocar</b> con la mano. Es lo <b>físico</b>.</p>
+       <p class="ej">🖥️ Monitor · ⌨️ Teclado · 🖱️ Mouse · 🔌 Cable · 💾 Memoria USB</p></div>
+     <div class="caja sw"><div class="gr">👀</div><h4>SOFTWARE</h4>
+       <p>Es lo que <b>ves y usas</b> en la pantalla, pero <b>no puedes agarrar</b>. Son los programas y las apps.</p>
+       <p class="ej">💬 WhatsApp · 🌐 Chrome · 📝 Word · 🎮 Juegos</p></div>
+   </div>
+   <div class="truco">⭐ <b>Truco de oro:</b> pregúntate «¿lo puedo agarrar con la mano?».<br>Sí → <b>hardware</b>. No → <b>software</b>.</div>
+   <p><b>Ejemplo de la vida diaria:</b> una televisión es hardware (la puedes cargar). Las caricaturas que pasan dentro son software (las ves, pero no las puedes agarrar). Igual con un radio y la música.</p>
+   <p>👇 <b>Toca las tarjetas</b> para ver la respuesta:</p>
+   <div class="flips">
+     ${flip('🖥️','Monitor','¿Se toca? <b>SÍ</b><br>→ HARDWARE','h')}
+     ${flip('🔌','Cable','¿Se toca? <b>SÍ</b><br>→ HARDWARE','h')}
+     ${flip('🖱️','Mouse','¿Se toca? <b>SÍ</b><br>→ HARDWARE','h')}
+     ${flip('💾','Memoria USB','¿Se toca? <b>SÍ</b><br>→ HARDWARE','h')}
+     ${flip('💬','WhatsApp','¿Se toca? <b>NO</b><br>→ SOFTWARE','s')}
+     ${flip('🌐','Chrome','¿Se toca? <b>NO</b><br>→ SOFTWARE','s')}
+     ${flip('📝','Word','¿Se toca? <b>NO</b><br>→ SOFTWARE','s')}
+     ${flip('🎮','Un juego del celular','¿Se toca? <b>NO</b><br>→ SOFTWARE','s')}
+   </div>
+   <p class="peque">Nota: tocar la pantalla del celular sí es tocar hardware. Lo que se ve dentro de ella (la app) es software.</p>`,
+  pasos:[
+   { q:'El <b>monitor</b> (la pantalla donde ves todo) ¿es <b>hardware</b> o <b>software</b>?', ph:'Escribe: hardware o software', re:HW,
+     ok:'¡Correcto! El monitor se toca: es hardware 🖥️', err:'Casi 🤔 Piensa: ¿puedes tocar el monitor con la mano?',
+     pistas:['Haz la prueba: ¿puedes tocar o cargar un monitor? Sí, ¿verdad? 👆','Lo que se toca es del grupo de los objetos físicos: el grupo del <b>hardware</b>.','Escribe esta palabra: <b>hardware</b>'] },
+   { q:'El <b>cable</b> que conecta el monitor con la computadora ¿es hardware o software?', ph:'hardware o software', re:HW,
+     ok:'¡Muy bien! Un cable se agarra con la mano: hardware 🔌', err:'Casi 🤔 ¿Un cable se puede agarrar con la mano?',
+     pistas:['¿Puedes agarrar un cable con las manos?','Si lo puedes tocar, es un objeto físico.','Escribe: <b>hardware</b>'] },
+   { q:'<b>WhatsApp</b> (la app donde mandas mensajes) ¿es hardware o software?', ph:'hardware o software', re:SW,
+     ok:'¡Exacto! WhatsApp se ve y se usa, pero no se agarra: software 💬', err:'Casi 🤔 Lo ves en la pantalla, pero ¿lo puedes agarrar?',
+     pistas:['Piensa: ¿puedes agarrar WhatsApp con la mano? Solo lo ves en la pantalla.','Lo que se ve y se usa, pero no se agarra, son programas. Y los programas son del grupo del <b>software</b>.','Escribe: <b>software</b>'] },
+   { q:'<b>Chrome</b> (el programa para navegar en internet) ¿es hardware o software?', ph:'hardware o software', re:SW,
+     ok:'¡Perfecto! Chrome es un programa: software 🌐', err:'Casi 🤔 Chrome es un programa. ¿Los programas se tocan?',
+     pistas:['Chrome es un programa que abres para entrar a internet. ¿Lo puedes agarrar?','No se agarra, solo se usa: es del grupo del <b>software</b>.','Escribe: <b>software</b>'] }
+  ]},
+
+/* ------------------------------ RETO 2 ------------------------------ */
+{ titulo:'El Teclado Misterioso', sub:'Las teclas que nadie te enseña', icono:'⌨️', corto:'El teclado',
+  intro:'¡Bien hecho en el reto 1! Ahora el teclado. Tiene teclas escondidas que casi nadie te explica. Tómate tu tiempo ⌨️',
+  leccion: () => `
+   <p>El teclado tiene <b>letras, números y teclas especiales</b>. Algunas se usan <b>de dos en dos</b>: mantienes una presionada y, sin soltarla, tocas la otra.</p>
+   ${tecladoVisual()}
+   <div class="combos">
+     <div class="combo"><div><kbd>Alt Gr</kbd> + <kbd>Q</kbd></div><div class="res">@</div><b>El arroba</b><small>Alt Gr está a la <b>derecha</b> de la barra espaciadora. Si no te sale, prueba <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Q</kbd>. (En teclados de España es Alt Gr + 2.)</small></div>
+     <div class="combo"><div><kbd>Shift</kbd> + <kbd>2</kbd></div><div class="res">"</div><b>Comillas dobles</b><small>Shift es la flecha hacia arriba ⇧ que está a los lados de la fila de abajo.</small></div>
+     <div class="combo"><div><kbd>Ñ</kbd></div><div class="res">ñ</div><b>La eñe</b><small>Es una tecla propia, justo a la <b>derecha de la L</b>. Sin ella «año» y «ano» son palabras muy distintas 😅</small></div>
+     <div class="combo"><div><kbd>Shift</kbd> o <kbd>Bloq Mayús</kbd></div><div class="res">A</div><b>Mayúsculas</b><small><b>Shift</b>: mayúscula solo mientras lo mantienes. <b>Bloq Mayús</b>: queda encendida hasta que la vuelves a tocar.</small></div>
+   </div>`,
+  practica:'teclado',
+  pasos:[
+   { widget:'arroba', q:'<b>Práctica:</b> haz clic en el cuadro negro de arriba y saca un <b>@</b>. Mantén <kbd>Alt Gr</kbd> y toca <kbd>Q</kbd>.',
+     ok:'¡Lo lograste! Ese es el arroba 🎉',
+     pistas:['Busca la tecla <b>Alt Gr</b>: está a la <b>derecha</b> de la barra espaciadora (la tecla larga de abajo).','Primero haz clic dentro del cuadro negro. Luego mantén presionada <b>Alt Gr</b> y, sin soltarla, toca la letra <b>Q</b>.','Si tu teclado no tiene Alt Gr, prueba <b>Ctrl + Alt + Q</b> todas juntas. Si tu teclado es de España, es <b>Alt Gr + 2</b>.'] },
+   { q:'Usa el @ en un correo de ejemplo. Escribe algo como <b>juan@gmail.com</b>', ph:'tunombre@gmail.com', re:/^[\w.+\-]+@[\w\-]+(\.[\w\-]+)+$/,
+     ok:'¡Ya sabes escribir un correo electrónico! 📧', err:'Un correo lleva: nombre, el @, y un sitio con punto (como gmail.com). Sin espacios 😉',
+     pistas:['Un correo tiene 3 partes: tu nombre, el <b>@</b> y el sitio (como gmail.com). No lleva espacios.','Ejemplo: <b>juan@gmail.com</b>. Para el @ usa Alt Gr + Q.','Escribe exactamente: <b>juan@gmail.com</b>'] },
+   { q:'Escribe tu nombre entre <b>comillas dobles</b>, así: <b>"Ana"</b>. Se hacen con <kbd>Shift</kbd> + <kbd>2</kbd>.', ph:'"Tu nombre"', re:/^\s*["“”][^"“”]+["“”]\s*$/,
+     ok:'¡Comillas dobles dominadas! ✍️', err:'Necesitas comillas dobles al inicio y al final. Son las de Shift + 2 😉',
+     pistas:['Mantén presionada la tecla <b>Shift</b> y toca el número <b>2</b> (el de arriba de las letras).','Haz eso una vez antes de tu nombre y otra vez después.','Ejemplo: <b>"Ana"</b>'] },
+   { q:'Escribe la palabra <b>mañana</b>. La <b>ñ</b> está a la derecha de la tecla <b>L</b>.', ph:'mañana', re:/^\s*ma[ñÑ]ana\s*$/i,
+     ok:'¡Perfecto! La ñ ya no tiene secretos 🇪🇸', err:'Se parece, pero la <b>ñ</b> es una tecla especial. Búscala a la derecha de la L 😉',
+     pistas:['Busca la tecla <b>L</b> y mira la tecla que está justo a su derecha.','Esa tecla tiene dibujada la <b>ñ</b>. Úsala en la mitad de la palabra: ma-<b>ñ</b>-ana.','Escribe: <b>mañana</b>'] },
+   { q:'Escribe tu <b>nombre</b> empezando con letra <b>mayúscula</b> (ejemplo: <b>Maria</b>). Mantén <kbd>Shift</kbd> y toca la primera letra.', ph:'Maria', re:/^\s*[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+(\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+)*\s*$/,
+     ok:'¡Muy bien! Primera letra grande, el resto pequeño 👏', err:'La primera letra debe ser mayúscula y las demás minúsculas (Ejemplo: Maria).',
+     pistas:['Mantén presionada <b>Shift</b> (⇧) y, sin soltarla, toca la primera letra de tu nombre.','Después suelta Shift y escribe las demás letras normalmente.','Ejemplo: <b>Maria</b> (solo la M va grande)'] },
+   { q:'Ahora escribe <b>COMPUTADORA</b> toda en <b>MAYÚSCULAS</b>. Puedes tocar <kbd>Bloq Mayús</kbd> una vez (¡luego apágala!).', ph:'COMPUTADORA', re:/^\s*COMPUTADORA\s*$/,
+     ok:'¡Gritaste en mayúsculas! 📢 Recuerda apagar Bloq Mayús.', err:'Todas las letras deben ser GRANDES. Toca Bloq Mayús y vuelve a escribirla.',
+     pistas:['Toca una vez la tecla <b>Bloq Mayús</b> (a la izquierda, arriba de Shift). Se queda encendida.','Con Bloq Mayús encendida, escribe la palabra. Después tócala otra vez para apagarla.','Escribe: <b>COMPUTADORA</b>'] }
+  ]},
+
+/* ------------------------------ RETO 3 ------------------------------ */
+{ titulo:'Los Secretos del Mouse', sub:'Izquierdo, derecho, doble clic y arrastrar', icono:'🖱️', corto:'El mouse',
+  intro:'¡Tercer reto! El mouse tiene dos botones y cada uno hace cosas distintas. Primero practicas y luego te hago unas preguntas.',
+  leccion: () => `
+   <p>El mouse tiene <b>dos botones</b>: el <b>izquierdo</b> (el que más vas a usar) y el <b>derecho</b>. Con ellos haces <b>4 cosas</b>:</p>
+   <div class="cuatro">
+     <div class="clic"><div class="rat"><i class="b l on"></i><i class="b r"></i></div><h4>1 clic izquierdo</h4><p>Seleccionar o presionar un botón. Es «señalar» algo.</p></div>
+     <div class="clic"><div class="rat dbl"><i class="b l on"></i><i class="b r"></i></div><h4>Doble clic</h4><p>Dos toques rápidos con el izquierdo. <b>Abre</b> programas, carpetas y archivos.</p></div>
+     <div class="clic"><div class="rat"><i class="b l"></i><i class="b r on"></i></div><h4>Clic derecho</h4><p>Muestra un <b>menú escondido</b> con más opciones (copiar, pegar, cambiar nombre...).</p></div>
+     <div class="clic"><div class="rat drag"><i class="b l on"></i><i class="b r"></i></div><h4>Arrastrar y soltar</h4><p>Mantén presionado el izquierdo, <b>mueve</b> el mouse y suelta donde quieras dejar la cosa.</p></div>
+   </div>
+   <div class="truco">⭐ <b>Para recordar:</b> izquierdo = <b>elegir</b> · doble clic = <b>abrir</b> · derecho = <b>menú</b> · arrastrar = <b>mover</b>.</div>`,
+  practica:'mouse',
+  pasos:[
+   { widget:'mouse', q:'<b>Práctica:</b> completa las 4 pruebas de la zona de práctica de arriba ☝️ (cada una se marca con ✔).',
+     ok:'¡Las 4 pruebas listas! Ya manejas el mouse 🖱️',
+     pistas:['Haz las pruebas en orden, una por una. Las que ya hiciste tienen un ✔ verde.','Doble clic: toca el botón izquierdo dos veces <b>rápido</b>, como «tac-tac». Clic derecho: el botón de la derecha, una sola vez.','Arrastrar: apunta al 📄, mantén presionado el izquierdo, mueve hasta la 📁 y suelta.'] },
+   { q:'Un solo clic con el botón izquierdo ¿sirve para <b>seleccionar</b> o para <b>abrir</b>? Escribe tu respuesta.', ph:'seleccionar o abrir', re:/^(?!.*abrir)(?=.*(selecc|elegir|marcar))/i,
+     ok:'¡Exacto! Un clic solo marca o selecciona 👆', err:'Casi 🤔 Un solo clic solo <b>marca</b> la cosa. Para abrir se necesita otro tipo de clic.',
+     pistas:['En la práctica, cuando diste un solo clic a la carpeta, solo se pintó de azul. ¿Se abrió?','No se abrió: solo quedó <b>marcada</b>.','Escribe: <b>seleccionar</b>'] },
+   { q:'¿Qué clic usas para <b>abrir</b> un programa o una carpeta? (Pista: son dos toques rápidos.)', ph:'Escribe el nombre del clic', re:/doble/i,
+     ok:'¡Eso es! El doble clic abre las cosas 📂', err:'Casi 🤔 Son <b>dos</b> toques rápidos con el izquierdo. ¿Cómo se llama ese clic?',
+     pistas:['Se hacen dos toques seguidos, muy rápidos.','Dos toques = se llama «____ clic».','Escribe: <b>doble clic</b>'] },
+   { q:'¿Qué clic abre un <b>menú escondido</b> con más opciones (copiar, pegar, propiedades...)?', ph:'izquierdo o derecho', re:/derech/i,
+     ok:'¡Muy bien! El clic derecho es el del menú 📋', err:'Casi 🤔 Es el botón del <b>otro</b> lado.',
+     pistas:['No es el que más usas. Es el botón del otro lado.','Son dos botones: izquierdo y ______.','Escribe: <b>derecho</b>'] },
+   { q:'¿Cómo se llama la acción de mantener presionado el clic izquierdo y <b>mover</b> algo a otro lugar? Escribe: <b>arrastrar y ...</b>', ph:'arrastrar y ...', re:/arrastr/i,
+     ok:'¡Correcto! Arrastrar y soltar 🎯', err:'Casi 🤔 Se «arrastra» la cosa de un lugar a otro y luego se suelta.',
+     pistas:['Es lo que hiciste con el 📄 hasta llegar a la 📁.','Se llama «arrastrar y ______» (lo que haces al final).','Escribe: <b>arrastrar y soltar</b>'] }
+  ]},
+
+/* ------------------------------ RETO 4 ------------------------------ */
+{ titulo:'Carpetas y Archivos', sub:'Dónde viven tus cosas', icono:'📁', corto:'Carpetas',
+  intro:'¡Reto 4! Todo lo que guardas en la computadora vive en algún lugar. Vamos a aprender a encontrarlo.',
+  leccion: () => `
+   <p>Imagina tu computadora como una <b>oficina</b>: un <b>archivo</b> es una hoja de papel (una foto, un documento, una canción) y una <b>carpeta</b> es el cajón donde guardas hojas parecidas.</p>
+   <p>La herramienta para ver todos los cajones se llama <b>Explorador de archivos</b> (la carpeta amarilla 📁 de abajo en la pantalla). Para abrirlo rápido: <kbd>⊞ Windows</kbd> + <kbd>E</kbd>.</p>
+   <div class="truco">👇 <b>Prueba el explorador de juguete:</b> toca cada lugar de la izquierda y lee qué vive ahí.</div>
+   ${PRACT.explorador.html()}
+   <p style="margin-top:14px"><b>¿Por qué no llenar el escritorio?</b> El escritorio es la <b>mesa</b> que ves al encender la computadora. Si dejas todo encima, se desordena, cuesta encontrar las cosas y hasta se pone lenta.</p>
+   <div class="escr">
+     <div class="mesa mal">${'📄🖼️🎵📄📁🖼️📄🎬📄🎵🖼️📄📄🖼️🎵📄🎬📄'.match(/./gu).map(x=>`<span>${x}</span>`).join('')}<p>😵 Escritorio saturado: nada se encuentra</p></div>
+     <div class="mesa bien">📁 Tareas<br>📁 Fotos<br>📁 Música<p>😊 Escritorio ordenado en carpetas</p></div>
+   </div>
+   <p><b>Dato clave:</b> lo que bajas de internet (fotos, PDFs, programas) se guarda casi siempre en la carpeta <b>Descargas</b>. ¡Búscalo ahí primero!</p>
+   <p class="peque">Si usas una Mac, el Explorador se llama «Finder». La idea es la misma.</p>`,
+  pasos:[
+   { q:'Cuando bajas algo de internet, ¿en qué carpeta se guarda casi siempre? (Pista: se llama como la acción de bajar algo.)', ph:'Nombre de la carpeta', re:/descarga|download/i,
+     ok:'¡Eso es! Todo lo que bajas cae en Descargas ⬇️', err:'Casi 🤔 Mira el explorador de juguete: la carpeta de la flechita hacia abajo ⬇️.',
+     pistas:['Revisa el explorador de juguete de arriba: hay una carpeta con una flecha hacia abajo ⬇️.','Se llama igual que la acción de «descargar» algo de internet.','Escribe: <b>Descargas</b>'] },
+   { q:'¿Qué teclas abren el <b>Explorador de archivos</b> rápido? Escríbelas así: <b>Windows + E</b>', ph:'Windows + E', re:/^\s*(tecla\s+)?(windows|win|⊞)\s*\+\s*e\s*$/i,
+     ok:'¡Atajo aprendido! ⊞ + E 🚀', err:'Casi 🤔 Es la tecla de Windows ⊞ junto con la letra <b>E</b>.',
+     pistas:['Usa la tecla con el dibujito de ventanas ⊞ (está entre Ctrl y Alt, abajo a la izquierda).','Se toca junto con una letra: la <b>E</b>, de «Explorador».','Escribe: <b>Windows + E</b>'] },
+   { q:'¿Por qué <b>no</b> conviene llenar el escritorio de archivos? Escribe una razón con tus palabras.', ph:'Ejemplo: se pone lenta...', re:/(lent|desorden|orden|satur|perd|encontr|confus|llen|trab|pesad|mucho|revuel|caos|ocup)/i,
+     ok:'¡Muy buena razón! Un escritorio ordenado = una compu feliz 😊', err:'Piensa en una mesa llena de papeles: ¿qué problemas te daría?',
+     pistas:['Imagina tu mesa de estudio llena de papeles. ¿Podrías encontrar rápido el que necesitas?','Con demasiadas cosas, se desordena, no encuentras nada y la computadora trabaja más lenta.','Escribe por ejemplo: <b>se pone lenta y no encuentro nada</b>'] },
+   { q:'Haz clic <b>derecho</b> en un espacio vacío → <b>Nuevo</b> → <b>Carpeta</b>. ¿Qué nombre le pondrías a una carpeta para tus <b>fotos</b>? <small>(No se permiten estos símbolos: \\ / : * ? " &lt; &gt; |)</small>', ph:'Ejemplo: Mis fotos', re:/^[^\\\/:*?"<>|]{3,}$/,
+     ok:'¡Buen nombre! Ya sabes crear carpetas 📁', err:'Escribe un nombre de al menos 3 letras y sin los símbolos prohibidos (\\ / : * ? " &lt; &gt; |).',
+     pistas:['Un buen nombre dice qué hay dentro de la carpeta.','Usa solo letras, números y espacios. Nada de símbolos raros.','Por ejemplo: <b>Mis fotos</b>'] }
+  ]},
+
+/* ------------------------------ RETO 5 ------------------------------ */
+{ titulo:'Prueba Final', sub:'Crear, guardar y pasar a una memoria USB', icono:'🏆', corto:'Prueba final',
+  intro:'¡Llegaste a la prueba final! Es una misión guiada paso a paso: crear un documento, guardarlo y pasarlo a una USB. Si tienes una compu enfrente, hazlo de verdad. ¡Tú puedes!',
+  leccion: () => `
+   <p>Vamos a hacer, <b>paso por paso</b>, lo que más se pide en la escuela y el trabajo. Mira el camino completo:</p>
+   <div class="flujo">
+     <div class="fl"><span class="ic">📝</span><b>1. Abrir</b><br>Menú Inicio → Bloc de notas o Word</div>
+     <div class="fl"><span class="ic">⌨️</span><b>2. Escribir</b><br>Escribe tu texto</div>
+     <div class="fl"><span class="ic">💾</span><b>3. Guardar</b><br>Archivo → Guardar como</div>
+     <div class="fl"><span class="ic">🏷️</span><b>4. Nombrar</b><br>nombre + punto + extensión</div>
+     <div class="fl"><span class="ic">🔌</span><b>5. Conectar</b><br>Mete la memoria USB</div>
+     <div class="fl"><span class="ic">📤</span><b>6. Pasar</b><br>Copiar a la USB y expulsar</div>
+   </div>
+   <div class="bloque" style="margin-top:12px">
+     <p><b>¿Qué es la extensión?</b> Es el «apellido» del archivo. Le dice a la computadora con qué programa abrirlo.</p>
+     <div class="nombre-demo">tarea<span class="ex">.docx</span></div>
+     <p style="text-align:center;margin:0">nombre + punto + <b>extensión</b></p>
+     <div class="exts"><span><b>.docx</b> Word</span><span><b>.txt</b> Bloc de notas</span><span><b>.pdf</b> documento fijo</span><span><b>.jpg</b> foto</span><span><b>.mp3</b> canción</span></div>
+   </div>
+   <div class="bloque">
+     <p><b>Para pasar el archivo a la USB</b> tienes 2 caminos fáciles:</p>
+     <p>✅ <b>Copiar y pegar:</b> clic derecho al archivo → Copiar. Luego abre la USB (sale en «Este equipo») → clic derecho → Pegar.<br>✅ <b>Arrastrar y soltar:</b> arrastra el archivo hasta el icono de la USB.</p>
+     <p><b>Antes de sacar la USB:</b> clic derecho sobre ella → <b>Expulsar</b>. Así no se daña lo que guardaste.</p>
+   </div>
+   <p class="peque">Si no tienes memoria USB a la mano, no pasa nada: responde con lo que harías.</p>`,
+  pasos:[
+   { q:'<b>Paso 1:</b> abre el menú <b>Inicio</b> (el icono ⊞) y busca un programa para escribir. ¿Cómo se llama el que abriste? (Bloc de notas o Word)', ph:'Bloc de notas o Word', re:/(word|bloc|notas|notepad|writer|wordpad)/i,
+     ok:'¡Programa abierto! 📝', err:'Casi 🤔 Escribe «Bloc de notas» o «Word» (o el programa para escribir que tengas).',
+     pistas:['Haz clic en el icono ⊞ (abajo a la izquierda) y escribe «bloc» o «word» en el buscador.','Elige el programa de la lista y ábrelo con un clic.','Escribe: <b>Bloc de notas</b>'] },
+   { q:'<b>Paso 2:</b> escribe en tu documento una frase. Aquí abajo escribe la frase que pusiste. Ejemplo: <b>Hola, esta es mi primera tarea</b>', ph:'Escribe tu frase', re:/^.{5,}$/,
+     ok:'¡Tu primer texto! Ya eres escritor/a ✍️', err:'Escribe una frase un poquito más larga (al menos 5 letras).',
+     pistas:['Puedes escribir lo que quieras: tu nombre, un saludo o una frase corta.','Usa el teclado como aprendiste: Shift para la mayúscula.','Por ejemplo: <b>Hola, esta es mi primera tarea</b>'] },
+   { q:'<b>Paso 3:</b> para guardarlo, abre el menú <b>Archivo</b>. ¿Qué opción eliges para guardarlo con un nombre nuevo?', ph:'Guardar ...', re:/guardar/i,
+     ok:'¡Eso es! «Guardar como» 💾', err:'Casi 🤔 Es la opción con la palabra «Guardar».',
+     pistas:['Arriba a la izquierda, haz clic en <b>Archivo</b>.','Busca la opción que dice «Guardar» o «Guardar como».','Escribe: <b>Guardar como</b>'] },
+   { q:'<b>Paso 4:</b> ponle nombre al archivo. Escribe el <b>nombre completo</b> con su extensión. Ejemplo para Word: <b>tarea.docx</b> (para Bloc de notas: <b>tarea.txt</b>)', ph:'tarea.docx', re:/^[^\\\/:*?"<>|\s][^\\\/:*?"<>|]*\.(docx?|txt|odt|rtf)$/i,
+     ok:'¡Perfecto! Nombre + punto + extensión 🏷️', err:'Falta el punto y la extensión. Debe verse así: <b>tarea.docx</b> (sin símbolos raros).',
+     pistas:['Recuerda: nombre + punto + extensión. Es como «nombre y apellido».','Si usaste Word, la extensión es <b>.docx</b>. Si usaste Bloc de notas, es <b>.txt</b>.','Escribe: <b>tarea.docx</b>'] },
+   { q:'<b>Paso 5:</b> mete la memoria USB y ábrela en «Este equipo». ¿Cómo pasas tu archivo a la USB? Escribe una de las dos formas.', ph:'Ejemplo: copiar y pegar', re:/(arrastr|copi|peg|mover|cortar|enviar)/i,
+     ok:'¡Archivo en la USB! 🔌', err:'Casi 🤔 Hay dos formas: «copiar y pegar» o «arrastrar y soltar».',
+     pistas:['Hay dos formas fáciles. Una usa el clic derecho (Copiar → Pegar).','La otra usa el mouse: tomar el archivo y llevarlo hasta la USB.','Escribe: <b>copiar y pegar</b> (o <b>arrastrar y soltar</b>)'] },
+   { q:'<b>Paso 6 (último):</b> antes de sacar la USB, ¿qué opción debes elegir con clic derecho sobre ella para no dañar tus archivos?', ph:'Expul...', re:/(expuls|eject|retirar|quitar de forma|extracci[oó]n segura|desconectar de forma)/i,
+     ok:'¡MISIÓN CUMPLIDA! 🎉', err:'Casi 🤔 No se arranca de golpe: primero se le avisa a la computadora. La opción empieza con «Exp...»',
+     pistas:['Haz clic derecho sobre el icono de la USB en el Explorador.','Busca una opción que empieza con «Exp» (como cuando sacan a alguien de un lugar).','Escribe: <b>Expulsar</b>'] }
+  ]}
+];
+
+/* ---------------------------------------------------------------------
+   PRÁCTICAS INTERACTIVAS
+   --------------------------------------------------------------------- */
+const W = { mouse:[false,false,false,false] };
+const PRACT = {
+ teclado:{
+  html:() => `<p>Haz clic en el cuadro negro y toca cualquier tecla para ver cómo se llama y qué hace.</p>
+   <div class="tester" id="tester" tabindex="0" aria-label="Probador de teclas">
+     <div class="t-hint">👆 Haz clic aquí y presiona teclas</div>
+     <div class="t-big" id="tBig">?</div>
+     <div class="t-name" id="tName">Esperando una tecla…</div>
+     <div class="t-mods"><span id="mShift">Mayús (Shift)</span><span id="mAlt">Alt Gr</span><span id="mCtrl">Ctrl</span><span id="mCaps">Bloq Mayús</span></div>
+   </div>`,
+  init:() => {
+    const t=$('#tester'); if(!t) return;
+    const N={' ':'ESPACIO','Enter':'ENTER','Backspace':'BORRAR','Shift':'SHIFT','Control':'CTRL','Alt':'ALT','AltGraph':'ALT GR','CapsLock':'BLOQ MAYÚS','Escape':'ESC','Tab':'TAB','Meta':'WINDOWS ⊞','Dead':'´ ¨','ArrowUp':'↑','ArrowDown':'↓','ArrowLeft':'←','ArrowRight':'→','Delete':'SUPR'};
+    const X={'@':'¡Ese es el ARROBA! 🎉','"':'Comillas dobles','ñ':'¡La eñe!','Ñ':'La eñe en mayúscula','Shift':'Shift: mayúsculas mientras la mantienes','AltGraph':'Alt Gr: tecla para símbolos escondidos','CapsLock':'Bloq Mayús: letras grandes hasta que la vuelvas a tocar','Enter':'Enter: baja de renglón o confirma','Backspace':'Borrar: quita la letra de atrás',' ':'Barra espaciadora: deja un espacio','Meta':'La tecla de Windows abre el menú Inicio','Dead':'Tecla muda: se junta con la siguiente letra (á, é, ü...)','Control':'Ctrl se usa junto con otras teclas'};
+    const mods = e => {
+      const ag=(e.getModifierState&&e.getModifierState('AltGraph'))||(e.ctrlKey&&e.altKey);
+      $('#mShift').classList.toggle('on',e.shiftKey);
+      $('#mAlt').classList.toggle('on',!!ag);
+      $('#mCtrl').classList.toggle('on',e.ctrlKey&&!ag);
+      $('#mCaps').classList.toggle('on',!!(e.getModifierState&&e.getModifierState('CapsLock')));
+    };
+    t.addEventListener('keydown',e=>{
+      if(['F5','F8','F11','F12','Tab'].includes(e.key)) return;
+      e.preventDefault(); mods(e);
+      const k=e.key; $('#tBig').textContent=N[k]||k;
+      $('#tBig').style.fontSize=(N[k]||k).length>3?'clamp(30px,8vw,52px)':'';
+      let msg=X[k]; if(!msg && k.length===1 && k!==k.toLowerCase() && k===k.toUpperCase() && /[A-ZÁÉÍÓÚÑ]/.test(k)) msg='Letra MAYÚSCULA';
+      $('#tName').textContent=msg||'Tecla: '+(N[k]||k);
+      if(k==='@') widgetListo('arroba');
+    });
+    t.addEventListener('keyup',mods);
+    t.addEventListener('blur',()=>['mShift','mAlt','mCtrl','mCaps'].forEach(i=>$('#'+i).classList.remove('on')));
+  }},
+ mouse:{
+  html:() => `<p>Haz las 4 pruebas. Cuando termines una, aparece un ✔ verde.</p>
+   <div class="lab">
+    <div class="tarea" id="mt0"><div class="tt">1) Un clic izquierdo</div><button class="btn" id="mBtn">🖱️ Haz UN clic aquí</button><div class="ms"></div></div>
+    <div class="tarea" id="mt1"><div class="tt">2) Doble clic</div><div class="carp" id="mCarp">📁<small>Mis tareas</small></div><div class="ms">Primero prueba con un solo clic… y luego con doble clic.</div></div>
+    <div class="tarea" id="mt2"><div class="tt">3) Clic derecho</div><div class="zona-der" id="mZona">Haz clic DERECHO aquí</div><div class="ms"></div></div>
+    <div class="tarea" id="mt3"><div class="tt">4) Arrastrar y soltar</div><div class="drag-row"><span id="mFile" draggable="true">📄</span>→<div id="mDrop">📁</div></div><div class="ms">Mantén presionado el clic izquierdo sobre el 📄 y llévalo a la 📁.</div></div>
+   </div>`,
+  init:() => {
+    if(!$('#mBtn')) return;
+    const hecho=(i,txt)=>{ const t=$('#mt'+i); t.classList.add('ok'); if(txt) t.querySelector('.ms').textContent=txt; W.mouse[i]=true; if(W.mouse.every(Boolean)) widgetListo('mouse'); };
+    $('#mBtn').addEventListener('click',()=>hecho(0,'¡Muy bien! Un clic izquierdo sirve para presionar botones.'));
+    const c=$('#mCarp'); let abierta=false;
+    c.addEventListener('click',()=>{ if(!abierta){ c.classList.add('sel'); $('#mt1 .ms').textContent='Un solo clic solo la marca (se puso azul). ¡Prueba doble clic!'; } });
+    c.addEventListener('dblclick',()=>{ abierta=true; c.classList.remove('sel'); c.innerHTML='📂<small>¡Abierta!</small>'; hecho(1,'¡El doble clic abre las cosas!'); });
+    const ctx=$('#ctx'), cerrar=()=>{ctx.hidden=true};
+    $('#mZona').addEventListener('contextmenu',e=>{ e.preventDefault(); ctx.style.left=Math.min(e.clientX,innerWidth-190)+'px'; ctx.style.top=Math.min(e.clientY,innerHeight-210)+'px'; ctx.hidden=false; hecho(2,'¡Apareció el menú escondido! Haz clic en otro lado para cerrarlo.'); });
+    document.addEventListener('click',cerrar); document.addEventListener('scroll',cerrar,true);
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrar(); });
+    const f=$('#mFile'), d=$('#mDrop');
+    f.addEventListener('dragstart',e=>{ e.dataTransfer.setData('text/plain','archivo'); e.dataTransfer.effectAllowed='move'; });
+    d.addEventListener('dragover',e=>{ e.preventDefault(); d.classList.add('over'); });
+    d.addEventListener('dragleave',()=>d.classList.remove('over'));
+    d.addEventListener('drop',e=>{ e.preventDefault(); d.classList.remove('over'); f.style.visibility='hidden'; d.textContent='📁📄'; hecho(3,'¡Soltaste el archivo dentro de la carpeta!'); });
+  }},
+ explorador:{
+  html:() => `<div class="expl" id="expl">
+    <div class="expl-bar">📁 Explorador de archivos</div>
+    <div class="expl-body">
+      <div class="expl-side">
+        <button data-act="lugar" data-k="escritorio">🖥️ Escritorio</button>
+        <button data-act="lugar" data-k="descargas">⬇️ Descargas</button>
+        <button data-act="lugar" data-k="documentos">📄 Documentos</button>
+        <button data-act="lugar" data-k="imagenes">🖼️ Imágenes</button>
+        <button data-act="lugar" data-k="usb">💾 Memoria USB</button>
+      </div>
+      <div class="expl-main" id="explMain">👈 Haz clic en un lugar de la izquierda.</div>
+    </div></div>`,
+  lugares:{
+   escritorio:['🖥️','Escritorio','Es la «mesa» que ves al prender la compu. Deja aquí solo lo que uses todos los días (¡y pocas cosas!).'],
+   descargas:['⬇️','Descargas','Aquí caen casi todas las cosas que bajas de internet: fotos, PDFs, programas. Si no encuentras algo que bajaste, ¡búscalo aquí!'],
+   documentos:['📄','Documentos','El lugar ideal para tus tareas y trabajos de Word. Puedes hacer carpetas dentro, una por materia.'],
+   imagenes:['🖼️','Imágenes','Para tus fotos y dibujos. Guárdalas aquí en vez de dejarlas sueltas en el escritorio.'],
+   usb:['💾','Memoria USB','Aparece cuando la conectas. Sirve para llevar tus archivos a otra computadora. Se saca con «Expulsar».']
+  }}
+};
+
+/* ---------------------------------------------------------------------
+   USUARIO, ESTADO LOCAL Y FIREBASE
+   --------------------------------------------------------------------- */
+function getUid(){
+  let r=localStorage.getItem('usuarioActual'); if(!r) return null;
+  try{ const j=JSON.parse(r); r=(j&&typeof j==='object')?(j.usuario||j.uid||j.name||''):String(j); }catch(e){}
+  r=String(r||'').trim().toLowerCase(); return r||null;
+}
+const UID=getUid();
+const KEY='ca_basico_v1_'+(UID||'invitado');
+const nuevo=()=>({done:[false,false,false,false,false],paso:[0,0,0,0,0],sel:0,pend:{xp:0,ins:false}});
+let S=cargar();
+function cargar(){
+  try{ const j=JSON.parse(localStorage.getItem(KEY)); if(j&&Array.isArray(j.done)&&j.done.length===5) return Object.assign(nuevo(),j); }catch(e){}
+  return nuevo();
+}
+function guardar(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+const xpGanado=()=>XP.reduce((a,x,i)=>a+(S.done[i]?x:0),0);
+const todoListo=()=>S.done.every(Boolean);
+
+function getDB(){ try{ if(window.firebase&&firebase.apps&&firebase.apps.length) return firebase.firestore(); }catch(e){} return null; }function nube(estado){
+  const el=$('#nube'); if(!el) return;
+  el.textContent = estado==='ok' ? '☁️ Guardado en tu perfil' : estado==='warn' ? '⚠️ Sin conexión: se guardará después' : estado==='login' ? '' : '';
+}
+
+async function flush(){
+  if(!UID){ nube('login'); return; }
+  const xp=S.pend.xp, ins=S.pend.ins;
+  if(!xp && !ins) return;
+  const d=getDB(); if(!d){ nube('warn'); return; }
+  try{
+    const ref=d.collection('ranking').doc(UID), F=firebase.firestore.FieldValue;
+    const snap=await ref.get();
+    if(snap.exists){
+      const u={}; if(xp) u.xp=F.increment(xp); if(ins) u.insignias=F.arrayUnion(INSIGNIA_ID);
+      await ref.update(u);
+    } else {
+      await ref.set({usuario:UID, xp:xp, insignias: ins?[INSIGNIA_ID]:[]});
+    }
+    S.pend.xp-=xp; if(ins) S.pend.ins=false; guardar(); nube('ok');
+  }catch(e){ console.warn('[basico] no se pudo guardar en Firebase:',e); nube('warn'); }
+}
+async function sumar(n,ins){ S.pend.xp+=n; if(ins) S.pend.ins=true; guardar(); await flush(); }
+
+async function sincronizar(){
+  const d=getDB(); if(!d||!UID) return;
+  try{
+    await flush();
+    const s=await d.collection('ranking').doc(UID).get(), dat=s.exists?s.data():{};
+    if(!S.pend.xp && S.done.some(Boolean) && (dat.xp||0)<xpGanado()){      // cuenta nueva con progreso viejo
+      S=nuevo(); guardar(); renderTodo(); toast('Cuenta nueva detectada: empezamos desde cero 🌱'); return;
+    }
+    const ins=Array.isArray(dat.insignias)?dat.insignias:[];
+    if(todoListo() && !ins.includes(INSIGNIA_ID)){ S.pend.ins=true; guardar(); await flush(); }
+    else if(s.exists) nube('ok');
+  }catch(e){ console.warn('[basico] sync',e); }
+}
+
+/* ---------------------------------------------------------------------
+   AYUDANTE
+   --------------------------------------------------------------------- */
+let bt; const HI={}, FAILS={};
+function habla(t,ms=15000){
+  const b=$('#bubble'); b.innerHTML='<button class="x" data-act="cerrarB" aria-label="Cerrar">✕</button>'+t; b.classList.remove('off');
+  clearTimeout(bt); if(ms) bt=setTimeout(()=>b.classList.add('off'),ms);
+}
+function pasoActual(){ const r=RETOS[S.sel]; return S.done[S.sel]?null:r.pasos[S.paso[S.sel]]; }
+function darPista(){
+  const p=pasoActual();
+  if(!p){ habla('¡Este reto ya lo terminaste! 🎉 Pasa al siguiente cuando quieras.'); return; }
+  const k=S.sel+'-'+S.paso[S.sel], n=HI[k]||0, P=p.pistas, i=Math.min(n,P.length-1); HI[k]=n+1;
+  habla(`<b>💡 Pista ${i+1} de ${P.length}</b><br>${P[i]}<br><small>${i===P.length-1?'Esa fue la última. ¡Tú puedes! 💪':'Toca otra vez si quieres más ayuda.'}</small>`,22000);
+}
+function ayudaSuave(){ const a=$('#ayudante'); a.classList.add('wig'); setTimeout(()=>a.classList.remove('wig'),2200); habla('¿Te ayudo? Haz clic en mí o en el botón <b>💡 Pista</b>. Equivocarse es normal 💛'); }
+
+/* ---------------------------------------------------------------------
+   RENDER
+   --------------------------------------------------------------------- */
+const hay=i=>i===0||S.done[i-1];
+function renderMapa(){
+  $('#mapa').innerHTML=RETOS.map((r,i)=>{
+    const est=S.done[i]?'hecho':(i===S.sel?'act':(hay(i)?'':'lock'));
+    return `<button class="nodo ${est}" data-act="ir" data-i="${i}" ${hay(i)?'':'disabled'}><span class="ic">${r.icono}</span>Reto ${i+1}<b>${r.corto} · ${XP[i]} XP</b></button>`;
+  }).join('');
+  const g=xpGanado(); $('#xpTxt').textContent=`XP ${g} / 300`; $('#xpFill').style.width=(g/300*100)+'%';
+}
+function renderPasos(){
+  const i=S.sel, r=RETOS[i], pi=S.paso[i], hecho=S.done[i], cont=$('#pasos'); if(!cont) return;
+  cont.innerHTML='<ol>'+r.pasos.map((p,k)=>{
+    const est=hecho||k<pi?'ok':(k===pi?'act':'lock');
+    let c=`<li class="paso ${est}"><div class="pn">${est==='ok'?'✔':k+1}</div><div class="pc"><div class="pq">${p.q}</div>`;
+    if(est==='act'){
+      c += p.widget ? `<div class="wst">⏳ Haz la práctica de arriba ☝️ y el paso se completa solo.</div>`
+        : `<div class="resp"><input id="resp" class="inp" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${p.ph||'Escribe aquí…'}" aria-label="Tu respuesta"><button class="btn" data-act="check">Comprobar ✔</button></div>`;
+      c += `<div class="fb" id="fb"></div><button class="btn sm azul" data-act="pista">💡 Necesito una pista</button>`;
+    } else if(est==='lock') c+=`<div class="cand">🔒 Se abre al terminar el paso anterior</div>`;
+    return c+'</div></li>';
+  }).join('')+'</ol>'
+  + (hecho ? `<div class="fin-reto"><h3>🏆 ¡Reto completado! +${XP[i]} XP</h3>${
+      i<4 ? `<button class="btn verde" data-act="ir" data-i="${i+1}">Siguiente reto ➜</button>`
+          : `<button class="btn verde" data-act="victoria">🏅 Ver mi Insignia Básico</button>`}</div>` : '');
+  const inp=$('#resp'); if(inp){ inp.addEventListener('keydown',e=>{ if(e.key==='Enter') comprobar(); }); }
+}
+function renderReto(foco){
+  const i=S.sel, r=RETOS[i];
+  $('#reto').innerHTML=`<article class="px reto">
+    <div class="reto-head"><span class="tag">RETO ${i+1} DE 5</span><span class="tag xp">+${XP[i]} XP</span>${i===4?'<span class="tag fin">PRUEBA FINAL</span>':''}</div>
+    <h2>${r.icono} ${r.titulo}</h2><p class="sub">${r.sub}</p>
+    <div class="bloque" style="margin-top:0"><h3>📖 Aprende primero</h3>${r.leccion()}</div>
+    ${r.practica && r.practica!=='explorador' ? `<div class="bloque"><h3>🎮 Zona de práctica</h3>${PRACT[r.practica].html()}</div>` : ''}
+    <div class="bloque pasos"><h3>🎯 Tu misión</h3><div id="pasos"></div></div>
+  </article>`;
+  if(r.practica==='teclado') PRACT.teclado.init();
+  if(r.practica==='mouse'){ W.mouse=[false,false,false,false]; PRACT.mouse.init(); }
+  renderPasos(); renderMapa();
+  habla(S.done[i] ? '¡Ya completaste este reto! Puedes repasarlo cuando quieras 😊' : r.intro, 18000);
+  if(foco){ const inp=$('#resp'); if(inp) setTimeout(()=>inp.focus({preventScroll:true}),50); }
+}
+function renderTodo(){
+  S.sel=Math.min(S.sel,4); if(!hay(S.sel)) S.sel=S.done.findIndex(d=>!d);
+  renderReto(); renderUsuario();
+}
+function renderUsuario(){
+  $('#chipUser').textContent = UID ? '👤 '+UID : 'Invitado';
+  const a=$('#aviso');
+  if(!UID){ a.innerHTML='⚠️ No has iniciado sesión: puedes practicar, pero tu XP <b>no se guardará</b>. <a href="registro.html">Entrar o crear mi cuenta</a>'; a.classList.add('on'); }
+  else a.classList.remove('on');
+}
+
+/* ---------------------------------------------------------------------
+   LÓGICA DE LOS PASOS
+   --------------------------------------------------------------------- */
+const ERRS=['No pasa nada, equivocarse es parte de aprender 💛 Inténtalo otra vez.','¡Casi! 😊 Revisa con calma y vuelve a probar.','Tranquilo/a, vas bien. Si quieres, toca al personaje y te doy una pista 🧙'];
+function fb(txt,cls){ const f=$('#fb'); if(f){ f.className='fb '+cls; f.innerHTML=txt; } }
+function comprobar(){
+  const p=pasoActual(); if(!p||p.widget) return;
+  const v=($('#resp').value||'').trim();
+  if(!v){ fb('Escribe tu respuesta en la cajita y toca <b>Comprobar</b> 😊','no'); return; }
+  const k=S.sel+'-'+S.paso[S.sel];
+  if(p.re.test(v)){ fb('✅ '+p.ok,'ok'); $('#resp').disabled=true; setTimeout(avanzar,1000); }
+  else{
+    FAILS[k]=(FAILS[k]||0)+1;
+    fb('🤔 '+(p.err&&FAILS[k]%2===1?p.err:ERRS[(FAILS[k]-1)%ERRS.length]),'no');
+    if(FAILS[k]===2||FAILS[k]%4===0) ayudaSuave();
+  }
+}
+function widgetListo(flag){
+  const p=pasoActual(); if(!p||p.widget!==flag) return;
+  fb('✅ '+p.ok,'ok'); const w=$('.wst'); if(w) w.remove();
+  p.widget=flag+'*'; /* evita doble disparo */
+  setTimeout(()=>{ p.widget=flag; avanzar(); },1100);
+}
+function avanzar(){
+  const i=S.sel, r=RETOS[i];
+  S.paso[i]++; guardar();
+  if(S.paso[i]>=r.pasos.length){ completarReto(i); }
+  else{ renderPasos(); habla('¡Bien! Sigamos con el paso '+(S.paso[i]+1)+' 👇',6000); const inp=$('#resp'); if(inp) inp.focus({preventScroll:true}); }
+}
+async function completarReto(i){
+  if(S.done[i]){ renderPasos(); return; }
+  S.done[i]=true; guardar(); renderMapa(); renderPasos();
+  popupXP(XP[i]); confeti(24);
+  habla(i<4?`¡Reto ${i+1} completado! 🎉 Ganaste <b>${XP[i]} XP</b>. ¡Sigue con el siguiente!`:'¡LO LOGRASTE! 🏆 Completaste todos los retos.',9000);
+  const fin=todoListo();
+  await sumar(XP[i], fin);
+  if(fin) setTimeout(victoria,1900);
+  else setTimeout(()=>{ const f=$('.fin-reto'); if(f) f.scrollIntoView({behavior:'smooth',block:'center'}); },300);
+}
+
+/* ---------------------------------------------------------------------
+   EFECTOS Y UTILIDADES
+   --------------------------------------------------------------------- */
+function popupXP(n){ const d=document.createElement('div'); d.className='popxp'; d.textContent='+'+n+' XP'; document.body.appendChild(d); const q=()=>d.remove(); d.addEventListener('animationend',q); setTimeout(q,2600); }
+function confeti(n){ const cs=['#fdc815','#4fd8ff','#ff4f9a','#7cffb2','#fff']; for(let i=0;i<n;i++){ const c=document.createElement('i'); c.className='conf'; c.style.left=Math.random()*100+'vw'; c.style.background=cs[i%cs.length]; c.style.animationDuration=(1.8+Math.random()*1.8)+'s'; c.style.animationDelay=(Math.random()*.6)+'s'; document.body.appendChild(c); setTimeout(()=>c.remove(),4500); } }
+let tt; function toast(t,ms=4000){ const e=$('#toast'); e.textContent=t; e.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('on'),ms); }
+function victoria(){
+  const o=$('#victoria');
+  o.innerHTML=`<div class="px vic"><div class="escudo"><span>🛡️</span><b>BÁSICO</b></div>
+    <h2>¡FELICIDADES!</h2><p>Completaste los 5 retos de Computación Básica. Ya sabes lo que es el hardware y el software, usar el teclado y el mouse, y guardar tus archivos.</p>
+    <div class="vic-xp">+300 XP en total</div><p>🏅 <b>Insignia Básico desbloqueada</b></p>
+    <p class="peque">${UID?'Se guarda en tu perfil y en el ranking.':'Inicia sesión para que quede en tu perfil.'}</p>
+    <div class="acc"><a class="btn verde" href="perfil.html">Ver mi perfil</a><a class="btn azul" href="ranking.html">Ver ranking</a><a class="btn" href="juegos.html">Más juegos</a><button class="btn rosa" data-act="cerrarV">Seguir repasando</button></div></div>`;
+  o.classList.add('on'); confeti(60);
+}
+
+/* ---------------------------------------------------------------------
+   EVENTOS GENERALES
+   --------------------------------------------------------------------- */
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act==='flip') a.classList.toggle('on');
+  else if(act==='check') comprobar();
+  else if(act==='pista') darPista();
+  else if(act==='ir'){ S.sel=+a.dataset.i; guardar(); renderReto(true); window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(act==='cerrarB') $('#bubble').classList.add('off');
+  else if(act==='victoria') victoria();
+  else if(act==='cerrarV') $('#victoria').classList.remove('on');
+  else if(act==='lugar'){
+    document.querySelectorAll('.expl-side button').forEach(b=>b.classList.toggle('on',b===a));
+    const l=PRACT.explorador.lugares[a.dataset.k]; $('#explMain').innerHTML=`<div class="ic">${l[0]}</div><h4>${l[1]}</h4><p>${l[2]}</p>`;
+  }
+});
+$('#pjBtn').addEventListener('click',darPista);
+$('#btnPista').addEventListener('click',darPista);
+
+/* tema claro / oscuro */
+(function(){
+  const t=localStorage.getItem('tema'), b=$('#btnTema');
+  const aplicar=l=>{ document.body.classList.toggle('light',l); b.textContent=l?'☀️':'🌙'; };
+  aplicar(t==='light'||t==='claro');
+  b.addEventListener('click',()=>{ const l=!document.body.classList.contains('light'); localStorage.setItem('tema',l?'light':'dark'); aplicar(l); });
+})();
+
+/* =========================================
+   MODO FERIA (KIOSCO) - Supervivencia
+   ========================================= */
+// 🔴 IMPORTANTE:
+// FALSE mientras programas/pruebas, para que nunca te borre nada.
+// TRUE el día de la feria, para que se reinicie solo si dejan la PC abandonada.
+const MODO_KIOSKO_ACTIVO = false;
+
+function salirYLimpiar() {
+  localStorage.removeItem('usuarioActual');
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
+        k.startsWith('ca_juegos_v1_') ||
+        k.startsWith('ca_arcade_profile_v1_')) {
+      localStorage.removeItem(k);
+    }
+  });
+  location.href = 'registro.html';
+}
+
+/* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
+document.addEventListener('click', e => {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
+});
+
+/* Temporizador de inactividad (solo si el modo kiosko está activo) */
+let timerInactividad;
+function resetearTimer() {
+  if (!MODO_KIOSKO_ACTIVO) return;
+  clearTimeout(timerInactividad);
+  timerInactividad = setTimeout(() => {
+    console.log('Inactividad detectada. Reseteando PC para el siguiente...');
+    salirYLimpiar();
+  }, 90000); // 90 segundos
+}
+
+['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetearTimer, { passive: true });
+});
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
+
+/* F8: salir y limpiar (con confirmación) */
+document.addEventListener('keydown', e => {
+  if (e.key === 'F8') {
+    e.preventDefault();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
+    }
+  }
+});
+
+/* ---------------------------------------------------------------------
+   ARRANQUE
+   --------------------------------------------------------------------- */
+(function(){
+  const primero=S.done.findIndex(d=>!d); S.sel = primero===-1 ? 4 : primero;
+  renderTodo();
+  sincronizar();
+})();
+</script>
+</body>
+</html>
