@@ -57,6 +57,14 @@ body {
 .btn-submit:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
 .btn-submit:disabled { opacity: .6; pointer-events: none; }
 
+.btn-back {
+  display: block; width: 100%; padding: 10px; margin-top: 16px; text-align: center; text-decoration: none;
+  background: #0d121f; color: #38bdf8; border: 3px solid #1e293b; box-shadow: 4px 4px 0px #000000;
+  font-family: 'Pixelify Sans', monospace; font-size: 1.1rem; transition: all 0.1s ease;
+}
+.btn-back:hover { border-color: #38bdf8; color: #ffe875; transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000000; }
+.btn-back:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000000; }
+
 .msg { margin-top: 15px; font-size: 0.9rem; text-align: center; min-height: 20px; }
 .msg.ok { color: #7dffa0; }
 .msg.err { color: #ff8a8a; }
@@ -153,6 +161,7 @@ body{height:auto;min-height:100dvh;overflow-x:hidden;overflow-y:auto;align-items
       <p id="msg" class="msg"></p>
     </form>
   </div>
+  <a href="index.html" class="btn-back">← Volver al inicio</a>
 </div>
 
 <!-- Estrellas, meteoritos y formato del teléfono -->
