@@ -130,13 +130,13 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 <script src="java/firebase-init.js"></script>
 <script>
   const RANGOS = [
-    {id:'diamante', nombre:'Platino', min:2500, emoji:'', color:'#4fd8ff'},
-    {id:'platino',  nombre:'Oro',  min:1500,  emoji:'', color:'#c9d6ff'},
-    {id:'oro',      nombre:'Plata',      min:500,  emoji:'', color:'#fdc815'},
-    {id:'bronce',   nombre:'Bronce',   min:0,    emoji:'', color:'#cd7f32'}
+    {id:'platino', nombre:'Platino', min:2500, emoji:'🔷', color:'#8fe8d8'},
+    {id:'oro',     nombre:'Oro',     min:1500, emoji:'🥇', color:'#ffc24b'},
+    {id:'plata',   nombre:'Plata',   min:500,  emoji:'🥈', color:'#c4cbdc'},
+    {id:'bronce',  nombre:'Bronce',  min:0,    emoji:'🥉', color:'#cd7f32'}
   ];
   const rangoDe = xp => RANGOS.find(r => xp >= r.min) || RANGOS[RANGOS.length - 1];
-  const MEDALLAS = ['🥇','🥈','🥉'];
+  const MEDALLAS = ['🥇','🥈',''];
   const COLORES_PODIO = ['#fdc815','#c9d6ff','#cd7f32'];
 
   let TODOS = [];
@@ -249,6 +249,8 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
         'No se pudo cargar el ranking. Revisa tu conexión y las reglas de Firestore.'));
     });
   }
+  // Recupera XP perdida (si el usuario tiene pruebas guardadas en la nube)
+  if (yo && typeof repararXPUsuario === 'function') repararXPUsuario(yo).catch(()=>{});
   render();
 </script>
 

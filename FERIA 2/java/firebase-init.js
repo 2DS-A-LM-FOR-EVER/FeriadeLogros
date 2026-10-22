@@ -11,13 +11,17 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); // ← variable global para todas tus páginas
 
-// Copia/actualiza al usuario en el ranking (sin contraseña)
+// Crea/actualiza al usuario en el ranking (sin contraseña).
+// IMPORTANTE: NUNCA pisa la XP de un ranking que ya existe.
 async function sincronizarRanking(usuario){
   const s = await db.collection('usuarios').doc(usuario).get();
   if(!s.exists) return;
   const d = s.data();
-  await db.collection('ranking').doc(usuario)
-    .set({ usuario, xp: d.xp || 0, avatar: d.avatar || 'boy.gif' }, { merge: true });
+  const rRef = db.collection('ranking').doc(usuario);
+  const r = await rRef.get();
+  const datos = { usuario, avatar: d.avatar || 'boy.gif' };
+  if(!r.exists) datos.xp = d.xp || 0;
+  await rRef.set(datos, { merge: true });
 }
 
 // Suma XP en ranking/{uid} (1 solo argumento: la cantidad)
@@ -29,4 +33,18 @@ async function sumarXP(n){
     { usuario: uid, xp: inc },
     { merge: true }
   );
+}
+
+// Repara la XP de un usuario: nunca debe ser menor que (pruebas hechas × 100).
+// Sirve para recuperar XP que se perdió por el bug anterior (las pruebas siguen guardadas).
+async function repararXPUsuario(usuario){
+  usuario = (usuario || localStorage.getItem('usuarioActual') || '').trim().toLowerCase();
+  if (!usuario) return;
+  const ref = db.collection('ranking').doc(usuario);
+  const s = await ref.get();
+  if (!s.exists) return;
+  const d = s.data() || {};
+  const pr = d.pruebas || {};
+  const minimo = Object.keys(pr).filter(k => pr[k] === true).length * 100;
+  if ((Number(d.xp) || 0) < minimo) await ref.set({ xp: minimo }, { merge: true });
 }

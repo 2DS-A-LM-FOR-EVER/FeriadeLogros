@@ -64,10 +64,13 @@ let st = readJSON(STATS_KEY, { fav:[], played:{}, last:null });
 let cat = 'Todos', onlyFav = false, query = '';
 
 /* ---------- Progreso por lenguaje (desde localStorage) ---------- */
+const CLAVE_ARCHIVO = { java:'javascript' };   // el juego "java" guarda como ca_javascript_v1_
 function progresoDe(id){
   try{
-    const p = JSON.parse(localStorage.getItem('ca_' + id + '_v1_' + UID) || 'null');
-    if(p && Array.isArray(p.hechos)) return p.hechos.map(Boolean);
+    const p = JSON.parse(localStorage.getItem('ca_' + (CLAVE_ARCHIVO[id] || id) + '_v1_' + UID) || 'null');
+    // basico guarda "done"; los demás guardan "hechos"
+    const arr = p && (Array.isArray(p.hechos) ? p.hechos : (Array.isArray(p.done) ? p.done : null));
+    if(arr) return arr.map(Boolean);
   }catch(e){}
   return [false,false,false,false,false];
 }
