@@ -64,7 +64,7 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .cab-top {
   width: 100%;
   aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
-  background-image: url('perfil1.png');
+  background-image: url('PERFIL1.png'); /* <-- CORREGIDO A MAYÚSCULAS */
   background-size: 100% 100%;
   background-repeat: no-repeat;
   position: relative;
@@ -88,7 +88,7 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .cab-bottom {
   width: 100%;
   aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
-  background-image: url('perfil2.png');
+  background-image: url('PERFIL2.png'); /* <-- CORREGIDO A MAYÚSCULAS */
   background-size: 100% 100%;
   background-repeat: no-repeat;
   position: relative;
@@ -707,40 +707,53 @@ ed.addEventListener('click',e=>{if(e.target===ed)ed.close()});
 
 render();
 
-/* ---------- MODO FERIA (KIOSCO) ---------- */
+const MODO_KIOSKO_ACTIVO = false;
+
 function salirYLimpiar() {
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
     if (k.startsWith('ca_python_v1_') ||
+        k.startsWith('ca_html_v1_') ||
         k.startsWith('ca_juegos_v1_') ||
-        k.startsWith('ca_arcade_profile_v1_')) {
+        k.startsWith('ca_arcade_profile_v1_') ||
+        k.startsWith('ca_basico_v1_')) { // Agregado por si acaso
       localStorage.removeItem(k);
     }
   });
   location.href = 'registro.html';
 }
 
+// Delegación de eventos: atrapa el click en el botón de salir de la navbar
 document.addEventListener('click', e => {
-  if (e.target.closest('#logout, .exit-btn, #gxLogout')) salirYLimpiar();
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+    e.preventDefault();
+    salirYLimpiar();
+  }
 });
 
+// Temporizador de inactividad
 let timerInactividad;
 function resetearTimer() {
+  if (!MODO_KIOSKO_ACTIVO) return; // Si es false, esto no hace NADA.
   clearTimeout(timerInactividad);
   timerInactividad = setTimeout(() => {
-    console.log("Inactividad detectada. Reseteando PC...");
+    console.log('Inactividad detectada. Reseteando PC...');
     salirYLimpiar();
-  }, 90000);
+  }, 90000); // 90 segundos
 }
+
 ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
   document.addEventListener(evt, resetearTimer, { passive: true });
 });
-resetearTimer();
+if (MODO_KIOSKO_ACTIVO) resetearTimer();
 
+// F8: salir y limpiar (con confirmación)
 document.addEventListener('keydown', e => {
   if (e.key === 'F8') {
     e.preventDefault();
-    salirYLimpiar();
+    if (confirm('¿Seguro que deseas salir y limpiar el progreso (Modo Kiosko)?')) {
+      salirYLimpiar();
+    }
   }
 });
 </script>
