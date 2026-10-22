@@ -43,90 +43,85 @@ canvas,img.pix{image-rendering:pixelated}
 
 /* LAYOUT */
 main{max-width:1120px;margin:0 auto;padding:44px 22px 70px;display:grid;grid-template-columns:minmax(300px,390px) minmax(0,1fr);gap:34px;align-items:start}
-@media(min-height:780px){main>section{position:sticky;top:96px}}
+/* sticky solo en pantallas muy altas (si la columna es más alta que la ventana, se corta) */
+@media(min-height:1000px){main>section{position:sticky;top:96px}}
 @media(max-width:900px){main{grid-template-columns:1fr}main>section{position:static}}
 h2.t{font-family:var(--px);font-size:12px;color:var(--amber);letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 h2.t::before{content:"";width:10px;height:10px;background:var(--violet);box-shadow:4px 4px 0 #000}
 h2.t span{margin-left:auto;color:var(--rk)}
 .box{background:var(--panel);border:4px solid var(--line);padding:20px;position:relative;box-shadow:6px 6px 0 #000}
 
-/* NUEVA CABINA PRINCIPAL */
-.cab-new {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  filter: drop-shadow(10px 10px 0 #000);
-  cursor: pointer;
-  
-  /* Respaldo visual si las imágenes no cargan */
-  min-height: 480px; 
-  background: var(--panel2);
-  border-radius: 12px;
-  border: 4px dashed var(--line);
+/* ═══════════ CABINA PRINCIPAL ═══════════
+   Si la pantalla no calza con el hueco de la imagen, cambia estos números
+   (o abre la página con ?ajustar al final de la URL para moverlos con barras). */
+.cab-new{
+  --scr-top:23.5%;  --scr-left:17%;  --scr-w:66%;  --scr-h:36%;   /* pantalla */
+  --btn-bottom:25%; --btn-right:15%; --btn-size:20%;              /* botón rojo */
+
+  position:relative;
+  display:grid;                 /* las dos imágenes se apilan en la misma celda */
+  width:100%;
+  max-width:400px;
+  margin:0 auto;
+  container-type:inline-size;   /* permite que el HUD escale con el ancho de la cabina */
+  filter:drop-shadow(10px 10px 0 #000);
+  border-radius:12px;
+}
+.cab-new .cab-img{
+  grid-area:1/1;align-self:start;
+  width:100%;height:auto;
+  visibility:hidden;pointer-events:none;border-radius:12px;
+}
+.cab-new .cab-img.active{visibility:visible}
+/* respaldo solo si la imagen no carga */
+.cab-new.sin-img{min-height:480px;background:var(--panel2);border:4px dashed var(--line)}
+
+/* PANTALLA (encima del hueco negro de la imagen) */
+.cab-new .screen{
+  position:absolute;
+  top:var(--scr-top);left:var(--scr-left);
+  width:var(--scr-w);height:var(--scr-h);
+  background:#000;border-radius:4px;overflow:hidden;z-index:5;
+}
+/* marco del color elegido en el editor */
+.cab-new .screen::before{
+  content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
+  box-shadow:inset 0 0 0 max(2px,.7cqw) var(--frame);
 }
 
-.cab-new .cab-img {
-  display: none;
-  width: 100%;
-  height: auto;
-  pointer-events: none;
-  border-radius: 12px;
-}
-
-.cab-new .cab-img.active {
-  display: block;
-}
-
-/* PANTALLA DE LA CABINA (Posicionada sobre el hueco negro) */
-.cab-new .screen {
-  position: absolute;
-  top: 23.5%; 
-  left: 17%;
-  width: 66%;
-  height: 36%;
-  background: #000;
-  border-radius: 4px;
-  overflow: hidden;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  aspect-ratio: auto; 
-  z-index: 5;
-}
-
-/* Efecto de líneas de escaneo (Scanlines) */
-.screen::after {
+/* Líneas de escaneo */
+.screen::after{
   content:"";
   position:absolute;inset:0;pointer-events:none;z-index:6;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);
   box-shadow:inset 0 0 70px rgba(0,0,0,.65)
 }
 
-/* El botón rojo será invisible pero clickeable */
-.arcade-btn-red {
-  position: absolute;
-  bottom: 25%; 
-  right: 15%;
-  width: 20%;
-  height: 20%;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+/* Botón rojo (invisible pero clickeable) */
+.arcade-btn-red{
+  position:absolute;
+  bottom:var(--btn-bottom);right:var(--btn-right);
+  width:var(--btn-size);aspect-ratio:1;
+  border-radius:50%;background:transparent;border:none;z-index:10;
 }
-.arcade-btn-red:hover { background: rgba(255,255,255,0.1); }
-.arcade-btn-red:active { transform: translateY(2px); }
+.arcade-btn-red:hover{background:rgba(255,255,255,.1)}
+.arcade-btn-red:active{transform:translateY(2px)}
+.arcade-btn-red:focus-visible{outline:3px dashed var(--amber);outline-offset:3px}
 
-/* HUD (Nivel, Score, etc) */
-.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;color:#fff;text-shadow:2px 2px 0 #000;line-height:1.5}
-.hud.tl{top:12px;left:14px;color:var(--frame)}
-.hud.tr{top:12px;right:14px;text-align:right}
-.hud.bl{bottom:12px;left:14px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hud.br{bottom:12px;right:14px;animation:blink 1s steps(2) infinite;color:var(--amber)}
+/* modo ?ajustar: muestra dónde está la pantalla (rojo) y el botón (verde) */
+.cab-new.debug .screen{outline:2px solid #f00}
+.cab-new.debug .arcade-btn-red{outline:2px solid #0f0;background:rgba(124,255,178,.3)}
+
+/* HUD (Nivel, Score, etc) — el tamaño de letra escala con la cabina */
+.hud{position:absolute;z-index:5;font-family:var(--px);font-size:9px;font-size:clamp(5px,2.1cqw,9px);color:#fff;text-shadow:1px 1px 0 #000;line-height:1.5}
+.hud.tl{top:3%;left:4%;color:var(--frame)}
+.hud.tr{top:3%;right:4%;text-align:right}
+.hud.bl{bottom:3%;left:4%;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hud.br{bottom:3%;right:4%;animation:blink 1s steps(2) infinite;color:var(--amber)}
 @keyframes blink{50%{opacity:0}}
-.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);width:34%;aspect-ratio:1;display:grid;place-items:end center}
+
+/* Muñequito: su tamaño depende de la altura de la pantalla (así nunca se sale) */
+.hero-av{position:absolute;z-index:4;left:50%;bottom:17%;transform:translateX(-50%);height:46%;aspect-ratio:1;display:grid;place-items:end center}
 .hero-av canvas,.hero-av img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 0 rgba(0,0,0,.45))}
 .pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
   box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
@@ -251,14 +246,12 @@ dialog::backdrop { background: transparent; }
 .dlg h3 { font-family: var(--px); font-size: 11px; color: var(--amber); margin: 20px 0 12px; letter-spacing: 1px; }
 .dlg h3:first-child { margin-top: 0; }
 
-/* PANTALLA DE VISTA PREVIA (Arreglado el ancho para que no se aplaste) */
+/* PANTALLA DE VISTA PREVIA */
 .screen.sm { 
   position: relative;
-  width: 100%; /* ESTO ARREGLA EL COLAPSO DE LA IMAGEN 1 */
+  width: 100%;
   flex-shrink: 0;
   aspect-ratio: 16/10;
-  outline-width: 3px; 
-  border-width: 4px; 
   border: 4px solid #000;
   outline: 3px solid var(--frame);
   background: #000;
@@ -322,8 +315,8 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
   <section>
     <!-- CABINA CON IMÁGENES Y PANTALLA INTERACTIVA -->
     <div class="cab-new" id="cabFrame">
-      <!-- Imagen normal de la cabina -->
-      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade" onerror="this.style.display='none'">
+      <!-- Imagen normal de la cabina (PERFIL1 y PERFIL2 deben tener el MISMO tamaño en píxeles) -->
+      <img id="imgNormal" src="PERFIL1.png" class="cab-img active" alt="Interfaz Arcade" onerror="this.style.display='none';document.getElementById('cabFrame').classList.add('sin-img')">
       <!-- Imagen presionada (cambia al abrir el editor) -->
       <img id="imgPressed" src="PERFIL2.png" class="cab-img" alt="Interfaz Editando" onerror="this.style.display='none'">
 
@@ -338,7 +331,7 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
       </div>
 
       <!-- El botón invisible sobre el botón rojo de la imagen -->
-      <button class="arcade-btn-red" id="openEd" aria-label="Editar Perfil"></button>
+      <button class="arcade-btn-red" id="openEd" type="button" aria-label="Editar Perfil"></button>
     </div>
     
     <div class="box idc">
@@ -382,7 +375,6 @@ dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto
   <div class="dlg">
     <div class="dlg-l">
       <h3 style="margin-top:0">Vista previa</h3>
-      <!-- Pantalla de vista previa con ancho 100% para que no colapse -->
       <div class="screen sm" id="prevScreen">
         <div class="pedestal"></div>
         <div class="hero-av" id="prevAv"></div>
@@ -531,25 +523,29 @@ if (typeof db !== 'undefined') {
   }).catch(err => console.log("Error leyendo perfil:", err));
 }
 
-const persist = async () => {
+/* Guarda en este equipo (devuelve true/false al instante) y sincroniza con la nube sin bloquear */
+const persist = () => {
   try {
     localStorage.setItem(KEY, JSON.stringify(S));
-    if (typeof db !== 'undefined') {
-      await db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
-        name: S.name,
-        bio: S.bio,
-        char: S.char,
-        stage: S.stage,
-        frame: S.frame,
-        gif: S.gif || null,
-        edited: S.edited || false
-      }, { merge: true });
-    }
-    return true;
   } catch (e) {
-    console.error("Error guardando en nube:", e);
+    console.error("Error guardando en el navegador:", e);
     return false;
   }
+  if (typeof db !== 'undefined') {
+    db.collection('ranking').doc(usuarioCanonico.toLowerCase()).set({
+      name: S.name,
+      bio: S.bio,
+      char: S.char,
+      stage: S.stage,
+      frame: S.frame,
+      gif: S.gif || null,
+      edited: S.edited || false
+    }, { merge: true }).catch(err => {
+      console.error("Error guardando en nube:", err);
+      toast('Guardado en este equipo, pero no se pudo sincronizar');
+    });
+  }
+  return true;
 };
 const $=id=>document.getElementById(id);
 function toast(m){
@@ -677,6 +673,15 @@ function render(){
   renderProgress();
 }
 
+/* ---------- IMAGEN DE LA CABINA (normal / presionada) ---------- */
+const imgN=$('imgNormal'), imgP=$('imgPressed');
+function setPressed(on){
+  // solo cambia a PERFIL2 si realmente cargó; si no, la cabina no desaparece
+  const usar = on && imgP.complete && imgP.naturalWidth > 0;
+  imgN.classList.toggle('active', !usar);
+  imgP.classList.toggle('active', usar);
+}
+
 /* ---------- EDITOR ---------- */
 const ed=$('ed');let D;
 function buildPickers(){
@@ -699,11 +704,9 @@ function sync(){
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
 
-// LÓGICA DEL BOTÓN: Cambia a PERFIL2 y abre la interfaz
+// Botón rojo: cambia a PERFIL2 y abre el editor
 $('openEd').onclick=()=>{
-  document.getElementById('imgNormal').classList.remove('active');
-  document.getElementById('imgPressed').classList.add('active');
-
+  setPressed(true);
   D={...S,user:'@'+usuarioCanonico};
   $('iName').value=D.name;
   $('iUser').value=D.user;
@@ -715,10 +718,7 @@ $('openEd').onclick=()=>{
 };
 
 // Al cerrar el editor, vuelve a PERFIL1
-ed.addEventListener('close', () => {
-  document.getElementById('imgPressed').classList.remove('active');
-  document.getElementById('imgNormal').classList.add('active');
-});
+ed.addEventListener('close', () => setPressed(false));
 
 $('iName').oninput=e=>D.name=e.target.value;
 $('iUser').value='@'+usuarioCanonico;
@@ -747,6 +747,45 @@ $('save').onclick=()=>{
 ed.addEventListener('click',e=>{if(e.target===ed)ed.close()});
 
 render();
+
+/* ---------- AJUSTAR CABINA: abre la página con ?ajustar al final de la URL ---------- */
+if (/[?&]ajustar/.test(location.search)) {
+  const cab = $('cabFrame');
+  cab.classList.add('debug');
+  const V = [
+    ['--scr-top','Pantalla: arriba',0,70,23.5],
+    ['--scr-left','Pantalla: izquierda',0,60,17],
+    ['--scr-w','Pantalla: ancho',20,100,66],
+    ['--scr-h','Pantalla: alto',10,70,36],
+    ['--btn-bottom','Botón: abajo',0,60,25],
+    ['--btn-right','Botón: derecha',0,60,15],
+    ['--btn-size','Botón: tamaño',5,40,20]
+  ];
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;right:8px;top:8px;z-index:100000;width:240px;background:#000;border:3px solid #ffcc00;padding:10px;font:16px monospace;color:#fff';
+  const out = document.createElement('pre');
+  out.style.cssText = 'margin-top:8px;font-size:14px;color:#7cffb2;white-space:pre-wrap';
+  const val = {};
+  const show = () => { out.textContent = V.map(v => v[0] + ':' + val[v[0]] + '%;').join('\n'); };
+  V.forEach(([name,label,min,max,def]) => {
+    val[name] = def;
+    const l = document.createElement('label');
+    l.style.display = 'block';
+    const r = document.createElement('input');
+    r.type = 'range'; r.min = min; r.max = max; r.step = 0.5; r.value = def; r.style.width = '100%';
+    r.oninput = () => {
+      val[name] = +r.value;
+      cab.style.setProperty(name, r.value + '%');
+      l.firstChild.textContent = label + ': ' + r.value + '%';
+      show();
+    };
+    l.append(label + ': ' + def + '%', r);
+    panel.appendChild(l);
+  });
+  panel.appendChild(out);
+  show();
+  document.body.appendChild(panel);
+}
 
 const MODO_KIOSKO_ACTIVO = false;
 
