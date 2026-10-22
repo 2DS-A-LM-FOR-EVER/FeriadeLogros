@@ -9,18 +9,35 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(); // ← variable global para todas tus páginas
+const db = firebase.firestore();
 
-// Copia/actualiza al usuario en el ranking (sin contraseña)
+// ✅ CORREGIDO: Solo crea el documento de ranking si NO existe.
+// Si ya existe, NO toca el XP (preserva el que ganaste jugando).
 async function sincronizarRanking(usuario){
   const s = await db.collection('usuarios').doc(usuario).get();
   if(!s.exists) return;
   const d = s.data();
-  await db.collection('ranking').doc(usuario)
-    .set({ usuario, xp: d.xp || 0, avatar: d.avatar || 'boy.gif' }, { merge: true });
+  
+  // Verificar si ya existe en ranking
+  const rankingDoc = await db.collection('ranking').doc(usuario).get();
+  
+  if (rankingDoc.exists) {
+    // Ya existe: solo actualiza usuario/avatar, NO toca xp
+    await db.collection('ranking').doc(usuario)
+      .set({ usuario, avatar: d.avatar || 'boy.gif' }, { merge: true });
+  } else {
+    // Primera vez: crea el documento con xp de usuarios (si existe)
+    await db.collection('ranking').doc(usuario)
+      .set({ 
+        usuario, 
+        xp: d.xp || 0, 
+        avatar: d.avatar || 'boy.gif',
+        insignias: []
+      }, { merge: true });
+  }
 }
 
-// Suma XP en ranking/{uid} (1 solo argumento: la cantidad)
+// Suma XP en ranking/{uid}
 async function sumarXP(n){
   const uid = (localStorage.getItem('usuarioActual') || '').trim().toLowerCase();
   if (!uid || !n) return;
