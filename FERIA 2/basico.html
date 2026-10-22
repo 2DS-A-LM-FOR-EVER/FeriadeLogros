@@ -274,15 +274,27 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important}}
 </style>
-<style id="fix-puntero">
-/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
-html, body, body * { cursor: auto !important; }
-body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
-body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
-body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
-body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
-body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
-#espada-cursor { display: none !important; }
+<style id="ajustes">
+/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,body *{cursor:auto!important}
+body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
+body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
+body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
+body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
+body button:disabled,body .btn:disabled{cursor:not-allowed!important}
+#espada-cursor{display:none!important}
+img,video,canvas,svg,iframe{max-width:100%}
+body{overflow-wrap:break-word}
+@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+/* Básico: rejillas que nunca desbordan en pantallas de 320px */
+.flips{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+.combos,.cuatro,.lab{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+@media (max-width:480px){
+  body{font-size:16px}
+  .escudo{width:110px;height:110px}
+  .ctx{max-width:calc(100vw - 16px)}
+}
 </style>
 </head>
 <body>
@@ -337,6 +349,7 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="java/firebase-init.js"></script>
+<script src="java/progreso-cloud.js"></script>
 <script>
 /* =====================================================================
    BÁSICO · PIXELWORD
@@ -345,7 +358,7 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 const KIOSCO_SEG = 90;          // segundos sin tocar nada para reiniciar la PC (modo feria)
 const AVISO_SEG  = 70;          // aviso amable antes del reinicio
 const INSIGNIA_ID = 'basico';   // valor que se guarda en ranking/{usuario}.insignias
-const XP = [50, 50, 50, 50, 100];   // total = 300
+const XP = [100, 100, 100, 100, 100];   // total = 500
 
 const $ = s => document.querySelector(s);
 const HW = /^(?!.*sof)(?=.*har)/i;      // "hardware" (tolera faltas de ortografía)
@@ -680,7 +693,20 @@ async function flush(){
     S.pend.xp-=xp; if(ins) S.pend.ins=false; guardar(); nube('ok');
   }catch(e){ console.warn('[basico] no se pudo guardar en Firebase:',e); nube('warn'); }
 }
-async function sumar(n,ins){ S.pend.xp+=n; if(ins) S.pend.ins=true; guardar(); await flush(); }
+async function sumar(n,ins,i){
+  const d=getDB(); if(!d||!UID){ nube(UID?'warn':'login'); return; }
+  const ref=d.collection('ranking').doc(UID), marca='basico_'+i;
+  try{
+    await d.runTransaction(async tx=>{
+      const s=await tx.get(ref), dat=s.exists?s.data():{};
+      if((dat.pruebas||{})[marca]) return;          // esta prueba ya dio su XP
+      const u={ usuario:UID, xp:(dat.xp||0)+n, pruebas:{[marca]:true} };
+      if(ins) u.insignias=firebase.firestore.FieldValue.arrayUnion(INSIGNIA_ID);
+      tx.set(ref,u,{merge:true});
+    });
+    nube('ok');
+  }catch(e){ console.warn('[basico] no se pudo guardar',e); nube('warn'); }
+}
 
 async function sincronizar(){
   const d=getDB(); if(!d||!UID) return;
@@ -722,7 +748,7 @@ function renderMapa(){
     const est=S.done[i]?'hecho':(i===S.sel?'act':(hay(i)?'':'lock'));
     return `<button class="nodo ${est}" data-act="ir" data-i="${i}" ${hay(i)?'':'disabled'}><span class="ic">${r.icono}</span>Reto ${i+1}<b>${r.corto} · ${XP[i]} XP</b></button>`;
   }).join('');
-  const g=xpGanado(); $('#xpTxt').textContent=`XP ${g} / 300`; $('#xpFill').style.width=(g/300*100)+'%';
+  const g=xpGanado(); $('#xpTxt').textContent=`XP ${g} / 500`; $('#xpFill').style.width=(g/500*100)+'%';
 }
 function renderPasos(){
   const i=S.sel, r=RETOS[i], pi=S.paso[i], hecho=S.done[i], cont=$('#pasos'); if(!cont) return;
@@ -802,7 +828,7 @@ async function completarReto(i){
   popupXP(XP[i]); confeti(24);
   habla(i<4?`¡Reto ${i+1} completado! 🎉 Ganaste <b>${XP[i]} XP</b>. ¡Sigue con el siguiente!`:'¡LO LOGRASTE! 🏆 Completaste todos los retos.',9000);
   const fin=todoListo();
-  await sumar(XP[i], fin);
+  await sumar(XP[i], fin, i);
   if(fin) setTimeout(victoria,1900);
   else setTimeout(()=>{ const f=$('.fin-reto'); if(f) f.scrollIntoView({behavior:'smooth',block:'center'}); },300);
 }
@@ -817,7 +843,7 @@ function victoria(){
   const o=$('#victoria');
   o.innerHTML=`<div class="px vic"><div class="escudo"><span>🛡️</span><b>BÁSICO</b></div>
     <h2>¡FELICIDADES!</h2><p>Completaste los 5 retos de Computación Básica. Ya sabes lo que es el hardware y el software, usar el teclado y el mouse, y guardar tus archivos.</p>
-    <div class="vic-xp">+300 XP en total</div><p>🏅 <b>Insignia Básico desbloqueada</b></p>
+    <div class="vic-xp">+500 XP en total</div><p>🏅 <b>Insignia Básico desbloqueada</b></p>
     <p class="peque">${UID?'Se guarda en tu perfil y en el ranking.':'Inicia sesión para que quede en tu perfil.'}</p>
     <div class="acc"><a class="btn verde" href="perfil.html">Ver mi perfil</a><a class="btn azul" href="ranking.html">Ver ranking</a><a class="btn" href="juegos.html">Más juegos</a><button class="btn rosa" data-act="cerrarV">Seguir repasando</button></div></div>`;
   o.classList.add('on'); confeti(60);
@@ -863,7 +889,8 @@ const MODO_KIOSKO_ACTIVO = false;
 function salirYLimpiar() {
   localStorage.removeItem('usuarioActual');
   Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('ca_python_v1_') ||
+    if (k.startsWith('ca_basico_v1_') ||       // ← ARREGLADO: Ahora sí borra el progreso de este juego
+        k.startsWith('ca_python_v1_') ||
         k.startsWith('ca_html_v1_') ||
         k.startsWith('ca_juegos_v1_') ||
         k.startsWith('ca_arcade_profile_v1_')) {
@@ -875,7 +902,7 @@ function salirYLimpiar() {
 
 /* Delegación de eventos: funciona aunque la navbar cree el botón SALIR después */
 document.addEventListener('click', e => {
-  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout')) {
+  if (e.target.closest('#logout, .exit-btn, #gxLogout, .gx-logout, .salir')) {
     e.preventDefault();
     salirYLimpiar();
   }

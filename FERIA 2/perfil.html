@@ -10,19 +10,31 @@
 <link rel="icon" href="ho.png">
 <style>
 :root{
-  --bg:#071016; --panel:#0d1c26; --panel2:#112734; --line:#1e3d4f;
-  --text:#d8f3e8; --muted:#7fa396;
-  --lime:#7cffb2; --pink:#ff4f9a; --amber:#ffc24b; --cyan:#4fd8ff; --violet:#a77bff;
-  --frame:#7cffb2;
-  --rk:#cd7f32; --rk-l:#f2bb86; --rk-d:#6b3a10;
-  --px:'Press Start 2P',monospace; --body:'VT323',monospace;
+  /* NUEVA PALETA BASADA EN TUS IMÁGENES */
+  --bg:#0c0414; /* Fondo general oscuro */
+  --panel:#1a0b2e; /* Paneles laterales */
+  --panel2:#2d1b4e; 
+  --line:#4b2c6b;
+  --text:#ffffff;
+  --muted:#a78bfa;
+  --lime:#7cffb2; 
+  --pink:#ff4f9a; 
+  --amber:#ffcc00; /* Amarillo arcade */
+  --cyan:#4fd8ff; 
+  --violet:#a77bff;
+  --frame:#ffcc00; /* Marco amarillo */
+  --rk:#ffcc00; 
+  --rk-l:#fff3b0; 
+  --rk-d:#a06a00;
+  --px:'Press Start 2P',monospace; 
+  --body:'VT323',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
 body{
   background:
-    radial-gradient(circle at 20% -10%, #0f3a3a55, transparent 45%),
-    radial-gradient(circle at 100% 20%, #3a0f3a44, transparent 40%),
+    radial-gradient(circle at 20% -10%, #3a0f3a55, transparent 45%),
+    radial-gradient(circle at 100% 20%, #0f3a3a44, transparent 40%),
     var(--bg);
   color:var(--text);font-family:var(--body);font-size:22px;line-height:1.15;min-height:100vh;
 }
@@ -34,14 +46,81 @@ main{max-width:1120px;margin:0 auto;padding:44px 22px 70px;display:grid;grid-tem
 @media(min-height:780px){main>section{position:sticky;top:96px}}
 @media(max-width:900px){main{grid-template-columns:1fr}main>section{position:static}}
 h2.t{font-family:var(--px);font-size:12px;color:var(--amber);letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-h2.t::before{content:"";width:10px;height:10px;background:var(--pink);box-shadow:4px 4px 0 #000}
+h2.t::before{content:"";width:10px;height:10px;background:var(--violet);box-shadow:4px 4px 0 #000}
 h2.t span{margin-left:auto;color:var(--rk)}
 .box{background:var(--panel);border:4px solid var(--line);padding:20px;position:relative;box-shadow:6px 6px 0 #000}
 
-/* CABINA */
-.cab{background:#14232c;border:4px solid #000;padding:18px 18px 16px;border-radius:14px 14px 4px 4px;box-shadow:0 0 0 4px var(--line),10px 10px 0 #000}
-.marquee{font-family:var(--px);font-size:10px;text-align:center;padding:10px;margin:-6px -6px 14px;background:#000;color:var(--frame);letter-spacing:2px;border-bottom:4px solid var(--frame);text-shadow:0 0 10px var(--frame)}
-.screen{position:relative;aspect-ratio:16/10;overflow:hidden;border:6px solid #000;outline:4px solid var(--frame);border-radius:14px;background:#000;box-shadow:0 0 38px color-mix(in srgb,var(--frame) 45%,transparent)}
+/* NUEVA CABINA BASADA EN IMÁGENES */
+.cab-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  filter: drop-shadow(10px 10px 0 #000);
+}
+
+.cab-top {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
+  background-image: url('perfil1.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+/* Posicionamos la pantalla justo donde va en la imagen de arriba */
+.cab-top .screen {
+  position: absolute;
+  top: 21%; /* Ajusta estos valores si la pantalla no encaja perfecto */
+  left: 10%;
+  width: 80%;
+  height: 56%;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cab-bottom {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Ajusta esto si tu imagen no es cuadrada */
+  background-image: url('perfil2.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  margin-top: -5%; /* Para que se junten bien las piezas */
+}
+
+/* El botón rojo será invisible pero clickeable, posicionado sobre la imagen */
+.arcade-btn-red {
+  position: absolute;
+  bottom: 25%; /* Posición del botón rojo en tu imagen */
+  right: 15%;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.arcade-btn-red:hover {
+  background: rgba(255,255,255,0.1); /* Brillo sutil al pasar el mouse */
+}
+.arcade-btn-red:active {
+  transform: translateY(2px); /* Efecto de presionado */
+}
+
+.screen {
+  position: relative;
+  overflow:hidden;
+  background:#000;
+}
 .screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px);
   box-shadow:inset 0 0 70px rgba(0,0,0,.65)}
@@ -56,18 +135,6 @@ h2.t span{margin-left:auto;color:var(--rk)}
 .pedestal{position:absolute;z-index:3;left:50%;bottom:11%;transform:translateX(-50%);width:36%;height:7%;background:var(--frame);
   box-shadow:0 7px 0 color-mix(in srgb,var(--frame) 55%,#000),0 14px 0 #000;opacity:.9}
 .pedestal::before{content:"";position:absolute;inset:0 12% auto;height:100%;background:rgba(255,255,255,.35);clip-path:inset(0 0 60% 0)}
-
-.panel{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;background:#0a141b;border:3px solid #000;border-radius:8px}
-.stick{width:56px;height:56px;position:relative;flex:none;transform:scale(.8);margin:-6px}
-.stick::before{content:"";position:absolute;left:50%;bottom:6px;width:8px;height:30px;background:#9aa;transform:translateX(-50%) rotate(-12deg);transform-origin:bottom}
-.stick::after{content:"";position:absolute;left:8px;top:-2px;width:26px;height:26px;border-radius:50%;background:var(--pink);box-shadow:inset -5px -5px 0 #0004,0 4px 0 #000}
-.btns{display:flex;gap:8px}
-.dot{width:20px;height:20px;border-radius:50%;box-shadow:inset -4px -4px 0 #0005,0 4px 0 #000}
-.arcade-btn{margin-left:auto;display:flex;align-items:center;gap:10px;background:none;border:none;padding:0;font-family:var(--px);font-size:10px;color:var(--text)}
-.arcade-btn i{width:48px;height:48px;border-radius:50%;background:var(--pink);box-shadow:inset -8px -8px 0 #0004,inset 6px 6px 0 #fff3,0 7px 0 #7a1d48,0 11px 0 #000;transition:transform .08s,box-shadow .08s;display:block}
-.arcade-btn:hover i{filter:brightness(1.15)}
-.arcade-btn:active i{transform:translateY(6px);box-shadow:inset -8px -8px 0 #0004,inset 6px 6px 0 #fff3,0 1px 0 #7a1d48,0 5px 0 #000}
-.arcade-btn:focus-visible{outline:3px dashed var(--amber);outline-offset:6px}
 
 /* TARJETA DE IDENTIDAD */
 .idc{margin-top:26px;display:grid;gap:12px}
@@ -194,15 +261,22 @@ dialog::backdrop{background:transparent}
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 
 </style>
-<style id="fix-puntero">
-/* Restaura el puntero normal aunque un CSS/JS externo (style.css, juegos.css, navbar.css, pixelword-nav.js) lo oculte */
-html, body, body * { cursor: auto !important; }
-body a, body button, body [onclick], body [role="button"], body label[for], body select, body summary,
-body input[type="button"], body input[type="submit"], body input[type="checkbox"], body input[type="radio"],
-body [class*="btn"], body [class*="boton"], body [class*="card"], body [class*="tab"] { cursor: pointer !important; }
-body input[type="text"], body input[type="password"], body input[type="tel"], body input[type="email"], body input:not([type]), body textarea { cursor: text !important; }
-body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
-#espada-cursor { display: none !important; }
+<style id="ajustes">
+/* ═══════════ AJUSTES GLOBALES: puntero normal + responsive ═══════════ */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body,body *{cursor:auto!important}
+body a,body button,body [onclick],body [role="button"],body label[for],body select,body summary,
+body input[type="button"],body input[type="submit"],body input[type="checkbox"],body input[type="radio"],
+body [class*="btn"],body [class*="boton"],body [class*="card"],body [class*="tab"]{cursor:pointer!important}
+body input[type="text"],body input[type="password"],body input[type="tel"],body input[type="email"],body input:not([type]),body textarea{cursor:text!important}
+body button:disabled,body .btn:disabled{cursor:not-allowed!important}
+#espada-cursor{display:none!important}
+img,video,canvas,svg,iframe{max-width:100%}
+body{overflow-wrap:break-word}
+@media (hover:none){input,select,textarea{font-size:max(16px,1em)}}
+/* Perfil: modal y columnas ajustados al ancho disponible */
+dialog{max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow:auto}
+@media (max-width:480px){main{padding:24px 14px 50px}}
 </style>
 </head>
 <body>
@@ -211,22 +285,27 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
 
 <main>
   <section>
-    <div class="cab">
-      <div class="marquee">★ JUGADOR 1 ★</div>
-      <div class="screen" id="heroScreen">
-        <div class="hud tl">NIVEL <span id="hudLvl">01</span></div>
-        <div class="hud tr">HI-SCORE<br><span id="hudScore">000000</span></div>
-        <div class="hud bl" id="hudUser">@jugador</div>
-        <div class="hud br">PRESS START</div>
-        <div class="pedestal"></div>
-        <div class="hero-av" id="heroAv"></div>
+    <!-- NUEVA CABINA CON IMÁGENES -->
+    <div class="cab-new">
+      <!-- Parte de arriba (Marquesina y Pantalla) -->
+      <div class="cab-top">
+        <div class="screen" id="heroScreen">
+          <div class="hud tl">NIVEL <span id="hudLvl">01</span></div>
+          <div class="hud tr">HI-SCORE<br><span id="hudScore">000000</span></div>
+          <div class="hud bl" id="hudUser">@jugador</div>
+          <div class="hud br">PRESS START</div>
+          <div class="pedestal"></div>
+          <div class="hero-av" id="heroAv"></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="stick"></div>
-        <div class="btns"><span class="dot" style="background:var(--amber)"></span><span class="dot" style="background:var(--cyan)"></span><span class="dot" style="background:var(--lime)"></span></div>
-        <button class="arcade-btn" id="openEd"><span>EDITAR<br><br>PERFIL</span><i></i></button>
+      
+      <!-- Parte de abajo (Panel de control) -->
+      <div class="cab-bottom">
+        <!-- Botón invisible que cubre el botón rojo de la imagen -->
+        <button class="arcade-btn-red" id="openEd" aria-label="Editar Perfil"></button>
       </div>
     </div>
+    
     <div class="box idc">
       <div class="nm" id="pName"></div>
       <div class="tag" id="pTag"></div>
@@ -263,12 +342,12 @@ body button:disabled, body .btn:disabled { cursor: not-allowed !important; }
   </div>
 </main>
 
-<!-- EDITOR -->
+<!-- EDITOR (La interfaz que se abre al dar clic al botón rojo) -->
 <dialog id="ed">
   <div class="dlg">
     <div class="dlg-l">
       <h3>Vista previa</h3>
-      <div class="screen sm" id="prevScreen">
+      <div class="screen sm" id="prevScreen" style="border: 4px solid #000; outline: 3px solid var(--frame);">
         <div class="pedestal"></div>
         <div class="hero-av" id="prevAv"></div>
       </div>
@@ -458,9 +537,9 @@ setInterval(()=>{const f=SEQ[t++%SEQ.length];document.querySelectorAll('canvas[d
 /* ---------- RANGOS + EMBLEMAS ---------- */
 const RANKS=[
   {n:'Bronce', min:0,    c:'#cd7f32', l:'#f2bb86', d:'#6b3a10', g:'I'},
-  {n:'Plata',  min:300,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
-  {n:'Oro',    min:700,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
-  {n:'Platino',min:1200, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
+  {n:'Plata',  min:500,  c:'#a8b8c8', l:'#e8f0f8', d:'#5a6a78', g:'II'},
+  {n:'Oro',    min:1500,  c:'#ffc24b', l:'#fff3b0', d:'#a06a00', g:'III'},
+  {n:'Platino',min:2500, c:'#4fd8ff', l:'#e0f8ff', d:'#6a4cff', g:'IV'}
 ];
 const EMBLEMAS = ['Broncee.png', 'Plata.png', 'ORO.png', 'RANGO-MAXIMO.png'];
 const rankOf=xp=>RANKS.reduce((a,r,k)=>xp>=r.min?k:a,0);
@@ -588,6 +667,7 @@ function sync(){
   document.querySelectorAll('#pFrame .swatch').forEach((b,i)=>b.setAttribute('aria-pressed',D.frame===i));
 }
 
+// ESTA ES LA LÓGICA QUE HACE QUE AL DAR CLIC AL BOTÓN ROJO SE ABRA LA OTRA INTERFAZ
 $('openEd').onclick=()=>{
   D={...S,user:'@'+usuarioCanonico};
   $('iName').value=D.name;
@@ -666,7 +746,7 @@ document.addEventListener('keydown', e => {
 </script>
 
 <!-- NAVBAR (la crea pixelword-nav.js, igual que en index) -->
-<script src="pixelword-nav.js"></script>
+<script src="pixelword-nav.js?v=4"></script>
 <script>
 (function(){
   const limpiar = () => {
